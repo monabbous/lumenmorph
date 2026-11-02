@@ -9,15 +9,15 @@ test("masonry keeps every card in bounds and reflows category filters", async ({
   await expect(page.locator(".example:visible")).toHaveCount(24);
   await expect(page.locator(".showcase-grid")).toHaveAttribute("data-masonry", "");
   const check = async () => {
-    const result = await page.locator(".example:visible").evaluateAll(cards => {
+    // ResizeObserver updates row spans after responsive columns change.
+    await expect.poll(() => page.locator(".example:visible").evaluateAll(cards => {
       const boxes = cards.map(card => card.getBoundingClientRect());
       return {
         overflow: document.documentElement.scrollWidth > innerWidth,
         clipped: cards.some(card => card.scrollWidth > card.clientWidth + 1),
         overlap: boxes.some((a, i) => boxes.some((b, j) => i !== j && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1)),
       };
-    });
-    expect(result).toEqual({ overflow: false, clipped: false, overlap: false });
+    })).toEqual({ overflow: false, clipped: false, overlap: false });
   };
   await check();
   for (const [filter, count] of [["surface", 6], ["type", 3], ["control", 9], ["composition", 6], ["all", 24]]) {
