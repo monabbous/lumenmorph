@@ -2,7 +2,7 @@
 
 // react/src/index.tsx
 import { useEffect, useId, useRef } from "react";
-import { observeSvgGeometry, parseViewBox, svgPageStyle, svgLayerStyle } from "../js/svg.mjs";
+import { observeSvgGeometry, parseViewBox, svgPageStyle, svgMaskStyle, svgLayerStyle } from "../js/svg.mjs";
 import { jsx, jsxs } from "react/jsx-runtime";
 function LumenText({ children, width = 640, height = 120, fontSize = 80, strokeWidth = 2, textProps = {}, className = "", style, ...props }) {
   const id = `lumen-${useId().replace(/[^a-zA-Z0-9_-]/g, "_")}`;
@@ -42,14 +42,14 @@ function LumenText({ children, width = 640, height = 120, fontSize = 80, strokeW
       className: `lumenmorph-svg ${className}`.trim(),
       style: { ...svgPageStyle, ...style },
       children: [
-        /* @__PURE__ */ jsxs("defs", { children: [
+        /* @__PURE__ */ jsxs("defs", { style: svgMaskStyle, children: [
           /* @__PURE__ */ jsxs("filter", { id: `${id}-ring`, filterUnits: "userSpaceOnUse", x: 0, y: 0, width, height, colorInterpolationFilters: "sRGB", children: [
             /* @__PURE__ */ jsx("feMorphology", { in: "SourceGraphic", operator: "dilate", radius: Math.max(0, strokeWidth) / 2, result: "expanded" }),
             /* @__PURE__ */ jsx("feMorphology", { in: "SourceGraphic", operator: "erode", radius: Math.max(0, strokeWidth) / 2, result: "contracted" }),
             /* @__PURE__ */ jsx("feComposite", { in: "expanded", in2: "contracted", operator: "out" })
           ] }),
-          /* @__PURE__ */ jsx("mask", { id: `${id}-fill`, maskUnits: "userSpaceOnUse", x: 0, y: 0, width, height, children: text() }),
-          /* @__PURE__ */ jsx("mask", { id: `${id}-outline`, maskUnits: "userSpaceOnUse", x: 0, y: 0, width, height, children: text(true) })
+          /* @__PURE__ */ jsx("mask", { id: `${id}-fill`, maskUnits: "userSpaceOnUse", x: 0, y: 0, width, height, style: { maskType: "alpha" }, children: text() }),
+          /* @__PURE__ */ jsx("mask", { id: `${id}-outline`, maskUnits: "userSpaceOnUse", x: 0, y: 0, width, height, style: { maskType: "alpha" }, children: text(true) })
         ] }),
         /* @__PURE__ */ jsxs("g", { "aria-hidden": "true", children: [
           layer(false),
@@ -85,14 +85,14 @@ function LumenIcon({ paths, width = 128, height = 128, viewBox = "0 0 64 64", st
       className: `lumenmorph-svg ${className}`.trim(),
       style: { ...svgPageStyle, ...style },
       children: [
-        /* @__PURE__ */ jsxs("defs", { children: [
+        /* @__PURE__ */ jsxs("defs", { style: svgMaskStyle, children: [
           /* @__PURE__ */ jsxs("filter", { id: `${id}-ring`, filterUnits: "userSpaceOnUse", ...bounds, colorInterpolationFilters: "sRGB", children: [
             /* @__PURE__ */ jsx("feMorphology", { in: "SourceGraphic", operator: "dilate", radius: Math.max(0, strokeWidth) / 2, result: "expanded" }),
             /* @__PURE__ */ jsx("feMorphology", { in: "SourceGraphic", operator: "erode", radius: Math.max(0, strokeWidth) / 2, result: "contracted" }),
             /* @__PURE__ */ jsx("feComposite", { in: "expanded", in2: "contracted", operator: "out" })
           ] }),
-          /* @__PURE__ */ jsx("mask", { id: `${id}-fill`, maskUnits: "userSpaceOnUse", ...bounds, children: shape() }),
-          /* @__PURE__ */ jsx("mask", { id: `${id}-outline`, maskUnits: "userSpaceOnUse", ...bounds, children: shape({ filter: `url(#${id}-ring)` }) })
+          /* @__PURE__ */ jsx("mask", { id: `${id}-fill`, maskUnits: "userSpaceOnUse", ...bounds, style: { maskType: "alpha" }, children: shape() }),
+          /* @__PURE__ */ jsx("mask", { id: `${id}-outline`, maskUnits: "userSpaceOnUse", ...bounds, style: { maskType: "alpha" }, children: shape({ filter: `url(#${id}-ring)` }) })
         ] }),
         /* @__PURE__ */ jsxs("g", { "aria-hidden": "true", children: [
           layer(false),

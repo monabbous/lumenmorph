@@ -357,6 +357,8 @@ SVG `foreignObject` backgrounds don't reliably share the document's fixed-backgr
 
 The SVG effect uses two masks and two HTML `foreignObject` layers. Its outline is a ring around the filled silhouette, produced by SVG dilation and erosion. Stroking the font's raw contours would expose internal seams in fonts with overlapping contours, including Cascadia Mono. The silhouette ring avoids those lines.
 
+The silhouette masks use alpha and keep their light coordinates constant. Pointer coordinates still flow to the paint layers, but don't invalidate the static mask subtree on every move. This reduces Safari's rendering work without removing the outline or the moving light. Blur and gradient painting still have a cost; this is not compositor-only animation.
+
 This effect uses more markup than the CSS text treatment. Test it in your target browsers: foreignObject compositing and backdrop blur through SVG masks can differ by engine. SVG export tools may not render the HTML layers.
 
 These adapters share the same silhouette outline and coordinate mapping as React. Vue, Svelte, and Angular render into one native `<svg>` with no wrapper. The Web Component adds its custom-element host and an open shadow root; its core stylesheet is shared between instances with a constructable stylesheet where supported.
@@ -472,7 +474,7 @@ An unlabeled icon is decorative and hidden from accessibility APIs. Supply `labe
 - Shared viewport light uses fixed-attachment backgrounds. Transforms, filters, containment, SVG compositing, and mobile engines can change fixed-background behavior. Use a static light or local mode on one untransformed surface when shared alignment isn't reliable.
 - Blur and radial gradients require rendering work. Small JavaScript and low markup don't imply compositor-only rendering or a speed advantage over other glass effects. Avoid many overlapping, full-screen blurred surfaces; test real devices.
 
-Automated browser checks use desktop and mobile-emulated Chromium. Test your target browsers and physical devices, especially for SVG compositing and fixed backgrounds.
+Automated browser checks use desktop and mobile-emulated Chromium, plus WebKit for SVG masking and coordinate isolation. Test your target browsers and physical devices, especially for SVG compositing and fixed backgrounds.
 
 ## Contributing
 

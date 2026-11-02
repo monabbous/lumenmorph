@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, type CSSProperties, type SVGProps } from "react";
-import { observeSvgGeometry, parseViewBox, svgPageStyle, svgLayerStyle } from "../../js/svg.mjs";
+import { observeSvgGeometry, parseViewBox, svgPageStyle, svgMaskStyle, svgLayerStyle } from "../../js/svg.mjs";
 
 export interface LumenTextProps extends Omit<SVGProps<SVGSVGElement>, "children" | "width" | "height" | "fontSize" | "strokeWidth" | "ref"> {
   children: string;
@@ -33,14 +33,14 @@ export function LumenText({ children, width = 640, height = 120, fontSize = 80, 
   return <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={`0 0 ${width} ${height}`}
     role="img" aria-label={props["aria-label"] ?? children} {...props} ref={svg}
     className={`lumenmorph-svg ${className}`.trim()} style={{ ...svgPageStyle, ...style }}>
-    <defs>
+    <defs style={svgMaskStyle as CSSProperties}>
       <filter id={`${id}-ring`} filterUnits="userSpaceOnUse" x={0} y={0} width={width} height={height} colorInterpolationFilters="sRGB">
         <feMorphology in="SourceGraphic" operator="dilate" radius={Math.max(0, strokeWidth) / 2} result="expanded" />
         <feMorphology in="SourceGraphic" operator="erode" radius={Math.max(0, strokeWidth) / 2} result="contracted" />
         <feComposite in="expanded" in2="contracted" operator="out" />
       </filter>
-      <mask id={`${id}-fill`} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height}>{text()}</mask>
-      <mask id={`${id}-outline`} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height}>{text(true)}</mask>
+      <mask id={`${id}-fill`} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height} style={{ maskType: "alpha" }}>{text()}</mask>
+      <mask id={`${id}-outline`} maskUnits="userSpaceOnUse" x={0} y={0} width={width} height={height} style={{ maskType: "alpha" }}>{text(true)}</mask>
     </defs>
     <g aria-hidden="true">{layer(false)}{layer(true)}</g>
     {text(false, true)}
@@ -71,14 +71,14 @@ export function LumenIcon({ paths, width = 128, height = 128, viewBox = "0 0 64 
   return <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox={viewBox} role="img"
     aria-label={accessibleLabel} aria-hidden={!accessibleLabel || undefined} {...props} ref={svg}
     className={`lumenmorph-svg ${className}`.trim()} style={{ ...svgPageStyle, ...style }}>
-    <defs>
+    <defs style={svgMaskStyle as CSSProperties}>
       <filter id={`${id}-ring`} filterUnits="userSpaceOnUse" {...bounds} colorInterpolationFilters="sRGB">
         <feMorphology in="SourceGraphic" operator="dilate" radius={Math.max(0, strokeWidth) / 2} result="expanded" />
         <feMorphology in="SourceGraphic" operator="erode" radius={Math.max(0, strokeWidth) / 2} result="contracted" />
         <feComposite in="expanded" in2="contracted" operator="out" />
       </filter>
-      <mask id={`${id}-fill`} maskUnits="userSpaceOnUse" {...bounds}>{shape()}</mask>
-      <mask id={`${id}-outline`} maskUnits="userSpaceOnUse" {...bounds}>{shape({ filter: `url(#${id}-ring)` })}</mask>
+      <mask id={`${id}-fill`} maskUnits="userSpaceOnUse" {...bounds} style={{ maskType: "alpha" }}>{shape()}</mask>
+      <mask id={`${id}-outline`} maskUnits="userSpaceOnUse" {...bounds} style={{ maskType: "alpha" }}>{shape({ filter: `url(#${id}-ring)` })}</mask>
     </defs>
     <g aria-hidden="true">{layer(false)}{layer(true)}</g>
     {shape({ className: "lumenmorph-svg-fallback", fill: "CanvasText", "aria-hidden": true, style: { display: "none" } })}

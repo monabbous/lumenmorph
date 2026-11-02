@@ -14,6 +14,25 @@ for (const adapter of ["React", "Vue", "Svelte", "Angular", "Web Component"]) {
     for (const selector of ["#react-demo svg", "#icon-demo svg"]) {
       const svg = page.locator(selector);
       await expect(svg).toBeVisible();
+      // Changing page light must reach the paint layer, but not invalidate the
+      // static silhouette subtree. Check both coordinates and both adapters.
+      for (const [x, y] of [[40, 60], [220, 180]]) {
+        await svg.evaluate((element, point) => {
+          element.style.setProperty("--lumen-x", `${point[0]}px`);
+          element.style.setProperty("--lumen-y", `${point[1]}px`);
+        }, [x, y]);
+        await expect.poll(() => svg.locator("foreignObject div").first().evaluate(element =>
+          getComputedStyle(element).getPropertyValue("--_lumen-page-x").trim()
+        )).toBe(`${x}px`);
+        for (const name of ["--lumen-x", "--lumen-y", "--_lumen-page-x", "--_lumen-page-y"]) {
+          expect(await svg.locator("mask").first().evaluate((element, name) =>
+            getComputedStyle(element).getPropertyValue(name).trim(), name
+          )).toBe("0px");
+        }
+      }
+      for (const mask of await svg.locator("mask").all()) {
+        await expect(mask).toHaveCSS("mask-type", "alpha");
+      }
       await svg.evaluate(element => {
         element.style.background = "#000";
         for (const [name, value] of Object.entries({

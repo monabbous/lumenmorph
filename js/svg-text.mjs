@@ -1,4 +1,4 @@
-import { observeSvgGeometry, parseViewBox, svgPageStyle, svgLayerStyle } from "./svg.mjs";
+import { observeSvgGeometry, parseViewBox, svgPageStyle, svgMaskStyle, svgLayerStyle } from "./svg.mjs";
 
 const namespace = "http://www.w3.org/2000/svg";
 const textAttributes = {
@@ -32,7 +32,7 @@ function mountGraphic(svg, initial, icon) {
   const dilate = make("feMorphology", { in: "SourceGraphic", operator: "dilate", result: "expanded" });
   const erode = make("feMorphology", { in: "SourceGraphic", operator: "erode", result: "contracted" });
   const filter = make("filter", { id: `${id}-ring`, filterUnits: "userSpaceOnUse", x: 0, y: 0, "color-interpolation-filters": "sRGB" }, [dilate, erode, make("feComposite", { in: "expanded", in2: "contracted", operator: "out" })]);
-  const masks = texts.map((text, index) => make("mask", { id: `${id}-${index}`, maskUnits: "userSpaceOnUse", x: 0, y: 0 }, [text]));
+  const masks = texts.map((text, index) => make("mask", { id: `${id}-${index}`, maskUnits: "userSpaceOnUse", x: 0, y: 0, style: "mask-type:alpha" }, [text]));
   const layers = masks.map((mask, index) => {
     const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
     div.setAttribute("class", "lumenmorph");
@@ -43,7 +43,9 @@ function mountGraphic(svg, initial, icon) {
     return make("foreignObject", { x: 0, y: 0, mask: `url(#${mask.id})` }, [div]);
   });
   svg.classList.add("lumenmorph-svg");
-  svg.replaceChildren(make("defs", {}, [filter, ...masks]), make("g", { "aria-hidden": "true" }, layers), fallback);
+  const defs = make("defs", {}, [filter, ...masks]);
+  for (const [name, value] of Object.entries(svgMaskStyle)) defs.style.setProperty(name, value);
+  svg.replaceChildren(defs, make("g", { "aria-hidden": "true" }, layers), fallback);
   let previousKeys = [];
   let options = {};
   let geometry;

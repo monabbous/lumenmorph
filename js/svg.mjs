@@ -5,6 +5,15 @@ export const svgPageStyle = {
   "--_lumen-page-size": "var(--lumen-glow-size, 460px)",
 };
 
+// Masks describe static silhouettes. Stop the animated light coordinates here
+// so WebKit can reuse their morphology result while the paint layers move.
+export const svgMaskStyle = {
+  "--lumen-x": "0px",
+  "--lumen-y": "0px",
+  "--_lumen-page-x": "0px",
+  "--_lumen-page-y": "0px",
+};
+
 export function svgLayerStyle(outline, icon = false) {
   return {
     width: "100%", height: "100%", borderRadius: "0",
