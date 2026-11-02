@@ -1,0 +1,55 @@
+:root { color-scheme: dark; --studio-radius: 4px; --editor-ink: #e9f3ed; --editor-muted: #adc2c5; --editor-line: #8cafab40; }
+body { margin: 0; background: #102a31; color: var(--editor-ink); font-family: ui-monospace, monospace; }
+.example-studio, .example-studio * { box-sizing: border-box; }
+.example-studio { max-width: 1360px; margin: auto; padding: 28px 32px 45px; --lumen-radius: var(--studio-radius); --lumen-blur: 0px; --lumen-bg: #ffaa710c; --lumen-glow-color: #ffaa71; --lumen-border-glow-color: #ffd4a3; --lumen-glow-opacity: .2; --lumen-border-opacity: .8; }
+.example-studio [hidden] { display: none !important; }
+.studio-back { color: var(--editor-muted); font-size: 11px; text-underline-offset: 4px; }
+.example-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin: 34px 0 28px; }
+.example-studio .eyebrow { color: #ffaa71; font-size: 9px; letter-spacing: .16em; margin: 0 0 14px; }
+.example-heading h1 { font-weight: 600; line-height: 1.1; font-size: clamp(28px, 4vw, 44px); letter-spacing: -.06em; margin: 0 0 14px; }
+.example-heading p:not(.eyebrow) { margin: 0; max-width: 600px; color: var(--editor-muted); font-size: 12px; line-height: 1.8; }
+.example-studio .studio-button { display: inline-flex; align-items: center; justify-content: center; flex: none; min-height: 42px; padding: 10px 15px; border: 1px solid var(--editor-line); border-radius: var(--studio-radius); background-color: #17353a; color: var(--editor-ink); font: inherit; line-height: 1.4; font-size: 11px; cursor: pointer; }
+.example-studio .studio-button:hover { border-color: #ffaa7180; color: #ffcca4; }
+.example-studio button:disabled { opacity: .45; cursor: wait; }
+.example-studio :is(button, a, input, textarea):focus-visible { outline: 2px solid #ffaa71; outline-offset: 3px; }
+.studio-workspace { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 24px; align-items: stretch; }
+.example-studio .studio-card { border: 2px solid var(--editor-line); border-radius: var(--studio-radius); min-width: 0; overflow: clip; background: #0b222a; }
+.panel-heading, .editor-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 56px; padding: 10px 20px; border-bottom: 1px solid var(--editor-line); gap: 10px; }
+.panel-heading h2 { margin: 0; font-size: 12px; font-weight: 500; }
+#preview-state { font-size: 9px; color: #88c9b8; }
+.preview-stage { min-height: 570px; display: grid; place-items: center; background: #102a31; }
+#example-preview { display: block; width: 100%; height: 570px; border: 0; background: #102a31; }
+#preview-poster { display: block; width: 100%; height: auto; }
+.preview-caption { border-top: 1px solid var(--editor-line); color: var(--editor-muted); font-size: 10px; padding: 17px 20px; line-height: 1.6; }
+.editor-card { display: flex; flex-direction: column; }
+.editor-toolbar { padding: 0 16px 0 0; }
+.code-tabs { display: flex; align-self: stretch; }
+.code-tabs button { border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--editor-muted); font: inherit; font-size: 11px; padding: 16px 20px; cursor: pointer; min-height: 54px; }
+.code-tabs button[aria-selected=true] { color: #ffbd8d; border-bottom-color: #ffaa71; background: #ffaa7108; }
+.auto-run { display: flex; align-items: center; gap: 7px; font-size: 10px; color: var(--editor-muted); white-space: nowrap; }
+.auto-run input { accent-color: #ffaa71; }
+.editor-card [role=tabpanel] { flex: 1; display: flex; min-height: 0; }
+.example-studio textarea { display: block; resize: vertical; width: 100%; min-height: 540px; border: 0; border-radius: 0; padding: 20px; background: #091d24; color: #d0e7de; font: 12px/1.8 ui-monospace, monospace; tab-size: 2; caret-color: #ffaa71; }
+.example-studio textarea:focus-visible { outline-offset: -3px; }
+.editor-actions { padding: 12px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; border-top: 1px solid var(--editor-line); }
+#edit-status { font-size: 9px; color: var(--editor-muted); margin-left: auto; }
+#preview-error { margin: 0; border: 0; border-top: 1px solid #ffad7155; border-radius: 0; padding: 14px 16px; white-space: pre-wrap; max-height: 130px; overflow: auto; font: 11px/1.6 ui-monospace, monospace; color: #ffbc93; background: #2c2525; }
+.studio-bottom { display: flex; justify-content: space-between; gap: 24px; margin-top: 23px; align-items: flex-start; }
+.studio-bottom p { margin: 0; color: var(--editor-muted); font-size: 10px; line-height: 1.8; }
+.studio-export { display: flex; gap: 10px; flex-wrap: wrap; }
+.studio-export form { margin: 0; }
+#share-status { font-size: 11px; color: #ffbd8d; }
+#share-url { width: 100%; padding: 12px; background: #091d24; color: var(--editor-ink); border: 1px solid var(--editor-line); border-radius: var(--studio-radius); font: 12px ui-monospace, monospace; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 850px) { .studio-workspace { grid-template-columns: 1fr; } .preview-stage { min-height: 510px; } #example-preview { height: 510px; } .example-studio textarea { min-height: 340px; } }
+@media (max-width: 600px) { .example-studio { padding: 22px 16px; } .example-heading { display: block; margin-block: 25px; } .example-heading .studio-button { margin-top: 20px; } .studio-bottom { flex-direction: column; } .studio-workspace { gap: 16px; } .code-tabs button { padding-inline: 14px; } .editor-toolbar { padding-right: 12px; } .panel-heading { padding-inline: 16px; } }
+@media (forced-colors: active) { .example-studio .studio-card, .example-studio textarea, .example-studio .studio-button { background: Canvas; color: CanvasText; border-color: CanvasText; } .code-tabs button[aria-selected=true] { border-color: Highlight; color: Highlight; } }
+.example-studio .studio-button { gap: 8px; }
+.code-tabs button i { margin-right: 7px; }
+.code-editor { width: 100%; min-width: 0; height: 540px; overflow: hidden; }
+.code-editor .cm-editor { height: 100%; }
+.code-editor .cm-scroller { max-width: 100%; }
+#format-code { margin-left: auto; min-width: 42px; padding-inline: 10px; }
+.editor-toolbar { gap: 6px; }
+@media (max-width: 850px) { .code-editor { height: 380px; } }
+@media (max-width: 600px) { .code-tabs button { padding-inline: 10px; } .code-tabs button i { margin-right: 4px; } .editor-toolbar { flex-wrap: wrap; padding-right: 8px; } .auto-run { font-size: 9px; } }

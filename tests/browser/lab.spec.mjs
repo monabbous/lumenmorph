@@ -225,10 +225,15 @@ test("optional motion transitions one coordinate owner and smooths exit", async 
   expect(durations.surface).toBe("0s");
   await page.mouse.move(300, 220);
   await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(300);
+  // Observe the transition in-page; a driver round trip can outlast the 500ms animation under load.
+  await page.locator(".lm-lab").evaluate(element => {
+    element.addEventListener("transitionrun", event => {
+      if (event.target === element && event.propertyName === "--lumen-x") element.dataset.returnTransition = "started";
+    });
+  });
   await page.mouse.move(-5, -5);
-  const returning = await page.locator(".lm-lab").evaluate(element => ({ x: Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")), duration: getComputedStyle(element).transitionDuration }));
-  expect(returning.duration).toBe("0.5s");
-  expect(returning.x).toBeLessThan(720);
+  await expect(page.locator(".lm-lab")).toHaveAttribute("data-return-transition", "started");
+  expect(await page.locator(".lm-lab").evaluate(element => getComputedStyle(element).transitionDuration)).toBe("0.5s");
   await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(720);
   await expect(page.locator("#snippet")).toContainText("@monabbous/lumenmorph/motion");
   await page.emulateMedia({ reducedMotion: "reduce" });

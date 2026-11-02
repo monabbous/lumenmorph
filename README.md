@@ -483,3 +483,11 @@ Contributions are welcome. For setup, tests, and source-generation rules, read [
 ## License and credit
 
 [ISC](LICENSE), Mohamed Nabous. Lumenmorph extracts and adapts the glass surface, shared pointer glow, illuminated edge, and SVG text approach from [monabbous/nabous.dev](https://github.com/monabbous/nabous.dev). It doesn't copy the site's shell or install Slidebox.
+
+## Editing the example collection
+
+The main lab links to `public/lab/examples/`, a standalone collection of 24 studies. Each study has a shareable directory with a live HTML/CSS/JavaScript editor, a downloadable HTML file, and an optional CodePen export. Editors provide syntax highlighting, autocomplete, and automatic Prettier formatting when leaving an editor. Format immediately with the Format button or Shift+Alt+F. Incomplete syntax stays untouched. Edits remain in the current tab; share links open the published example.
+
+Edit card markup in `public/lab/examples/index.html`, styling in `public/lab/showcase.css`, and interactions in `public/lab/example-behaviors.mjs`. Run `npm run build:lab` to regenerate example pages, formatted sources, and 1200 × 630 social images, including the main lab’s collection thumbnail. Preview generation requires Playwright Chromium (`npx playwright install chromium`); it renders actual card markup without network access and skips unchanged images. Commit generated files with their sources. CI checks that the pages and preview manifest are current.
+
+The editor runs user code in an opaque-origin iframe with scripts enabled and network requests blocked. Its bundled runtime includes Lumenmorph and Slidebox. CodeMirror, Prettier, and Font Awesome are served locally; formatting loads on demand. The host site adds its navigation and resolves each page's `lab:title` and `lab:image` metadata.

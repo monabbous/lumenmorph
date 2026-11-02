@@ -11,10 +11,11 @@
   <link rel="stylesheet" href="./assets/slidebox.css">
   <link rel="stylesheet" href="./assets/slidebox-range.css">
   <link rel="stylesheet" href="./lab.css">
+
 </head>
 <body>
   <main class="lm-lab lumenmorph-motion">
-    <section class="lm-intro"><p class="eyebrow">CSS EXPERIMENT / GLASS &amp; LIGHT</p><h1 class="lm-title"><span class="title-label">Lumenmorph</span><span id="header-demo" aria-hidden="true"></span></h1><div class="intro-bottom"><p class="dek">The glass from <a href="https://nabous.dev">nabous.dev</a>, without the site around it.<br>Adjust the material. Keep your markup.</p><a class="intro-link" href="#code">Get the code <span aria-hidden="true">↓</span></a></div></section>
+    <section class="lm-intro"><p class="eyebrow">CSS EXPERIMENT / GLASS &amp; LIGHT</p><h1 class="lm-title"><span class="title-label">Lumenmorph</span><span id="header-demo" aria-hidden="true"></span></h1><div class="intro-bottom"><p class="dek">The glass from <a href="https://nabous.dev">nabous.dev</a>, without the site around it.<br>Adjust the material. Keep your markup.</p><a class="intro-link" href="#code">Get the code <span aria-hidden="true">↓</span></a><a class="intro-link" href="./examples/">Explore 24 examples <span aria-hidden="true">↘</span></a></div></section>
     <div class="lm-workspace">
       <section class="stage" aria-label="Live preview">
         <div class="stage-top"><span class="eyebrow">01 / LIVE MATERIAL</span><span class="status"><i></i> Move your pointer</span></div>
@@ -54,6 +55,7 @@
       <p id="copy-status" role="status"></p>
     </section>
     <section class="notes" aria-label="Implementation notes"><div><h3>CSS is the core.</h3><p>No runtime, canvas, wrappers, or event handlers for static surfaces. The border uses one pseudo-element.</p></div><div><h3>One shared light.</h3><p>The optional helper writes two inherited variables, at most once per animation frame. It does nothing while idle.</p></div><div><h3>Use it where it fits.</h3><p>Backdrop blur and gradient painting have a cost. Keep large blurred areas in check and test on your target devices.</p></div></section>
+    <section class="collection-invite" aria-labelledby="collection-heading"><a class="collection-thumbnail" href="./examples/" aria-label="Explore all 24 Lumenmorph examples"><img src="./examples/collection.png" alt="A collage of glowing typography, glass controls, and the weather example." width="1200" height="630" loading="lazy" decoding="async"></a><div class="collection-copy"><p class="eyebrow">THE MATERIAL COLLECTION</p><h2 id="collection-heading">24 ways to play with light.</h2><p>Glass surfaces, glowing type, and small interactive worlds. Explore the collection, share an example, or make it your own in the live editor.</p><a class="lumenmorph lumenmorph-border" href="./examples/">Explore all examples ↗</a></div></section>
   </main>
   <script type="module" src="./lab.mjs"></script><script type="module" src="./assets/react-demo.mjs"></script>
 </body></html>

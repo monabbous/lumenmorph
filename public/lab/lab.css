@@ -159,3 +159,18 @@ body:not(:has([data-nabous-shell])) {
   .lm-lab .specimen, .lm-lab .specimen :is(p, .chip) { color: CanvasText; }
   .lm-lab .material-icon, .lm-lab .status { color: CanvasText; }
 }
+.lm-lab .collection-invite { display: grid; grid-template-columns: 1.15fr 1fr; margin: 48px 0 20px; border: 1px solid #80b4aa40; border-radius: var(--studio-radius, 4px); background: radial-gradient(ellipse at top right, #71cbb915, transparent 70%); }
+.lm-lab .collection-invite h2 { font-size: clamp(26px, 4vw, 40px); letter-spacing: -.05em; margin: 12px 0; }
+.lm-lab .collection-copy > p:not(.eyebrow) { max-width: 620px; color: #adc2c5; font-size: 12px; line-height: 1.8; }
+.lm-lab .collection-copy > a { display: inline-block; padding: 14px 20px; margin-top: 15px; font-size: 12px; text-decoration: none; --lumen-radius: var(--studio-radius, 4px); --lumen-blur: 0px; --lumen-bg: #ffaa7110; }
+
+.lm-lab .collection-thumbnail { display: block; min-width: 0; overflow: hidden; border-radius: var(--studio-radius, 4px) 0 0 var(--studio-radius, 4px); background: #102a31; }
+.lm-lab .collection-thumbnail img { display: block; width: 100%; height: 100%; min-height: 280px; object-fit: contain; }
+.lm-lab .collection-thumbnail:focus-visible { outline-offset: -4px; }
+.lm-lab .collection-copy { min-width: 0; padding: 28px; align-self: center; }
+@media (max-width: 700px) {
+  .lm-lab .collection-invite { grid-template-columns: 1fr; }
+  .lm-lab .collection-thumbnail { border-radius: var(--studio-radius, 4px) var(--studio-radius, 4px) 0 0; }
+  .lm-lab .collection-thumbnail img { height: auto; min-height: 0; }
+  .lm-lab .collection-copy { padding: 24px; }
+}

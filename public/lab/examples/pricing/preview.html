@@ -1,0 +1,517 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><style>/* A surface needs no wrapper. Add the border class to opt into one pseudo-element. */
+.lumenmorph {
+  background-color: var(--lumen-bg, #302028b3);
+  border-radius: var(--lumen-radius, 0.25rem);
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+  backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+}
+
+.lumenmorph-border {
+  position: relative;
+  border: var(--lumen-border-width, 1.5px) solid var(--lumen-border-color, #ffffff30);
+}
+
+.lumenmorph-border::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--lumen-border-width, 1.5px));
+  border-radius: inherit;
+  padding: var(--lumen-border-width, 1.5px);
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+.lumenmorph-text,
+.glassmorphism-text {
+  color: var(--lumen-text-color, #ffffffb3);
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  .lumenmorph {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+
+  .lumenmorph-border::before {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-border-glow-color, var(--lumen-glow-color, #ffd4a3)) calc(var(--lumen-border-opacity, 0.9) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .lumenmorph-text,
+    .glassmorphism-text {
+      background-color: transparent;
+      background-image: radial-gradient(circle at bottom center, color-mix(in srgb, var(--lumen-glow-color, #ffaa71) 10%, transparent), transparent 50%), radial-gradient(circle var(--lumen-text-glow-size, var(--lumen-glow-size, 80vmax)) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-text-glow-opacity, 1) * 100%), transparent), transparent);
+      background-attachment: scroll, var(--lumen-attachment, fixed);
+      background-size: var(--lumen-space, 100vw 100vh);
+      background-position: center center, 0 0;
+      background-repeat: no-repeat;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+      -webkit-text-stroke: var(--lumen-text-stroke-width, 2px) transparent;
+    }
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lumenmorph {
+    background: var(--lumen-solid-bg, #302028);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .lumenmorph {
+    background: Canvas;
+    color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .lumenmorph-border { border-color: CanvasText; }
+  .lumenmorph-border::before { display: none; }
+  .lumenmorph-text,
+  .glassmorphism-text { background: none; color: CanvasText; -webkit-text-stroke: 0; }
+}
+
+.slidebox {
+  --_container-width-ratio: var(--slidebox-width, 2);
+  --_thumb-spacing-ratio: var(--slidebox-spacing, .33);
+  --_deform: var(--slidebox-deform, .1);
+  --_duration: var(--slidebox-duration, 200ms);
+  --_easing-function: var(--slidebox-easing, ease-in-out);
+  --_track: var(--slidebox-track, Field);
+  --_border: var(--slidebox-border, ButtonBorder);
+  --_off: var(--slidebox-off, FieldText);
+  --_on: var(--slidebox-on, var(--_accent, light-dark(#0b75ff, SelectedItem)));
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(1em * var(--_container-width-ratio));
+  height: 1em;
+  font-size: var(--slidebox-size, 54px);
+  padding: 0;
+  border: 1px solid var(--_border);
+  border-radius: 100vw;
+  background: var(--_track);
+  cursor: pointer;
+}
+@supports (color: AccentColor) {
+  .slidebox { --_accent: AccentColor; }
+}
+.slidebox::after {
+  --_start: 0; --_end: 1;
+  box-sizing: border-box;
+  content: "";
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: calc((1 - var(--_thumb-spacing-ratio)) * 1em);
+  height: calc((1 - var(--_thumb-spacing-ratio)) * 1em);
+  margin-block: calc(var(--_thumb-spacing-ratio) * .5em);
+  margin-inline-start: calc((1em * var(--_container-width-ratio) - 1em) * var(--_start) + var(--_thumb-spacing-ratio) * .5em);
+  margin-inline-end: calc((1em * var(--_container-width-ratio) - 1em) * var(--_end) + var(--_thumb-spacing-ratio) * .5em);
+  border-radius: inherit;
+  border: 1px solid var(--_track);
+  background: var(--_off);
+  transition: background var(--_duration) var(--_easing-function), margin-inline-start var(--_duration) var(--_easing-function), margin-inline-end var(--_duration) var(--_easing-function);
+  transition-delay: 0s, 0s, calc(var(--_duration) * var(--_deform));
+}
+.slidebox:checked::after {
+  --_start: 1; --_end: 0;
+  background: var(--_on);
+  transition-delay: 0s, calc(var(--_duration) * var(--_deform)), 0s;
+}
+.slidebox:not(:checked):active::after { --_end: calc(1 - var(--_deform)); }
+.slidebox:checked:active::after { --_start: calc(1 - var(--_deform)); }
+.slidebox:disabled { cursor: not-allowed; opacity: .5; }
+.slidebox[data-slidebox-dragging]::after {
+  margin-inline-start: calc((1em * var(--_container-width-ratio) - 1em) * max(0, var(--slidebox-drag-progress) - max(0, var(--slidebox-drag-stretch, 0))) + var(--_thumb-spacing-ratio) * .5em);
+  margin-inline-end: calc((1em * var(--_container-width-ratio) - 1em) * max(0, 1 - var(--slidebox-drag-progress) - max(0, -1 * var(--slidebox-drag-stretch, 0))) + var(--_thumb-spacing-ratio) * .5em);
+  transition: none;
+}
+@media (forced-colors: active) {
+  .slidebox { --_track: Field; --_border: ButtonBorder; --_off: FieldText; --_on: Highlight; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slidebox::after { transition-duration: .01ms; transition-delay: 0ms; }
+}
+
+.slidebox-range {
+  --_size: var(--slidebox-size, 24px);
+  --_spacing: var(--slidebox-spacing, .33);
+  --_range-inset: max(0px, calc(var(--_size) * var(--_spacing) * .5));
+  --_thumb-size: calc(var(--_size) * (1 - var(--_spacing)));
+  --_deform: var(--slidebox-deform, .1);
+  --_duration: var(--slidebox-duration, 200ms);
+  --_easing: var(--slidebox-easing, ease-in-out);
+  --_track: var(--slidebox-track, Field);
+  --_border: var(--slidebox-border, ButtonBorder);
+  --_on: var(--slidebox-on, var(--_accent, light-dark(#0b75ff, SelectedItem)));
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: var(--_size);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: var(--_range-inset);
+  border: 1px solid var(--_border);
+  border-radius: var(--slidebox-radius, 100vw);
+  background: var(--_track);
+  color: var(--_on);
+  cursor: pointer;
+  accent-color: var(--_on);
+}
+.slidebox-range[data-slidebox-range-fill] {
+  --_fill-size: max(0px, min(var(--_thumb-size), calc(var(--_size) - 2px)));
+  --_fill-stop: clamp(0px, calc(var(--_thumb-size) * .5 + (100% - var(--_thumb-size)) * clamp(0, var(--slidebox-range-fill, 0), 1)), 100%);
+  background-image:
+    radial-gradient(circle closest-side, var(--_fill-color, var(--_on)) calc(100% - .5px), transparent 100%),
+    linear-gradient(to right, transparent 0 calc(var(--_fill-size) * .5), var(--_fill-color, var(--_on)) calc(var(--_fill-size) * .5) var(--_fill-stop), transparent var(--_fill-stop)),
+    var(--_range-track-image, none);
+  background-size: var(--_fill-size) var(--_fill-size), max(0px, calc(100% - 2 * var(--_range-inset))) var(--_fill-size), 100vw 100vh;
+  background-position: left var(--_range-inset) center, center, 0 0;
+  background-repeat: no-repeat;
+  background-attachment: scroll, scroll, fixed;
+  background-clip: padding-box;
+}
+.slidebox-range[data-slidebox-range-fill]:dir(rtl) {
+  background-image:
+    radial-gradient(circle closest-side, var(--_fill-color, var(--_on)) calc(100% - .5px), transparent 100%),
+    linear-gradient(to left, transparent 0 calc(var(--_fill-size) * .5), var(--_fill-color, var(--_on)) calc(var(--_fill-size) * .5) var(--_fill-stop), transparent var(--_fill-stop)),
+    var(--_range-track-image, none);
+  background-position: right var(--_range-inset) center, center, 0 0;
+}
+.slidebox-range::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  height: calc(var(--_size) - 2px);
+  border: 0;
+  border-radius: var(--slidebox-radius, 100vw);
+  background: transparent;
+}
+.slidebox-range::-moz-range-track {
+  box-sizing: border-box;
+  height: calc(var(--_size) - 2px);
+  border: 0;
+  border-radius: var(--slidebox-radius, 100vw);
+  background: transparent;
+}
+.slidebox-range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  box-sizing: border-box;
+  width: calc(var(--_size) * (1 - var(--_spacing)));
+  height: calc(var(--_size) * (1 - var(--_spacing)));
+  margin-top: calc(var(--_size) * var(--_spacing) / 2 - 1px);
+  border: 1px solid var(--_track);
+  border-radius: var(--slidebox-radius, 100vw);
+  background: var(--_on);
+  transition: none;
+}
+.slidebox-range::-moz-range-thumb {
+  box-sizing: border-box;
+  width: calc(var(--_size) * (1 - var(--_spacing)));
+  height: calc(var(--_size) * (1 - var(--_spacing)));
+  border: 1px solid var(--_track);
+  border-radius: var(--slidebox-radius, 100vw);
+  background: var(--_on);
+  transition: none;
+}
+.slidebox-range:focus-visible { outline: 2px solid var(--_on); outline-offset: 3px; }
+.slidebox-range[data-slidebox-range-dragging]::-webkit-slider-thumb { background: transparent; border-color: transparent; transition: none; }
+.slidebox-range[data-slidebox-range-dragging]::-moz-range-thumb { background: transparent; border-color: transparent; transition: none; }
+.slidebox-range:disabled { cursor: not-allowed; opacity: .5; }
+@supports (color: AccentColor) {
+  .slidebox-range { --_accent: AccentColor; }
+}
+@media (forced-colors: active) {
+  .slidebox-range { --_track: Field; --_border: ButtonBorder; --_on: Highlight; }
+  .slidebox-range::-webkit-slider-thumb { border-color: Highlight; }
+  .slidebox-range::-moz-range-thumb { border-color: Highlight; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slidebox-range { transition-duration: .01ms; }
+  .slidebox-range::-webkit-slider-thumb { transition-duration: .01ms; }
+  .slidebox-range::-moz-range-thumb { transition-duration: .01ms; }
+}
+
+/* Change this material and make it yours. */
+body {
+  margin: 0;
+  padding: 24px;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  background: #102a31;
+  color: #e9f3ed;
+  font-family: ui-monospace, monospace;
+}
+button,
+input {
+  font: inherit;
+}
+.lm-lab {
+  width: 100%;
+  max-width: 380px;
+}
+.lm-lab .showcase {
+  --sg-ink: #e9f3ed;
+  --sg-muted: #adc2c5;
+  --sg-ember: #ffaa71;
+  --sg-teal: #70d5c5;
+  --lumen-bg: #16323680;
+  --lumen-solid-bg: #163236;
+  --lumen-glow-color: var(--sg-teal);
+  --lumen-border-glow-color: #b4eee1;
+  --lumen-glow-opacity: 0.2;
+  --lumen-border-opacity: 0.75;
+  --lumen-glow-size: 260px;
+  --lumen-radius: 14px;
+  --lumen-blur: 0px;
+  --lumen-border-width: 1px;
+  --lumen-border-color: #92b4ad30;
+  color: var(--sg-ink);
+  padding: 30px 0 32px;
+  border-top: 0;
+  scroll-margin-top: 100px;
+}
+.lm-lab .showcase * {
+  box-sizing: border-box;
+}
+.lm-lab .showcase [hidden] {
+  display: none !important;
+}
+.lm-lab #showcase-count {
+  margin: 0;
+  color: var(--sg-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+.lm-lab .example {
+  min-width: 0;
+  border: 2px solid #8cafab30;
+  border-radius: var(--studio-radius, 4px);
+  background: #0b2028;
+  overflow: hidden;
+}
+.lm-lab .showcase[data-enhanced]:not([data-in-view]),
+.lm-lab .showcase[data-enhanced] .example:not([data-visible]) {
+  --lumen-x: -100vw;
+  --lumen-y: -100vh;
+}
+.lm-lab .showcase-demo {
+  position: relative;
+  padding: 24px;
+  min-height: 220px;
+  overflow: clip;
+  isolation: isolate;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.lm-lab .showcase-demo h3 {
+  font-size: 25px;
+  line-height: 1.15;
+  letter-spacing: -0.055em;
+  margin: 14px 0;
+}
+.lm-lab .showcase-demo p {
+  margin: 0;
+}
+.lm-lab .showcase-demo button {
+  min-height: 44px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--sg-ink);
+  padding: 9px 12px;
+  cursor: pointer;
+}
+.lm-lab .showcase-demo button[aria-pressed="true"] {
+  color: var(--sg-ember);
+}
+.lm-lab .showcase :is(button, input, a, pre):focus-visible {
+  outline: 2px solid var(--sg-ember);
+  outline-offset: 3px;
+}
+.lm-lab .demo-kicker {
+  display: block;
+  color: var(--sg-muted);
+  font-size: 8px;
+  line-height: 1.5;
+  letter-spacing: 0.13em;
+}
+.lm-lab .demo-note {
+  display: block;
+  font-size: 9px;
+  color: var(--sg-muted);
+  line-height: 1.6;
+}
+.lm-lab .showcase-demo :is(button, input, label) {
+  position: relative;
+}
+@keyframes lm-wave {
+  to {
+    transform: scaleY(0.25);
+  }
+}
+@keyframes lm-edge {
+  to {
+    background-position: 100% 100%;
+  }
+}
+@media (max-width: 600px) {
+  .lm-lab .showcase {
+    padding-top: 34px;
+  }
+  .lm-lab #showcase-count {
+    margin-top: 14px;
+  }
+  .lm-lab .showcase-demo {
+    padding-inline: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lm-lab .showcase *,
+  .lm-lab .showcase *::before,
+  .lm-lab .showcase *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+  .lm-lab .glass-dock button:is(:hover, :focus-visible) {
+    transform: none;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .lm-lab .showcase .lumenmorph {
+    --lumen-blur: 0px;
+    background: #173538;
+  }
+  .lm-lab .showcase .foil-pass {
+    background: #b0ba9b;
+  }
+}
+@media (forced-colors: active) {
+  .lm-lab .showcase,
+  .lm-lab .showcase * {
+    color: CanvasText !important;
+    text-shadow: none !important;
+    box-shadow: none !important;
+  }
+  .lm-lab
+    .showcase
+    :is(
+      .example,
+      .showcase-demo,
+      .example-caption,
+      .showcase-dialog,
+      .lumenmorph,
+      input,
+      button
+    ) {
+    background: Canvas !important;
+    border-color: CanvasText;
+  }
+  .lm-lab
+    .showcase
+    :is(.beam-ring, .ignite-halo, .weather-sky, .marble-line, .mesh-lines) {
+    display: none;
+  }
+  .lm-lab .showcase :is(.specimen-word, .outline-word) {
+    background: none;
+    -webkit-text-stroke: 0;
+  }
+  .lm-lab .showcase :is([aria-pressed="true"], [aria-current="step"]) {
+    outline: 2px solid Highlight;
+  }
+}
+.lm-lab .demo-pricing {
+  background:
+    radial-gradient(ellipse at 80% 10%, #ffaa7120, transparent 70%), #282b28;
+  padding: 30px 24px;
+}
+.lm-lab .demo-pricing h3 {
+  font-size: 40px;
+  margin: 32px 0 20px;
+}
+.lm-lab .price-value {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin: 20px 0 !important;
+}
+.lm-lab .price-value strong {
+  font-size: 70px;
+  line-height: 1;
+  color: #ffd1a5;
+  letter-spacing: -0.09em;
+  font-weight: 500;
+}
+.lm-lab .price-value > span {
+  font-size: 10px;
+  color: var(--sg-muted);
+}
+.lm-lab .demo-pricing button {
+  width: 100%;
+  margin-top: 24px;
+  --lumen-glow-color: #ffaa71;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lm-lab .showcase .light-chart i,
+  .lm-lab .showcase .palette-orb {
+    transition: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lm-lab .focus-tasks label,
+  .lm-lab .spark-rating span,
+  .lm-lab .demo-rating::before {
+    transition: none;
+  }
+}
+.lm-lab .showcase {
+  padding: 0;
+  border: 0;
+}
+.lm-lab .example {
+  border-radius: 4px;
+}
+
+html,body{width:1200px;height:630px;overflow:hidden}body{padding:60px;display:grid;grid-template-columns:1fr 400px;gap:60px;background:radial-gradient(ellipse at 85% 30%,#37625750,transparent 70%),#102a31}.og-copy{align-self:center;max-width:490px}.og-copy .tag{color:#ffaa71;font:12px/1.6 ui-monospace,monospace;letter-spacing:2px}.og-copy h1{font:500 48px/1.12 ui-monospace,monospace;letter-spacing:-3px;margin:28px 0 22px}.og-copy p{font:16px/1.7 ui-monospace,monospace;color:#adc2c5}.og-copy .address{margin-top:50px;font-size:13px}.lm-lab{width:380px;max-height:540px;align-self:center}.lm-lab .showcase{--lumen-x:950px;--lumen-y:200px}.lm-lab .example{border:2px solid #92b4ad40;border-radius:4px}*{animation:none!important;transition:none!important}</style></head><body><div class="og-copy"><span class="tag">LUMENMORPH / CONTROL</span><h1>Choose your orbit</h1><p>A pricing tile with a monthly or yearly switch.</p><p class="address">nabous.dev / examples / pricing</p></div><main class="lm-lab">
+  <section class="showcase">
+    <article class="example" data-visible>
+      <div class="showcase-demo demo-pricing">
+        <span class="demo-kicker">ROOM TO EXPERIMENT</span>
+        <h3>Studio.</h3>
+        <p class="price-value">
+          <strong data-price>$12</strong><span>/ month</span>
+        </p>
+        <p class="demo-note" data-billing-note>
+          Billed monthly. An illustrative plan.
+        </p>
+        <button
+          type="button"
+          class="lumenmorph lumenmorph-border"
+          data-billing
+          aria-pressed="false"
+        >
+          Switch to yearly
+        </button>
+      </div>
+    </article>
+  </section>
+</main>
+</body></html>

@@ -16,6 +16,8 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: git diff --exit-code -- dist scss less tailwind public/lab/assets angular/dist web-component/styles.mjs react/index.mjs react/index.d.ts
+      - run: git diff --exit-code -- public/lab/examples public/lab/editor-runtime.json
+      - run: npm run build:previews -- --check
       - run: npm test
       - run: npm run test:types
       - run: npm run test:svelte
