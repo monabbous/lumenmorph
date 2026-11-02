@@ -5,12 +5,9 @@ import { PNG } from "pngjs";
 // Check actual pixels for both glyphs and path icons, including shadow-root adapters.
 for (const adapter of ["React", "Vue", "Svelte", "Angular", "Web Component"]) {
   test(`${adapter}: SVG light stays inside text and icon silhouettes`, async ({ page }) => {
-    await page.goto("/lab/");
-    await page.getByRole("group", { name: "SVG implementation" })
-      .getByRole("button", { name: adapter, exact: true }).click();
-    await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", {
-      React: "react", Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component",
-    }[adapter]);
+    const name = { React: "react", Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component" }[adapter];
+    await page.goto(`/__adapter-tests/masking.html?adapter=${name}`);
+    await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", name);
 
     for (const selector of ["#react-demo svg", "#icon-demo svg"]) {
       const svg = page.locator(selector);
