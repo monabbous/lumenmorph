@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A glassmorphism lab. Tune pointer light, frosted surfaces, and illuminated borders with Lumenmorph.">
+  <meta name="color-scheme" content="dark light">
+  <title>Lumenmorph glass lab</title>
+  <link rel="stylesheet" href="./assets/lumenmorph.css">
+  <link rel="stylesheet" href="./assets/motion.css">
+  <link rel="stylesheet" href="./assets/slidebox.css">
+  <link rel="stylesheet" href="./assets/slidebox-range.css">
+  <link rel="stylesheet" href="./lab.css">
+</head>
+<body>
+  <main class="lm-lab lumenmorph-motion">
+    <section class="lm-intro"><p class="eyebrow">CSS EXPERIMENT / GLASS &amp; LIGHT</p><h1 class="lm-title"><span class="title-label">Lumenmorph</span><span id="header-demo" aria-hidden="true"></span></h1><div class="intro-bottom"><p class="dek">The glass from <a href="https://nabous.dev">nabous.dev</a>, without the site around it.<br>Adjust the material. Keep your markup.</p><a class="intro-link" href="#code">Get the code <span aria-hidden="true">↓</span></a></div></section>
+    <div class="lm-workspace">
+      <section class="stage" aria-label="Live preview">
+        <div class="stage-top"><span class="eyebrow">01 / LIVE MATERIAL</span><span class="status"><i></i> Move your pointer</span></div>
+        <div class="specimens" id="specimens">
+          <article class="lumenmorph lumenmorph-border specimen main-card"><span class="chip">01 / SURFACE</span><div class="material-icon" aria-hidden="true"><svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3"><path d="M32 4v56M4 32h56M12 12l40 40M12 52l40-40"/></svg></div><h2>Glass surface</h2><p>Blur the background and catch the pointer light along the edge.</p><a class="sample-link" href="#code">Get the CSS <span aria-hidden="true">↗</span></a></article>
+          <div class="small-cards"><button class="lumenmorph lumenmorph-border specimen small-card" id="sample-button" type="button"><span aria-hidden="true">↗</span><span>Try this button</span></button><article class="lumenmorph lumenmorph-border specimen small-card"><span class="chip">02 / NO WRAPPER</span><p>A background and one border pseudo-element.</p></article></div>
+        </div>
+        <div class="type-preview"><span class="eyebrow">03 / OPTIONAL REACT SVG</span><div id="react-demo"></div><p>Two SVG masks. Shared page light. No animation loop.</p></div>
+        <div class="type-preview"><span class="eyebrow">04 / HTML TEXT</span><h3 class="lumenmorph-text html-text-demo">Lumenmorph</h3><p>The original glassmorphism-text treatment. Selectable HTML; no component required.</p></div>
+      </section>
+      <aside class="controls" aria-labelledby="controls-heading"><div class="controls-heading"><h2 id="controls-heading">Shape the light</h2><button class="lumenmorph lumenmorph-border" id="reset" type="button">Reset</button></div>
+        <div class="presets" role="group" aria-label="Material presets"><button class="lumenmorph lumenmorph-border" type="button" data-preset="ember" aria-pressed="true">Ember</button><button class="lumenmorph lumenmorph-border" type="button" data-preset="lagoon" aria-pressed="false">nabous.dev</button><button class="lumenmorph lumenmorph-border" type="button" data-preset="daylight" aria-pressed="false">Daylight</button></div>
+        <form id="controls">
+          <fieldset><legend>Light</legend>
+            <label for="glow-size">Glow size <output for="glow-size" id="glow-size-value"></output></label><input class="slidebox-range" id="glow-size" name="glow-size" type="range" min="80" max="900" step="10" value="460" data-unit="px">
+            <label for="glow-opacity">Surface intensity <output for="glow-opacity" id="glow-opacity-value"></output></label><input class="slidebox-range" id="glow-opacity" name="glow-opacity" type="range" min="0" max="1" step="0.01" value="0.3">
+            <label for="border-opacity">Edge intensity <output for="border-opacity" id="border-opacity-value"></output></label><input class="slidebox-range" id="border-opacity" name="border-opacity" type="range" min="0" max="1" step="0.01" value="0.9">
+            <div class="color-row"><label for="glow-color">Glow color</label><input type="color" id="glow-color" name="glow-color" value="#ffaa71"></div>
+            <div class="color-row"><label for="border-glow-color">Edge color</label><input type="color" id="border-glow-color" name="border-glow-color" value="#ffd4a3"></div>
+          </fieldset>
+          <fieldset><legend>Glass</legend>
+            <label for="blur">Backdrop blur <output for="blur" id="blur-value"></output></label><input class="slidebox-range" id="blur" name="blur" type="range" min="0" max="60" value="32" data-unit="px">
+            <label for="saturation">Saturation <output for="saturation" id="saturation-value"></output></label><input class="slidebox-range" id="saturation" name="saturation" type="range" min="0" max="3" step="0.1" value="1.6">
+            <div class="color-row"><label for="bg-color">Tint</label><input id="bg-color" name="bg-color" type="color" value="#302028"></div>
+            <label for="bg-opacity">Tint opacity <output for="bg-opacity" id="bg-opacity-value"></output></label><input class="slidebox-range" id="bg-opacity" name="bg-opacity" type="range" min="0" max="1" step="0.01" value="0.7">
+            <label for="radius">Corner radius <output for="radius" id="radius-value"></output></label><input class="slidebox-range" id="radius" name="radius" type="range" min="0" max="48" value="4" data-unit="px">
+            <label for="border-width">Border width <output for="border-width" id="border-width-value"></output></label><input class="slidebox-range" id="border-width" name="border-width" type="range" min="0" max="5" step="0.5" value="1.5" data-unit="px">
+          </fieldset>
+          <div class="pointer-options"><label class="check"><input class="slidebox" type="checkbox" role="switch" id="tracking" checked> Follow pointer</label><label class="check"><input class="slidebox" type="checkbox" role="switch" id="smoothing" checked> Smooth follow &amp; return</label><p class="hint">Smoothing animates the shared coordinates once, on the lab container. Reduced motion disables tracking and smoothing. Touch keeps the static light.</p><p class="hint">Controls use <a href="https://github.com/monabbous/slidebox">Slidebox</a>; ranges are experimental.</p></div>
+        </form>
+      </aside>
+    </div>
+    <section class="code-section" id="code" aria-labelledby="code-heading"><div class="code-heading"><div><p class="eyebrow">TAKE IT WITH YOU</p><h2 id="code-heading">Your material, in code.</h2></div><button class="lumenmorph lumenmorph-border" id="copy" type="button">Copy snippet</button></div><div class="code-tabs" role="group" aria-label="Code format"><button class="lumenmorph lumenmorph-border" type="button" data-format="css" aria-pressed="true">CSS</button><button class="lumenmorph lumenmorph-border" type="button" data-format="scss" aria-pressed="false">SCSS</button><button class="lumenmorph lumenmorph-border" type="button" data-format="less" aria-pressed="false">Less</button><button class="lumenmorph lumenmorph-border" type="button" data-format="tailwind" aria-pressed="false">Tailwind</button><button class="lumenmorph lumenmorph-border" type="button" data-format="react" aria-pressed="false">React</button></div><pre><code id="snippet"></code></pre><p id="copy-status" role="status"></p></section>
+    <section class="notes" aria-label="Implementation notes"><div><h3>CSS is the core.</h3><p>No runtime, canvas, wrappers, or event handlers for static surfaces. The border uses one pseudo-element.</p></div><div><h3>One shared light.</h3><p>The optional helper writes two inherited variables, at most once per animation frame. It does nothing while idle.</p></div><div><h3>Use it where it fits.</h3><p>Backdrop blur and gradient painting have a cost. Keep large blurred areas in check and test on your target devices.</p></div></section>
+  </main>
+  <script type="module" src="./lab.mjs"></script><script type="module" src="./assets/react-demo.mjs"></script>
+</body></html>

@@ -1,0 +1,103 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import { createRequire } from "node:module";
+import { gzipSync } from "node:zlib";
+import { compileString } from "sass";
+import less from "less";
+import postcss from "postcss";
+import tailwind from "tailwindcss";
+import { compile } from "@tailwindcss/node";
+import { createElement } from "react";
+import { renderToString } from "react-dom/server";
+import { LumenText } from "../react/index.mjs";
+
+const require = createRequire(import.meta.url);
+const css = await readFile(new URL("../dist/css/lumenmorph.css", import.meta.url), "utf8");
+const mixins = await readFile(new URL("../less/lumenmorph.less", import.meta.url), "utf8");
+
+function declarations(source, selector, property) {
+  const values = [];
+  postcss.parse(source).walkRules(rule => {
+    if (rule.selectors.includes(selector)) rule.walkDecls(property, decl => values.push(decl.value));
+  });
+  return values;
+}
+
+test("SCSS and Less preserve core declarations and accessibility rules", async () => {
+  const sass = compileString('@use "mixins" as lumen; .card { @include lumen.lumenmorph((glow-size: 480px)); @include lumen.border(); } .label { @include lumen.text(); }', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;
+  const lessCSS = (await less.render(`${mixins}\n.card { .lumenmorph(@glow-size: 480px); .lumenmorph-border(); } .label { .lumenmorph-text(); }`)).css;
+  for (const compiled of [sass, lessCSS]) {
+    assert.deepEqual(declarations(compiled, ".card", "background-image"), declarations(css, ".lumenmorph", "background-image"));
+    assert.deepEqual(declarations(compiled, ".card::before", "background-image"), declarations(css, ".lumenmorph-border::before", "background-image"));
+    assert.deepEqual(declarations(compiled, ".card", "--lumen-glow-size"), ["480px"]);
+    assert.match(compiled, /forced-colors: active/);
+    assert.match(compiled, /prefers-reduced-transparency: reduce/);
+    assert.match(compiled, /mask-composite: exclude/);
+    assert.deepEqual(declarations(compiled, ".label", "background-image"), declarations(css, ".lumenmorph-text", "background-image"));
+  }
+});
+
+test("original HTML text class remains an alias without a blur or visible stroke", () => {
+  assert.deepEqual(declarations(css, ".glassmorphism-text", "background-image"), declarations(css, ".lumenmorph-text", "background-image"));
+  assert.deepEqual(declarations(css, ".lumenmorph-text", "backdrop-filter"), ["none"]);
+  assert.deepEqual(declarations(css, ".lumenmorph-text", "-webkit-text-stroke"), ["var(--lumen-text-stroke-width, 2px) transparent", "0"]);
+});
+
+test("SCSS entry point emits ready-to-use classes", () => {
+  const output = compileString('@use "lumenmorph";', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;
+  assert.match(output, /\.lumenmorph-border::before/);
+  assert.match(output, /\.lumenmorph-text/);
+});
+
+test("Tailwind v3 compiles components, theme colors, arbitrary values, and variants", async () => {
+  const output = await postcss([tailwind({
+    content: [{ raw: '<div class="lumenmorph lumenmorph-border lumenmorph-text lumen-glow-cyan-300 lumen-glow-size-[480px] hover:lumen-glow-opacity-50 lumen-bg-[#11223380] lumen-radius-xl"></div>' }],
+    plugins: [require("../tailwind/index.cjs")],
+  })]).process("@tailwind utilities;", { from: undefined });
+  assert.match(output.css, /--lumen-glow-size: 480px/);
+  assert.match(output.css, /--lumen-glow-opacity: 0.5/);
+  assert.match(output.css, /--lumen-glow-color: #67e8f9/);
+  assert.match(output.css, /forced-colors: active/);
+  assert.match(output.css, /mask-composite: exclude/);
+});
+
+test("Tailwind v4 compiles the same plugin through @plugin", async () => {
+  const compiler = await compile('@import "tailwindcss-v4"; @plugin "./tailwind/index.cjs";', { base: new URL("..", import.meta.url).pathname, onDependency() {} });
+  const output = compiler.build(["lumenmorph", "lumenmorph-border", "lumenmorph-text", "lumen-glow-cyan-300", "lumen-glow-size-[480px]", "hover:lumen-glow-opacity-50"]);
+  assert.match(output, /--lumen-glow-size: 480px/);
+  assert.match(output, /--lumen-glow-opacity: 0.5/);
+  assert.match(output, /--lumen-glow-color: (?:oklch\(|var\(--color-cyan-300\))/);
+  assert.match(output, /mask-composite: exclude/);
+});
+
+test("React SVG is accessible, server-renderable, and uses distinct stable mask IDs", () => {
+  const render = () => renderToString(createElement("div", null, createElement(LumenText, { width: 640, height: 120 }, "Glass & light"), createElement(LumenText, null, "Another")));
+  const output = render();
+  const ids = [...output.matchAll(/<mask id="([^"]+)"/g)].map(match => match[1]);
+  assert.equal(new Set(ids).size, 4);
+  assert.equal(output, render());
+  assert.match(output, /aria-label="Glass &amp; light"/);
+  assert.match(output, /foreignObject/);
+  assert.doesNotMatch(output, /Math.random/);
+});
+
+test("core CSS and pointer helper stay within small gzip budgets", async () => {
+  const js = await readFile(new URL("../js/pointer.mjs", import.meta.url));
+  assert.ok(gzipSync(css).length < 1800, "CSS exceeds 1.8 kB gzip budget");
+  assert.ok(gzipSync(js).length < 1800, "Pointer helper exceeds 1.8 kB gzip budget");
+});
+
+test("motion is optional, inherited, and only transitions its coordinate owner", async () => {
+  const motion = await readFile(new URL("../dist/css/motion.css", import.meta.url), "utf8");
+  const sass = compileString('@use "motion";', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;
+  const lessCSS = (await less.render(await readFile(new URL("../less/motion.less", import.meta.url), "utf8"))).css;
+  for (const output of [motion, sass, lessCSS]) {
+    assert.match(output, /@property --lumen-x/);
+    assert.match(output, /inherits: true/);
+    assert.match(output, /prefers-reduced-motion: reduce/);
+    assert.deepEqual(declarations(output, ".lumenmorph", "transition"), []);
+    assert.equal(declarations(output, ".lumenmorph-motion", "transition").length, 2);
+  }
+  assert.doesNotMatch(css, /@property|transition:/);
+});

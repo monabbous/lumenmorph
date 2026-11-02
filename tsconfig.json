@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "NodeNext", "moduleResolution": "NodeNext",
+    "jsx": "react-jsx", "strict": true, "noEmit": true, "skipLibCheck": false,
+    "lib": ["ES2022", "DOM"]
+  },
+  "include": ["tests/types.tsx", "react/index.d.ts", "js/pointer.d.ts"]
+}

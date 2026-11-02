@@ -1,0 +1,26 @@
+/* Optional. Animate one coordinate owner; its surfaces inherit the result. */
+@property --lumen-x {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 50vw;
+}
+
+@property --lumen-y {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 35vh;
+}
+
+.lumenmorph-motion {
+  transition: --lumen-x var(--lumen-follow-duration, 50ms) var(--lumen-follow-easing, ease),
+    --lumen-y var(--lumen-follow-duration, 50ms) var(--lumen-follow-easing, ease);
+}
+
+.lumenmorph-motion:not(:hover) {
+  transition-duration: var(--lumen-return-duration, 500ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lumenmorph-motion,
+  .lumenmorph-motion:not(:hover) { transition: none; }
+}

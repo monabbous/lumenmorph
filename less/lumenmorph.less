@@ -1,0 +1,157 @@
+// Generated from src/lumenmorph.css.
+.lumen-option(@name; @value) when not (@value = false) { --lumen-@{name}: @value; }
+
+.lumenmorph(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+  .lumen-option(bg; @bg);
+  .lumen-option(solid-bg; @solid-bg);
+  .lumen-option(glow-color; @glow-color);
+  .lumen-option(glow-size; @glow-size);
+  .lumen-option(glow-opacity; @glow-opacity);
+  .lumen-option(blur; @blur);
+  .lumen-option(saturation; @saturation);
+  .lumen-option(radius; @radius);
+  .lumen-option(border-width; @border-width);
+  .lumen-option(border-color; @border-color);
+  .lumen-option(border-glow-color; @border-glow-color);
+  .lumen-option(border-opacity; @border-opacity);
+  .lumen-option(text-color; @text-color);
+  .lumen-option(text-glow-size; @text-glow-size);
+  .lumen-option(text-glow-opacity; @text-glow-opacity);
+  .lumen-option(text-stroke-width; @text-stroke-width);
+  
+  & {
+    background-color: var(--lumen-bg, #302028b3);
+    border-radius: var(--lumen-radius, 0.25rem);
+    -webkit-backdrop-filter: ~"blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6))";
+    backdrop-filter: ~"blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6))";
+  }
+  
+  @supports (background: color-mix(in srgb, red, transparent)) {
+    & {
+      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent)";
+      background-attachment: var(--lumen-attachment, fixed);
+      background-size: var(--lumen-space, 100vw 100vh);
+      background-repeat: no-repeat;
+    }
+  }
+  
+  @media (prefers-reduced-transparency: reduce) {
+    & {
+      background: var(--lumen-solid-bg, #302028);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  
+  @media (forced-colors: active) {
+    & {
+      background: Canvas;
+      color: CanvasText;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  
+}
+
+.lumenmorph-border(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+  .lumen-option(bg; @bg);
+  .lumen-option(solid-bg; @solid-bg);
+  .lumen-option(glow-color; @glow-color);
+  .lumen-option(glow-size; @glow-size);
+  .lumen-option(glow-opacity; @glow-opacity);
+  .lumen-option(blur; @blur);
+  .lumen-option(saturation; @saturation);
+  .lumen-option(radius; @radius);
+  .lumen-option(border-width; @border-width);
+  .lumen-option(border-color; @border-color);
+  .lumen-option(border-glow-color; @border-glow-color);
+  .lumen-option(border-opacity; @border-opacity);
+  .lumen-option(text-color; @text-color);
+  .lumen-option(text-glow-size; @text-glow-size);
+  .lumen-option(text-glow-opacity; @text-glow-opacity);
+  .lumen-option(text-stroke-width; @text-stroke-width);
+  
+  
+  & {
+    position: relative;
+    border: var(--lumen-border-width, 1.5px) solid var(--lumen-border-color, #ffffff30);
+  }
+  
+  &::before {
+    content: "";
+    position: absolute;
+    inset: ~"calc(-1 * var(--lumen-border-width, 1.5px))";
+    border-radius: inherit;
+    padding: var(--lumen-border-width, 1.5px);
+    pointer-events: none;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+  
+  @supports (background: color-mix(in srgb, red, transparent)) {
+  
+    &::before {
+      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-border-glow-color, var(--lumen-glow-color, #ffd4a3)) calc(var(--lumen-border-opacity, 0.9) * 100%), transparent), transparent)";
+      background-attachment: var(--lumen-attachment, fixed);
+      background-size: var(--lumen-space, 100vw 100vh);
+      background-repeat: no-repeat;
+    }
+  }
+  
+  @media (forced-colors: active) {
+    & { border-color: CanvasText; }
+    &::before { display: none; }
+  }
+  
+}
+
+.lumenmorph-text(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+  .lumen-option(bg; @bg);
+  .lumen-option(solid-bg; @solid-bg);
+  .lumen-option(glow-color; @glow-color);
+  .lumen-option(glow-size; @glow-size);
+  .lumen-option(glow-opacity; @glow-opacity);
+  .lumen-option(blur; @blur);
+  .lumen-option(saturation; @saturation);
+  .lumen-option(radius; @radius);
+  .lumen-option(border-width; @border-width);
+  .lumen-option(border-color; @border-color);
+  .lumen-option(border-glow-color; @border-glow-color);
+  .lumen-option(border-opacity; @border-opacity);
+  .lumen-option(text-color; @text-color);
+  .lumen-option(text-glow-size; @text-glow-size);
+  .lumen-option(text-glow-opacity; @text-glow-opacity);
+  .lumen-option(text-stroke-width; @text-stroke-width);
+  
+  
+  & {
+    color: var(--lumen-text-color, #ffffffb3);
+  }
+  
+  @supports (background: color-mix(in srgb, red, transparent)) {
+  
+    @supports (background-clip: text) or (-webkit-background-clip: text) {
+      & {
+        background-color: transparent;
+        background-image: ~"radial-gradient(circle at bottom center, color-mix(in srgb, var(--lumen-glow-color, #ffaa71) 10%, transparent), transparent 50%), radial-gradient(circle var(--lumen-text-glow-size, var(--lumen-glow-size, 80vmax)) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-text-glow-opacity, 1) * 100%), transparent), transparent)";
+        background-attachment: scroll, var(--lumen-attachment, fixed);
+        background-size: var(--lumen-space, 100vw 100vh);
+        background-position: center center, 0 0;
+        background-repeat: no-repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        -webkit-text-stroke: var(--lumen-text-stroke-width, 2px) transparent;
+      }
+    }
+  }
+  
+  @media (forced-colors: active) {
+    & { background: none; color: CanvasText; -webkit-text-stroke: 0; }
+  }
+  
+}

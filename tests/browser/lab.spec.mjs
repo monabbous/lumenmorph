@@ -1,0 +1,176 @@
+import { test, expect } from "@playwright/test";
+import { PNG } from "pngjs";
+
+test("lab loads, renders React masks, and controls update the exported code", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  await page.goto("/lab/");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Lumenmorph");
+  await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
+  await expect(page.locator("#react-demo mask")).toHaveCount(2);
+  await expect(page.locator("#header-demo svg")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ember", exact: true })).toHaveAttribute("aria-pressed", "true");
+  expect(await page.locator("button:not(.lumenmorph)").count()).toBe(0);
+  expect(await page.locator('input[type="range"]:not(.slidebox-range)').count()).toBe(0);
+  await page.locator("#glow-size").fill("620");
+  await expect(page.locator("#glow-size-value")).toHaveText("620px");
+  await expect(page.locator("#snippet")).toContainText("--lumen-glow-size: 620px");
+  await page.getByRole("button", { name: "Ember", exact: true }).click();
+  await expect(page.locator("#snippet")).toContainText("#ffaa71");
+  await page.getByRole("button", { name: "nabous.dev", exact: true }).click();
+  await expect(page.locator("#snippet")).toContainText("#00b2b2");
+  for (const format of ["SCSS", "Less", "Tailwind", "React"]) {
+    await page.getByRole("button", { name: format, exact: true }).click();
+    await expect(page.locator("#snippet")).toContainText("lumenmorph");
+  }
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(page.locator("#glow-size")).toHaveValue("460");
+  const size = await page.evaluate(() => ({ body: document.documentElement.scrollWidth, viewport: innerWidth }));
+  expect(size.body).toBeLessThanOrEqual(size.viewport);
+  expect(errors).toEqual([]);
+});
+
+test("native button keeps keyboard behavior and tracking cleans up", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Desktop keyboard and mouse interaction");
+  await page.goto("/lab/");
+  await page.locator("#sample-button").focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#sample-button")).toContainText("Native click received");
+  await page.locator("#glow-size").focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#glow-size")).toHaveValue("470");
+  await page.locator("#tracking").focus();
+  await page.keyboard.press("Space");
+  await expect(page.locator("#tracking")).not.toBeChecked();
+  await page.keyboard.press("Space");
+  await page.mouse.move(300, 350);
+  await expect.poll(() => page.evaluate(() => document.querySelector(".lm-lab").style.getPropertyValue("--lumen-x"))).toBe("300px");
+  await page.locator("#tracking").uncheck();
+  await expect.poll(() => page.evaluate(() => document.querySelector(".lm-lab").style.getPropertyValue("--lumen-x"))).toBe("");
+  await page.mouse.move(350, 380);
+  expect(await page.evaluate(() => document.querySelector(".lm-lab").style.getPropertyValue("--lumen-x"))).toBe("");
+});
+
+test("scaled SVG light stays under the viewport pointer coordinates", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Deterministic desktop pixel coordinates");
+  await page.goto("/lab/");
+  await expect(page.locator("#header-demo svg")).toBeVisible();
+  await page.evaluate(() => {
+    const svg = document.querySelector("#header-demo svg");
+    Object.assign(svg.style, { position: "fixed", left: "200px", top: "100px", width: "400px", height: "80px", zIndex: "100000" });
+    svg.style.setProperty("--lumen-x", "350px");
+    svg.style.setProperty("--lumen-y", "140px");
+    svg.style.setProperty("--lumen-glow-size", "30px");
+    svg.querySelectorAll("foreignObject")[1].style.display = "none";
+    const fill = svg.querySelector("foreignObject");
+    fill.removeAttribute("mask");
+    const layer = fill.querySelector("div");
+    for (const [key, value] of Object.entries({ bg: "#000", blur: "0px", saturation: "1", "glow-color": "#fff", "glow-opacity": "1" })) layer.style.setProperty(`--lumen-${key}`, value);
+  });
+  await expect.poll(() => page.locator("#header-demo svg").evaluate(svg => svg.style.getPropertyValue("--_lumen-svg-a"))).toBe("2");
+  const image = PNG.sync.read(await page.locator("#header-demo svg").screenshot({ scale: "css" }));
+  let peak = { brightness: 0, x: 0, y: 0 };
+  for (let y = 1; y < image.height - 1; y++) for (let x = 1; x < image.width - 1; x++) {
+    const index = (y * image.width + x) * 4;
+    const brightness = image.data[index] + image.data[index + 1] + image.data[index + 2];
+    if (brightness > peak.brightness) peak = { brightness, x, y };
+  }
+  expect(peak.brightness).toBeGreaterThan(700);
+  expect(Math.abs(peak.x - 150)).toBeLessThanOrEqual(1);
+  expect(Math.abs(peak.y - 40)).toBeLessThanOrEqual(1);
+});
+
+test("SVG outline doesn't reveal internal seams between overlapping glyph contours", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Deterministic desktop pixel coordinates");
+  await page.goto("/lab/");
+  await expect(page.locator("#header-demo svg")).toBeVisible();
+  await page.locator("#header-demo svg").evaluate(svg => {
+    Object.assign(svg.style, { position: "fixed", left: "0px", top: "0px", width: "800px", height: "160px", zIndex: "100000", background: "#000" });
+    for (const [key, value] of Object.entries({ "--lumen-text-fill": "transparent", "--lumen-text-outline": "#fff", "--lumen-glow-color": "transparent" })) svg.style.setProperty(key, value);
+    for (const text of svg.querySelectorAll("mask text")) {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      // Two overlapping filled contours, as found in the source font's L glyph.
+      path.setAttribute("d", "M100 20h20v80h-20z M100 80h80v20h-80z");
+      for (const attribute of ["fill", "stroke", "stroke-width", "filter"]) {
+        if (text.hasAttribute(attribute)) path.setAttribute(attribute, text.getAttribute(attribute));
+      }
+      text.replaceWith(path);
+    }
+  });
+  const image = PNG.sync.read(await page.locator("#header-demo svg").screenshot({ scale: "css" }));
+  const brightness = (x, y) => {
+    const index = (y * image.width + x) * 4;
+    return image.data[index] + image.data[index + 1] + image.data[index + 2];
+  };
+  expect(brightness(110, 80)).toBeLessThan(20); // No horizontal seam through the stem.
+  expect(brightness(120, 90)).toBeLessThan(20); // No vertical seam through the foot.
+  expect(brightness(100, 50)).toBeGreaterThan(100); // Keep the actual outside edge.
+  expect(brightness(150, 80)).toBeGreaterThan(100);
+});
+
+test("hosted lab reuses shell coordinates without changing the host palette", async ({ page }) => {
+  await page.route("**/lab/", async route => {
+    const response = await route.fetch();
+    const html = (await response.text()).replace("<body>", '<body><header data-nabous-shell>Host shell</header>');
+    await route.fulfill({ response, body: html });
+  });
+  await page.goto("/lab/");
+  await expect(page.locator(".lm-lab")).toHaveAttribute("data-hosted", "");
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("--mouse-x", "450px");
+    document.documentElement.style.setProperty("--mouse-y", "170px");
+    document.documentElement.style.setProperty("--accent", "#00b2b2");
+  });
+  await page.mouse.move(200, 200);
+  expect(await page.locator(".lm-lab").evaluate(element => element.style.getPropertyValue("--lumen-x"))).toBe("");
+  await expect.poll(() => page.locator(".lm-lab").evaluate(element => getComputedStyle(element).getPropertyValue("--lumen-x").trim())).toBe("450px");
+  await page.getByRole("button", { name: "Ember", exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue("--accent"))).toBe("#00b2b2");
+  await page.locator("#tracking").uncheck();
+  await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(await page.evaluate(() => innerWidth / 2));
+});
+
+test("reduced motion retains a static light and forced colors retains readable content", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce", forcedColors: "active" });
+  await page.goto("/lab/");
+  await page.mouse.move(200, 250);
+  expect(await page.evaluate(() => document.querySelector(".lm-lab").style.getPropertyValue("--lumen-x"))).toBe("");
+  const style = await page.locator(".main-card").evaluate(element => ({ blur: getComputedStyle(element).backdropFilter, color: getComputedStyle(element).color, border: getComputedStyle(element).borderTopColor }));
+  expect(style.blur).toBe("none");
+  expect(style.border).not.toBe("rgba(0, 0, 0, 0)");
+  await expect(page.getByRole("heading", { name: "Glass surface" })).toBeVisible();
+});
+
+test("static CSS works without JavaScript", async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  await page.goto("http://127.0.0.1:4173/lab/");
+  const style = await page.locator(".main-card").evaluate(element => ({ image: getComputedStyle(element).backgroundImage, backdrop: getComputedStyle(element).backdropFilter }));
+  expect(style.image).toContain("radial-gradient");
+  expect(style.backdrop).toContain("blur(32px)");
+  await expect(page.getByRole("heading", { name: "Glass surface" })).toBeVisible();
+  await context.close();
+});
+
+test("optional motion transitions one coordinate owner and smooths exit", async ({ page, isMobile }) => {
+  test.skip(isMobile, "Desktop hover exit behavior");
+  await page.goto("/lab/");
+  await page.locator("#smoothing").check();
+  await expect(page.locator(".lm-lab")).toHaveClass(/lumenmorph-motion/);
+  const durations = await page.locator(".main-card").evaluate(surface => ({
+    owner: getComputedStyle(document.querySelector(".lm-lab")).transitionProperty,
+    surface: getComputedStyle(surface).transitionDuration,
+  }));
+  expect(durations.owner).toBe("--lumen-x, --lumen-y");
+  expect(durations.surface).toBe("0s");
+  await page.mouse.move(300, 220);
+  await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(300);
+  await page.mouse.move(-5, -5);
+  const returning = await page.locator(".lm-lab").evaluate(element => ({ x: Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")), duration: getComputedStyle(element).transitionDuration }));
+  expect(returning.duration).toBe("0.5s");
+  expect(returning.x).toBeLessThan(720);
+  await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(720);
+  await expect(page.locator("#snippet")).toContainText("@monabbous/lumenmorph/motion");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  expect(await page.locator(".lm-lab").evaluate(element => getComputedStyle(element).transitionDuration)).toBe("0s");
+});
