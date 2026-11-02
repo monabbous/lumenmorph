@@ -5,6 +5,8 @@ import { PNG } from "pngjs";
 // Check actual pixels for both glyphs and path icons, including shadow-root adapters.
 for (const adapter of ["React", "Vue", "Svelte", "Angular", "Web Component"]) {
   test(`${adapter}: SVG light stays inside text and icon silhouettes`, async ({ page }) => {
+    const errors = [];
+    page.on("pageerror", error => errors.push(error.message));
     const name = { React: "react", Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component" }[adapter];
     await page.goto(`/__adapter-tests/masking.html?adapter=${name}`);
     await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", name);
@@ -36,6 +38,7 @@ for (const adapter of ["React", "Vue", "Svelte", "Angular", "Web Component"]) {
       expect(coverage, "The glyph or icon must remain visible").toBeGreaterThan(0.03);
       expect(coverage, "The light must not become a solid rectangle").toBeLessThan(0.65);
     }
+    expect(errors).toEqual([]);
     // The SVG fix must not disable blur on ordinary glass surfaces.
     await expect(page.locator(".main-card")).toHaveCSS("backdrop-filter", /blur\(32px\)/);
   });

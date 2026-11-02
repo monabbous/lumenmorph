@@ -42,7 +42,7 @@ if (["react", "vue", "svelte", "angular", "web-component"].includes(name)) {
   const path = name === "react" ? "react-demo.mjs" : "adapters/" + name + ".mjs";
   const adapter = await import("../lab/assets/" + path);
   await adapter.mountDemo(document.querySelector("#react-demo"), { text:"Lumenmorph", width:640, height:130, fontSize:88, strokeWidth:1.5 });
-  await adapter.mountIconDemo(document.querySelector("#icon-demo"), { paths:"M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z", width:112, height:112, strokeWidth:1, label:"Play" });
+  await adapter.mountIconDemo(document.querySelector("#icon-demo"), { paths:"M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z", viewBox:"0 0 64 64", width:112, height:112, strokeWidth:1, label:"Play" });
   document.querySelector("#react-demo").dataset.framework = name;
 }
 </script></body></html>`);
