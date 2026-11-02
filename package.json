@@ -1,10 +1,13 @@
 {
   "name": "@monabbous/lumenmorph",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Low-markup glass surfaces, pointer light, and optional SVG text from nabous.dev.",
   "type": "module",
   "license": "ISC",
-  "author": { "name": "Mohamed Nabous", "url": "https://nabous.dev" },
+  "author": {
+    "name": "Mohamed Nabous",
+    "url": "https://nabous.dev"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/monabbous/lumenmorph.git"

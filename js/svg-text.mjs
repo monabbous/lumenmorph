@@ -37,8 +37,8 @@ function mountGraphic(svg, initial, icon) {
     const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div");
     div.setAttribute("class", "lumenmorph");
     for (const [key, value] of Object.entries(svgLayerStyle(index === 1, icon))) {
-      if (key.startsWith("--")) div.style.setProperty(key, value);
-      else div.style[key] = value;
+      const property = key.startsWith("--") ? key : key.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+      div.style.setProperty(property, value);
     }
     return make("foreignObject", { x: 0, y: 0, mask: `url(#${mask.id})` }, [div]);
   });

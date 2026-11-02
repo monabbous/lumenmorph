@@ -195,6 +195,8 @@ For SCSS, use `@use "@monabbous/lumenmorph/scss/motion";`. For Less, use `@impor
 
 For scoped tracking, put the motion class on the same ancestor you pass to `trackPointer`. Don't add it to all the surfaces. In the hosted lab, only `.lm-lab` transitions, leaving the site's shell unchanged. This stylesheet sets `transition` on the coordinate owner; combine its two properties with any existing transitions you need there. `:not(:hover)` also matches on touch devices and when the pointer leaves that scope. Window blur with the pointer still inside uses the follow duration. Browsers without `@property` retain tracking but can't interpolate these custom properties. Importing this option registers the coordinate types document-wide, so use CSS lengths, not percentages, for these two properties.
 
+SVG text and icon paint layers do not apply backdrop blur or saturation. Filtering an HTML `foreignObject` can escape its SVG mask in Safari, producing a solid rectangle. The adapters keep their translucent fill, outline, and pointer light; place them on a Lumenmorph surface when you want a blurred backdrop.
+
 ## Defaults and controls
 
 All public custom properties use the `--lumen-` prefix. They inherit, so you can set a page theme and override individual surfaces. The component uses fallbacks rather than assigning defaults on each element.

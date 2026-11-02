@@ -19,7 +19,7 @@ jobs:
       - run: npm test
       - run: npm run test:types
       - run: npm run test:svelte
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser
       - run: npm pack --dry-run
       - uses: actions/upload-artifact@v4

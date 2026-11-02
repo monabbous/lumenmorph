@@ -8,6 +8,9 @@ export const svgPageStyle = {
 export function svgLayerStyle(outline, icon = false) {
   return {
     width: "100%", height: "100%", borderRadius: "0",
+    // WebKit composites backdrop-filter outside the foreignObject's SVG mask.
+    // Keep these paint layers unfiltered; a surrounding surface can supply blur.
+    backdropFilter: "none", WebkitBackdropFilter: "none",
     "--lumen-attachment": "scroll", "--lumen-space": "100% 100%",
     "--lumen-x": "calc(var(--_lumen-page-x) * var(--_lumen-svg-a, 1) + var(--_lumen-page-y) * var(--_lumen-svg-c, 0) + var(--_lumen-svg-e, 0px))",
     "--lumen-y": "calc(var(--_lumen-page-x) * var(--_lumen-svg-b, 0) + var(--_lumen-page-y) * var(--_lumen-svg-d, 1) + var(--_lumen-svg-f, 0px))",
