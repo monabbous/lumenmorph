@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ES2022", "moduleResolution": "Bundler",
+    "rootDir": ".", "outDir": "../.generated-angular",
+    "strict": true, "experimentalDecorators": true, "useDefineForClassFields": false,
+    "skipLibCheck": true, "lib": ["ES2022", "DOM"]
+  },
+  "angularCompilerOptions": { "strictTemplates": true },
+  "files": ["angular.ts"]
+}

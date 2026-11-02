@@ -3,9 +3,20 @@ import postcss from "postcss";
 import { build } from "esbuild";
 
 const root = new URL("../", import.meta.url);
+await build({
+  entryPoints: [new URL("react/src/index.tsx", root).pathname], outfile: new URL("react/index.mjs", root).pathname,
+  bundle: true, packages: "external", format: "esm", jsx: "automatic", target: "es2022",
+  plugins: [{ name: "shared-svg-helper", setup(builder) {
+    builder.onResolve({ filter: /^\.\.\/\.\.\/js\/svg\.mjs$/ }, () => ({ path: "../js/svg.mjs", external: true }));
+  } }],
+});
 const css = await readFile(new URL("src/lumenmorph.css", root), "utf8");
 const motion = await readFile(new URL("src/motion.css", root), "utf8");
 const ast = postcss.parse(css);
+const lessClasses = ast.clone();
+lessClasses.walkDecls(declaration => {
+  if (/\b(?:color-mix|calc|blur|saturate|radial-gradient)\(/.test(declaration.value)) declaration.value = `~"${declaration.value}"`;
+});
 const controls = ["bg", "solid-bg", "glow-color", "glow-size", "glow-opacity", "blur", "saturation", "radius", "border-width", "border-color", "border-glow-color", "border-opacity", "text-color", "text-glow-size", "text-glow-opacity", "text-stroke-width"];
 const components = { lumenmorph: ".lumenmorph", border: ".lumenmorph-border", text: ".lumenmorph-text" };
 
@@ -55,7 +66,11 @@ const outputs = {
   "scss/_mixins.scss": sass,
   "scss/lumenmorph.scss": '@forward "mixins";\n@use "mixins";\n.lumenmorph { @include mixins.lumenmorph(); }\n.lumenmorph-border { @include mixins.border(); }\n.lumenmorph-text, .glassmorphism-text { @include mixins.text(); }\n',
   "less/lumenmorph.less": less,
+  "less/classes.less": "// Generated from src/lumenmorph.css.\n" + lessClasses.toString(),
+  "less/index.less": '@import "lumenmorph.less";\n',
+  "scss/_index.scss": '@forward "lumenmorph";\n',
   "tailwind/rules.json": JSON.stringify(Object.fromEntries([...Object.values(components), ".glassmorphism-text"].map(selector => [selector, object(nested(ast, selector))])), null, 2) + "\n",
+  "web-component/styles.mjs": `// Generated from src/lumenmorph.css.\nexport const css = ${JSON.stringify(css)};\n`,
 };
 for (const [path, text] of Object.entries(outputs)) {
   await mkdir(new URL(path.substring(0, path.lastIndexOf("/")) + "/", root), { recursive: true });
@@ -79,4 +94,6 @@ for (const name of ["react", "react-dom"]) {
   await copyFile(new URL(`node_modules/${name}/LICENSE`, root), new URL(`${name}-LICENSE`, assets));
 }
 await build({ entryPoints: [new URL("lab/react-demo.mjs", root).pathname], outfile: new URL("react-demo.mjs", assets).pathname, bundle: true, minify: true, format: "esm", define: { "process.env.NODE_ENV": '"production"' } });
+await build({ entryPoints: [new URL("lab/highlight.mjs", root).pathname], outfile: new URL("highlight.mjs", assets).pathname, bundle: true, minify: true, format: "esm" });
+await copyFile(new URL("node_modules/highlight.js/LICENSE", root), new URL("highlight-LICENSE", assets));
 console.log("Built CSS, SCSS, Less, Tailwind utilities, and standalone lab.");

@@ -1,5 +1,6 @@
 import { trackPointer } from "./assets/pointer.mjs";
 import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from "./assets/slidebox-range.mjs";
+import { foundationSnippets, componentSnippets } from "./snippets.mjs";
 
 const root = document.querySelector(".lm-lab");
 const hosted = Boolean(document.querySelector("[data-nabous-shell]"));
@@ -14,7 +15,50 @@ const presets = {
   daylight: { "glow-color": "#0799ce", "border-glow-color": "#ffffff", "bg-color": "#f4fbff", "bg-opacity": "0.5", "glow-size": "300", "glow-opacity": "0.22", "border-opacity": "1", blur: "18", saturation: "1.1", radius: "4", "border-width": "1" },
 };
 let format = "css";
+let framework = "react";
+let foundationBlocks = [];
+let componentBlocks = [];
+let colorCode;
 let cleanup;
+let demoCleanup;
+let demoVersion = 0;
+const adapterLoaders = {
+  react: () => import("./assets/react-demo.mjs"),
+  vue: () => import("./assets/adapters/vue.mjs"),
+  svelte: () => import("./assets/adapters/svelte.mjs"),
+  angular: () => import("./assets/adapters/angular.mjs"),
+  "web-component": () => import("./assets/adapters/web-component.mjs"),
+};
+const adapterNames = { react: "React", vue: "Vue 3.5", svelte: "Svelte 5", angular: "Angular 21", "web-component": "Web Component" };
+async function selectAdapter(name) {
+  const version = ++demoVersion;
+  const target = document.querySelector("#react-demo");
+  const iconTarget = document.querySelector("#icon-demo");
+  let stagedCleanup;
+  target.setAttribute("aria-busy", "true");
+  document.querySelector("#adapter-status").textContent = "Loading component…";
+  try {
+    const module = await adapterLoaders[name]();
+    if (version !== demoVersion) return;
+    demoCleanup?.(); demoCleanup = undefined;
+    target.replaceChildren();
+    iconTarget.replaceChildren();
+    const stop = await module.mountDemo(target, { text: "Lumenmorph", width: 640, height: 130, fontSize: 88, strokeWidth: 1.5, textProps: { fontFamily: "inherit", letterSpacing: -2 } });
+    stagedCleanup = stop;
+    if (version !== demoVersion) { stop(); return; }
+    const stopIcon = await module.mountIconDemo(iconTarget, { paths: "M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z", viewBox: "0 0 64 64", width: 112, height: 112, strokeWidth: 1, label: "Play" });
+    const combined = () => { stop(); stopIcon(); };
+    if (version !== demoVersion) { combined(); return; }
+    demoCleanup = combined;
+    target.dataset.framework = name;
+    document.querySelector("#adapter-status").textContent = "Two SVG masks. Shared page light.";
+  } catch {
+    stagedCleanup?.();
+    if (version === demoVersion) document.querySelector("#adapter-status").textContent = `Couldn't load ${adapterNames[name]}. Try another adapter or reload.`;
+  } finally {
+    if (version === demoVersion) target.setAttribute("aria-busy", "false");
+  }
+}
 const ranges = [...form.querySelectorAll('input[type="range"]')];
 const rangeCleanup = ranges.flatMap(input => {
   return [enhanceSlideboxRange(input), enhanceSlideboxRangeFill(input)];
@@ -39,34 +83,52 @@ function render() {
     document.querySelector(`#${input.id}-value`).value = input.value + (input.dataset.unit ?? "");
     input.dispatchEvent(new Event("input")); // Update Slidebox's optional fill after preset changes.
   }
-  const declarations = Object.entries(values).map(([name, value]) => `  --lumen-${name}: ${value};`).join("\n");
-  const js = tracking.checked ? '\n\n// Optional pointer light. Call stop() on unmount.\nimport { trackPointer } from "@monabbous/lumenmorph";\nconst stop = trackPointer();' : "";
-  const html = '<article class="lumenmorph lumenmorph-border card">Your content</article>';
-  const snippets = {
-    css: `/* Import once in your CSS entry point. */\n@import "@monabbous/lumenmorph/css";\n\n.card {\n${declarations}\n}\n\n/* HTML */\n${html}${js}`,
-    scss: `@use "@monabbous/lumenmorph/scss/mixins" as lumen;\n\n.card {\n  @include lumen.lumenmorph((\n${Object.entries(values).map(([key, value]) => `    ${key}: ${value}`).join(",\n")}\n  ));\n  @include lumen.border();\n}\n\n/* HTML: <article class="card">Your content</article> */${js}`,
-    less: `@import "@monabbous/lumenmorph/less";\n\n.card {\n  .lumenmorph(\n${Object.entries(values).map(([key, value]) => `    @${key}: ${value}`).join(";\n")}\n  );\n  .lumenmorph-border();\n}\n\n/* HTML: <article class="card">Your content</article> */${js}`,
-    tailwind: `/* Tailwind v4 stylesheet; v3: add the plugin in tailwind.config.cjs. */\n@import "tailwindcss";\n@plugin "@monabbous/lumenmorph/tailwind";\n\n/* HTML */\n<article class="lumenmorph lumenmorph-border\n${Object.entries(values).map(([key, value]) => `  [--lumen-${key}:${value}]`).join("\n")}\n">Your content</article>${js}`,
-    react: `"use client";\nimport { useEffect } from "react";\nimport { LumenText } from "@monabbous/lumenmorph/react";\nimport { trackPointer } from "@monabbous/lumenmorph";\nimport "@monabbous/lumenmorph/css";\n\nexport function Preview() {\n${tracking.checked ? "  useEffect(() => trackPointer(), []);" : "  // Static light: no pointer listener."}\n  return <div style={${JSON.stringify(Object.fromEntries(Object.entries(values).map(([k, v]) => [`--lumen-${k}`, v])), null, 4).replaceAll("\n", "\n  ")}}>\n    <LumenText width={640} height={120} fontSize={80}>\n      Lumenmorph\n    </LumenText>\n  </div>;\n}`,
-  };
-  if (smoothing.checked) {
-    const imports = {
-      css: '@import "@monabbous/lumenmorph/motion";',
-      scss: '@use "@monabbous/lumenmorph/scss/motion";',
-      less: '@import "@monabbous/lumenmorph/less/motion";',
-      tailwind: '@import "@monabbous/lumenmorph/motion";',
-      react: 'import "@monabbous/lumenmorph/motion";',
-    };
-    const note = format === "react"
-      ? '// Add className="lumenmorph-motion" to <html> in your app layout.\n'
-      : '/* Add class="lumenmorph-motion" to <html>. Only that element transitions. */\n';
-    // Keep the React client directive before imports.
-    snippets[format] = format === "react"
-      ? snippets[format].replace('"use client";\n', `"use client";\n${imports.react}\n${note}`)
-      : `${imports[format]}\n${note}\n${snippets[format]}`;
-  }
-  snippet.textContent = snippets[format];
+  foundationBlocks = foundationSnippets(format, values, { tracking: tracking.checked, smoothing: smoothing.checked });
+  componentBlocks = componentSnippets(framework);
+  renderBlocks(snippet, foundationBlocks);
+  renderBlocks(document.querySelector("#component-snippet"), componentBlocks);
 }
+
+function renderBlocks(target, blocks) {
+  target.replaceChildren(...blocks.map(block => {
+    const section = document.createElement("div");
+    const label = document.createElement("p"); label.className = "code-label"; label.textContent = block.title;
+    const pre = document.createElement("pre");
+    const code = document.createElement("code"); code.dataset.language = block.language; code.textContent = block.code;
+    applyHighlight(code);
+    const frame = document.createElement("div"); frame.className = "code-frame";
+    const copy = document.createElement("button"); copy.type = "button"; copy.className = "lumenmorph lumenmorph-border copy-code";
+    copy.setAttribute("aria-label", `Copy ${block.title}`); copy.title = `Copy ${block.title}`;
+    const icon = document.createElement("i"); icon.className = "fa-regular fa-copy"; icon.setAttribute("aria-hidden", "true");
+    const fallback = document.createElement("span"); fallback.className = "copy-fallback"; fallback.textContent = "Copy";
+    copy.append(icon, fallback);
+    copy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(block.code);
+        icon.className = "fa-solid fa-check"; fallback.textContent = "Copied"; copy.title = "Copied";
+        document.querySelector("#copy-status").textContent = `${block.title} copied.`;
+        window.setTimeout(() => { icon.className = "fa-regular fa-copy"; fallback.textContent = "Copy"; copy.title = `Copy ${block.title}`; }, 1400);
+      } catch { document.querySelector("#copy-status").textContent = "Clipboard unavailable. Select and copy the code in this block."; }
+    });
+    pre.append(code); frame.append(pre, copy); section.append(label, frame); return section;
+  }));
+}
+
+function applyHighlight(code) {
+  if (!colorCode) return;
+  code.innerHTML = colorCode(code.textContent, code.dataset.language);
+  code.classList.add("hljs");
+}
+
+const codeObserver = new IntersectionObserver(async entries => {
+  if (!entries.some(entry => entry.isIntersecting)) return;
+  codeObserver.disconnect();
+  try {
+    colorCode = (await import("./assets/highlight.mjs")).highlight;
+    for (const code of document.querySelectorAll(".code-blocks code")) applyHighlight(code);
+  } catch { /* Plain text remains readable when the optional highlighter cannot load. */ }
+}, { rootMargin: "200px" });
+codeObserver.observe(document.querySelector("#code"));
 
 function syncTracking() {
   cleanup?.();
@@ -95,6 +157,12 @@ for (const button of document.querySelectorAll("[data-format]")) button.addEvent
   for (const other of document.querySelectorAll("[data-format]")) other.setAttribute("aria-pressed", String(other === button));
   render();
 });
+for (const button of document.querySelectorAll("[data-framework]")) button.addEventListener("click", () => {
+  framework = button.dataset.framework;
+  for (const other of document.querySelectorAll("[data-framework]")) other.setAttribute("aria-pressed", String(other === button));
+  render();
+  selectAdapter(framework);
+});
 document.querySelector("#reset").addEventListener("click", () => {
   tracking.checked = true;
   smoothing.checked = true;
@@ -102,11 +170,11 @@ document.querySelector("#reset").addEventListener("click", () => {
   syncTracking();
   preset("ember");
 });
-document.querySelector("#copy").addEventListener("click", async () => {
-  try { await navigator.clipboard.writeText(snippet.textContent); document.querySelector("#copy-status").textContent = "Copied."; }
-  catch { document.querySelector("#copy-status").textContent = "Clipboard unavailable. Select and copy the code above."; }
-});
 document.querySelector("#sample-button").addEventListener("click", event => { event.currentTarget.querySelector("span:last-child").textContent = "Native click received ✓"; });
 syncTracking();
 preset("ember");
-window.addEventListener("pagehide", () => { cleanup?.(); for (const stop of rangeCleanup) stop(); }, { once: true });
+selectAdapter("react");
+window.addEventListener("pagehide", event => {
+  if (event.persisted) return; // The back/forward cache freezes and resumes these instances.
+  demoVersion++; demoCleanup?.(); cleanup?.(); for (const stop of rangeCleanup) stop();
+});

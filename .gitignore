@@ -3,3 +3,5 @@ test-results/
 playwright-report/
 *.tgz
 .DS_Store
+public/__adapter-tests/
+tests/.generated-angular/

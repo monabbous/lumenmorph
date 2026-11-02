@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", "module": "ES2022", "moduleResolution": "Bundler",
+    "rootDir": "src", "outDir": "dist", "declaration": true,
+    "strict": true, "experimentalDecorators": true, "useDefineForClassFields": false,
+    "skipLibCheck": true, "lib": ["ES2022", "DOM"]
+  },
+  "angularCompilerOptions": { "compilationMode": "partial", "strictTemplates": true },
+  "include": ["src/**/*.ts"]
+}

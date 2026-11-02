@@ -4,12 +4,12 @@
   "description": "Low-markup glass surfaces, pointer light, and optional SVG text from nabous.dev.",
   "type": "module",
   "license": "ISC",
-  "author": "Mohamed Nabous <https://nabous.dev>",
+  "author": { "name": "Mohamed Nabous", "url": "https://nabous.dev" },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/monabbous/lumenmorph.git"
   },
-  "homepage": "https://github.com/monabbous/lumenmorph#readme",
+  "homepage": "https://nabous.dev/lab/lumenmorph/",
   "bugs": "https://github.com/monabbous/lumenmorph/issues",
   "style": "./dist/css/lumenmorph.css",
   "sass": "./scss/lumenmorph.scss",
@@ -25,11 +25,29 @@
     "./scss/mixins": "./scss/_mixins.scss",
     "./scss/motion": "./scss/_motion.scss",
     "./less": "./less/lumenmorph.less",
+    "./less/classes": "./less/classes.less",
     "./less/motion": "./less/motion.less",
     "./tailwind": "./tailwind/index.cjs",
     "./react": {
       "types": "./react/index.d.ts",
       "import": "./react/index.mjs"
+    },
+    "./vue": {
+      "types": "./vue/index.d.ts",
+      "import": "./vue/index.mjs"
+    },
+    "./svelte": {
+      "types": "./svelte/index.d.ts",
+      "svelte": "./svelte/index.mjs",
+      "default": "./svelte/index.mjs"
+    },
+    "./angular": {
+      "types": "./angular/dist/index.d.ts",
+      "default": "./angular/dist/index.js"
+    },
+    "./web-component": {
+      "types": "./web-component/index.d.ts",
+      "import": "./web-component/index.mjs"
     },
     "./package.json": "./package.json"
   },
@@ -40,6 +58,11 @@
     "tailwind/",
     "js/",
     "react/",
+    "vue/",
+    "svelte/",
+    "angular/dist/",
+    "web-component/",
+    "skills/lumenmorph/",
     "AGENTS.md"
   ],
   "sideEffects": [
@@ -51,10 +74,22 @@
     "access": "public"
   },
   "peerDependencies": {
+    "@angular/core": ">=21 <22",
     "react": ">=18 <20",
-    "tailwindcss": ">=3.4 <5"
+    "svelte": ">=5 <6",
+    "tailwindcss": ">=3.4 <5",
+    "vue": ">=3.5 <4"
   },
   "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "svelte": {
+      "optional": true
+    },
     "react": {
       "optional": true
     },
@@ -63,11 +98,13 @@
     }
   },
   "scripts": {
-    "build": "node scripts/build.mjs",
+    "build": "tsc -p react/tsconfig.json && node scripts/build.mjs && ngc -p angular/tsconfig.json && node scripts/build-lab-adapters.mjs",
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",
+    "pretest:browser": "node scripts/build-adapter-tests.mjs",
     "test:types": "tsc --noEmit",
+    "test:svelte": "svelte-check --no-tsconfig --fail-on-warnings",
     "prepack": "npm run build"
   },
   "keywords": [
@@ -82,20 +119,31 @@
     "svg"
   ],
   "devDependencies": {
+    "@angular/compiler": "^21.2.25",
+    "@angular/compiler-cli": "^21.2.25",
+    "@angular/core": "^21.2.25",
+    "@angular/platform-browser": "^21.2.25",
+    "@babel/core": "^7.29.7",
     "@monabbous/slidebox": "1.3.2",
     "@playwright/test": "^1.56.0",
     "@tailwindcss/node": "^4.1.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "esbuild": "^0.25.0",
+    "highlight.js": "^11.12.0",
     "less": "^4.4.0",
     "pngjs": "^7.0.0",
     "postcss": "^8.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "rxjs": "^7.8.2",
     "sass": "^1.90.0",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
     "tailwindcss": "^3.4.0",
     "tailwindcss-v4": "npm:tailwindcss@^4.1.0",
-    "typescript": "^5.9.0"
+    "tslib": "^2.9.1",
+    "typescript": "^5.9.0",
+    "vue": "^3.5.44"
   }
 }

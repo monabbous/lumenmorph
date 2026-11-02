@@ -19,15 +19,73 @@ test("lab loads, renders React masks, and controls update the exported code", as
   await expect(page.locator("#snippet")).toContainText("#ffaa71");
   await page.getByRole("button", { name: "nabous.dev", exact: true }).click();
   await expect(page.locator("#snippet")).toContainText("#00b2b2");
-  for (const format of ["SCSS", "Less", "Tailwind", "React"]) {
-    await page.getByRole("button", { name: format, exact: true }).click();
+  for (const format of ["SCSS", "Less", "Tailwind"]) {
+    await page.getByRole("group", { name: "Code format" }).getByRole("button", { name: format, exact: true }).click();
     await expect(page.locator("#snippet")).toContainText("lumenmorph");
   }
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await expect(page.locator("#glow-size")).toHaveValue("460");
-  const size = await page.evaluate(() => ({ body: document.documentElement.scrollWidth, viewport: innerWidth }));
+  const size = await page.evaluate(() => ({ body: document.documentElement.scrollWidth, viewport: document.documentElement.clientWidth }));
   expect(size.body).toBeLessThanOrEqual(size.viewport);
   expect(errors).toEqual([]);
+});
+
+test("live SVG demo lazily loads every framework adapter", async ({ page }) => {
+  const errors = [];
+  const requested = [];
+  page.on("pageerror", error => errors.push(error.message));
+  page.on("request", request => { if (request.url().includes("/assets/adapters/")) requested.push(request.url()); });
+  await page.goto("/lab/");
+  await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
+  expect(requested).toEqual([]);
+  const picker = page.getByRole("group", { name: "SVG implementation" });
+  for (const [name, label] of [["Vue", "Vue 3.5"], ["Svelte", "Svelte 5"], ["Angular", "Angular 21"], ["Web Component", "Web Component"], ["React", "React"]]) {
+    await picker.getByRole("button", { name, exact: true }).click();
+    await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", ({ Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component", React: "react" })[name]);
+    await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
+    await expect(page.locator("#react-demo svg")).toHaveCount(1);
+    await expect(page.locator("#icon-demo svg")).toHaveAttribute("aria-label", "Play");
+    await expect(page.locator("#icon-demo mask path")).toHaveCount(2);
+  }
+  expect(errors).toEqual([]);
+});
+
+test("framework switching keeps the preview space while the next bundle loads", async ({ page }) => {
+  await page.goto("/lab/");
+  await expect(page.locator("#react-demo svg")).toBeVisible();
+  const before = await page.locator("#react-demo").boundingBox();
+  let release;
+  const hold = new Promise(resolve => { release = resolve; });
+  await page.route("**/assets/adapters/vue.mjs", async route => { await hold; await route.continue(); });
+  await page.getByRole("group", { name: "SVG implementation" }).getByRole("button", { name: "Vue", exact: true }).click();
+  await expect(page.locator("#react-demo")).toHaveAttribute("aria-busy", "true");
+  await expect(page.locator("#react-demo svg")).toBeVisible();
+  const loading = await page.locator("#react-demo").boundingBox();
+  expect(Math.abs(loading.height - before.height)).toBeLessThan(1);
+  release();
+  await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", "vue");
+  const after = await page.locator("#react-demo").boundingBox();
+  expect(Math.abs(after.height - before.height)).toBeLessThan(1);
+});
+
+test("implementation panels use highlighted blocks with per-block copy buttons", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } });
+  });
+  await page.goto("/lab/");
+  await page.locator("#code").scrollIntoViewIfNeeded();
+  await expect(page.getByRole("heading", { name: "Foundations", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "SVG components", exact: true })).toBeAttached();
+  await expect(page.locator(".stage button[data-framework]")).toHaveCount(0);
+  await expect(page.locator("#snippet code.hljs").first()).toBeAttached();
+  await expect(page.locator("#snippet .copy-code")).toHaveCount(3);
+  const raw = await page.locator("#snippet code").first().textContent();
+  await page.getByRole("button", { name: "Copy styles.css", exact: true }).click();
+  expect(await page.evaluate(() => window.__copiedCode)).toBe(raw);
+  await expect(page.locator("#snippet .copy-code .fa-check")).toHaveCount(1);
+  await page.getByRole("group", { name: "SVG implementation" }).getByRole("button", { name: "Web Component", exact: true }).click();
+  await expect(page.locator("#component-snippet code")).toHaveCount(2);
+  await expect(page.locator("#component-snippet .copy-code")).toHaveCount(2);
 });
 
 test("native button keeps keyboard behavior and tracking cleans up", async ({ page, isMobile }) => {
@@ -139,6 +197,8 @@ test("reduced motion retains a static light and forced colors retains readable c
   expect(style.blur).toBe("none");
   expect(style.border).not.toBe("rgba(0, 0, 0, 0)");
   await expect(page.getByRole("heading", { name: "Glass surface" })).toBeVisible();
+  await expect(page.locator("#header-demo .lumenmorph-svg-fallback")).toBeVisible();
+  await expect(page.locator("#header-demo foreignObject").first()).toBeHidden();
 });
 
 test("static CSS works without JavaScript", async ({ browser }) => {

@@ -1,13 +1,20 @@
 import { createElement as h } from "react";
 import { createRoot } from "react-dom/client";
-import { LumenText } from "../react/index.mjs";
+import { LumenText, LumenIcon } from "../react/index.mjs";
 
 createRoot(document.querySelector("#header-demo"), { identifierPrefix: "lm-header-" }).render(h(LumenText, {
   width: 800, height: 160, fontSize: 120, strokeWidth: 1.2, "aria-hidden": true,
   textProps: { fontFamily: "inherit", letterSpacing: "-2", fontWeight: 600 },
 }, "Lumenmorph"));
 
-createRoot(document.querySelector("#react-demo"), { identifierPrefix: "lm-preview-" }).render(h(LumenText, {
-  width: 640, height: 130, fontSize: 88, strokeWidth: 1.5,
-  textProps: { fontFamily: "inherit", letterSpacing: "-2" },
-}, "Lumenmorph"));
+export function mountDemo(target, { text, ...props }) {
+  const root = createRoot(target, { identifierPrefix: "lm-preview-" });
+  root.render(h(LumenText, props, text));
+  return () => root.unmount();
+}
+
+export function mountIconDemo(target, props) {
+  const root = createRoot(target, { identifierPrefix: "lm-icon-preview-" });
+  root.render(h(LumenIcon, props));
+  return () => root.unmount();
+}

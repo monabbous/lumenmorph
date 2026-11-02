@@ -10,7 +10,9 @@ import tailwind from "tailwindcss";
 import { compile } from "@tailwindcss/node";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
-import { LumenText } from "../react/index.mjs";
+import { LumenText, LumenIcon } from "../react/index.mjs";
+import { highlight } from "../lab/highlight.mjs";
+import { foundationSnippets, componentSnippets } from "../public/lab/snippets.mjs";
 
 const require = createRequire(import.meta.url);
 const css = await readFile(new URL("../dist/css/lumenmorph.css", import.meta.url), "utf8");
@@ -50,6 +52,36 @@ test("SCSS entry point emits ready-to-use classes", () => {
   assert.match(output, /\.lumenmorph-text/);
 });
 
+test("Less ready-made classes match CSS for surfaces and HTML text", async () => {
+  const source = await readFile(new URL("../less/classes.less", import.meta.url), "utf8");
+  const output = (await less.render(source)).css;
+  for (const selector of [".lumenmorph", ".lumenmorph-border::before", ".lumenmorph-text", ".glassmorphism-text"]) {
+    assert.deepEqual(declarations(output, selector, "background-image"), declarations(css, selector, "background-image"));
+  }
+});
+
+test("implementation blocks separate foundations from all SVG adapters", () => {
+  for (const format of ["css", "scss", "less", "tailwind"]) {
+    const blocks = foundationSnippets(format, { "glow-size": "460px" }, { tracking: true, smoothing: true });
+    assert.equal(blocks.length, 3);
+    assert.match(blocks[0].code, /--lumen-glow-size: 460px/);
+    assert.match(blocks[2].code, /trackPointer/);
+    assert.equal(foundationSnippets(format, {}, { tracking: false, smoothing: false }).length, 2);
+  }
+  for (const framework of ["react", "vue", "svelte", "angular", "web-component"]) {
+    const blocks = componentSnippets(framework);
+    assert.ok(blocks.length >= 1);
+    assert.match(blocks.map(block => block.code).join("\n"), /LumenIcon|lumen-icon|lumenIcon/);
+    assert.doesNotMatch(blocks.map(block => block.code).join("\n"), /trackPointer\(/);
+  }
+});
+
+test("code highlighting escapes markup and colors supported languages", () => {
+  assert.match(highlight('const value = "light";', "javascript"), /hljs-keyword/);
+  assert.match(highlight('<script>alert("x")</script>', "xml"), /&lt;/);
+  assert.doesNotMatch(highlight('<script>alert("x")</script>', "xml"), /<script>/);
+});
+
 test("Tailwind v3 compiles components, theme colors, arbitrary values, and variants", async () => {
   const output = await postcss([tailwind({
     content: [{ raw: '<div class="lumenmorph lumenmorph-border lumenmorph-text lumen-glow-cyan-300 lumen-glow-size-[480px] hover:lumen-glow-opacity-50 lumen-bg-[#11223380] lumen-radius-xl"></div>' }],
@@ -80,6 +112,22 @@ test("React SVG is accessible, server-renderable, and uses distinct stable mask 
   assert.match(output, /aria-label="Glass &amp; light"/);
   assert.match(output, /foreignObject/);
   assert.doesNotMatch(output, /Math.random/);
+});
+
+test("React icon ports filled silhouettes with explicit or decorative semantics", () => {
+  const output = renderToString(createElement(LumenIcon, { paths: ["M8 8h48v48H8Z"], label: "Square", viewBox: "0 0 64 64" }));
+  assert.match(output, /aria-label="Square"/);
+  assert.equal([...output.matchAll(/<path /g)].length, 3);
+  assert.match(output, /feMorphology/);
+  assert.match(renderToString(createElement(LumenIcon, { paths: "M8 8h48v48H8Z" })), /aria-hidden="true"/);
+  assert.throws(() => renderToString(createElement(LumenIcon, { paths: "M0 0", viewBox: "0 0 0 10" })), /viewBox/);
+});
+
+test("client-only entry points import safely without a browser", async () => {
+  await import("../vue/index.mjs");
+  const web = await import("../web-component/index.mjs");
+  assert.throws(() => web.defineLumenText(), /browser/);
+  assert.throws(() => web.defineLumenIcon(), /browser/);
 });
 
 test("core CSS and pointer helper stay within small gzip budgets", async () => {
