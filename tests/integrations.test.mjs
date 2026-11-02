@@ -12,7 +12,7 @@ import { createElement } from "react";
 import { renderToString } from "react-dom/server";
 import { LumenText, LumenIcon } from "../react/index.mjs";
 import { highlight } from "../lab/highlight.mjs";
-import { foundationSnippets, componentSnippets } from "../public/lab/snippets.mjs";
+import { installationSnippets, foundationSnippets, componentSnippets } from "../public/lab/snippets.mjs";
 
 const require = createRequire(import.meta.url);
 const css = await readFile(new URL("../dist/css/lumenmorph.css", import.meta.url), "utf8");
@@ -74,6 +74,21 @@ test("implementation blocks separate foundations from all SVG adapters", () => {
     assert.match(blocks.map(block => block.code).join("\n"), /LumenIcon|lumen-icon|lumenIcon/);
     assert.doesNotMatch(blocks.map(block => block.code).join("\n"), /trackPointer\(/);
   }
+});
+
+test("CDN snippets use minified CSS and browser-resolvable imports with optional motion", () => {
+  assert.match(installationSnippets("css", {})[0].code, /npm install @monabbous\/lumenmorph/);
+  const install = installationSnippets("cdn", { smoothing: true })[0].code;
+  assert.match(install, /@0\.1\.3\/dist\/css\/lumenmorph\.min\.css/);
+  assert.match(install, /motion\.min\.css/);
+  assert.doesNotMatch(installationSnippets("cdn", { smoothing: false })[0].code, /motion/);
+  const blocks = foundationSnippets("cdn", { "glow-color": "#ffaa71" }, { tracking: true, smoothing: true });
+  assert.match(blocks[0].code, /--lumen-glow-color: #ffaa71/);
+  assert.doesNotMatch(blocks[0].code, /@import/);
+  assert.match(blocks[1].code, /lumenmorph-motion/);
+  assert.match(blocks[2].code, /<script type="module">/);
+  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.1\.3\/js\/pointer\.mjs/);
+  assert.equal(foundationSnippets("cdn", {}, { tracking: false, smoothing: false }).length, 2);
 });
 
 test("code highlighting escapes markup and colors supported languages", () => {

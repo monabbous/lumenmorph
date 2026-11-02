@@ -1,6 +1,6 @@
 import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
 import postcss from "postcss";
-import { build } from "esbuild";
+import { build, transform } from "esbuild";
 
 const root = new URL("../", import.meta.url);
 await build({
@@ -60,7 +60,9 @@ function object(container) {
 
 const outputs = {
   "dist/css/lumenmorph.css": css,
+  "dist/css/lumenmorph.min.css": (await transform(css, { loader: "css", minify: true })).code,
   "dist/css/motion.css": motion,
+  "dist/css/motion.min.css": (await transform(motion, { loader: "css", minify: true })).code,
   "scss/_motion.scss": motion,
   "less/motion.less": motion,
   "scss/_mixins.scss": sass,

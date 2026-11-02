@@ -88,6 +88,24 @@ test("implementation panels use highlighted blocks with per-block copy buttons",
   await expect(page.locator("#component-snippet .copy-code")).toHaveCount(2);
 });
 
+test("installation switches between npm and a minified no-build CDN setup", async ({ page }) => {
+  await page.goto("/lab/");
+  await expect(page.locator("#installation-snippet")).toContainText("npm install @monabbous/lumenmorph");
+  await page.getByRole("button", { name: "CDN · minified", exact: true }).click();
+  await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
+  await expect(page.locator("#installation-snippet")).toContainText("motion.min.css");
+  await expect(page.locator("#snippet")).toContainText('<script type="module">');
+  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.1.3/js/pointer.mjs");
+  await page.locator("#smoothing").uncheck();
+  await page.locator("#tracking").uncheck();
+  await expect(page.locator("#installation-snippet")).not.toContainText("motion.min.css");
+  await expect(page.locator("#snippet")).not.toContainText("trackPointer");
+  await expect(page.locator("#snippet")).not.toContainText("lumenmorph-motion");
+  await page.getByRole("button", { name: "Vanilla CSS · npm", exact: true }).click();
+  await expect(page.locator("#installation-snippet")).toContainText("npm install");
+  await expect(page.locator("#snippet")).toContainText('@import "@monabbous/lumenmorph/css"');
+});
+
 test("native button keeps keyboard behavior and tracking cleans up", async ({ page, isMobile }) => {
   test.skip(isMobile, "Desktop keyboard and mouse interaction");
   await page.goto("/lab/");

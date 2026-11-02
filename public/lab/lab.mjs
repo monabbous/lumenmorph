@@ -1,6 +1,6 @@
 import { trackPointer } from "./assets/pointer.mjs";
 import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from "./assets/slidebox-range.mjs";
-import { foundationSnippets, componentSnippets } from "./snippets.mjs";
+import { installationSnippets, foundationSnippets, componentSnippets } from "./snippets.mjs";
 
 const root = document.querySelector(".lm-lab");
 const hosted = Boolean(document.querySelector("[data-nabous-shell]"));
@@ -84,6 +84,10 @@ function render() {
     input.dispatchEvent(new Event("input")); // Update Slidebox's optional fill after preset changes.
   }
   foundationBlocks = foundationSnippets(format, values, { tracking: tracking.checked, smoothing: smoothing.checked });
+  renderBlocks(document.querySelector("#installation-snippet"), installationSnippets(format, { smoothing: smoothing.checked }));
+  document.querySelector("#installation-hint").textContent = format === "cdn"
+    ? "Plain HTML, no build step. Add these minified stylesheets to <head>, then link your styles.css after them. CDN URLs are pinned to 0.1.3."
+    : "Install the package, then use the styles and HTML below. Package imports need a bundler such as Vite; choose CDN for plain HTML without a build step. Frameworks are optional.";
   componentBlocks = componentSnippets(framework);
   renderBlocks(snippet, foundationBlocks);
   renderBlocks(document.querySelector("#component-snippet"), componentBlocks);
