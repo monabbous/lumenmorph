@@ -4,7 +4,8 @@ export function trackPointer(target = document.documentElement, options = {}) {
   if (!view) throw new Error("trackPointer requires an element in a browser document.");
   const local = options.local ?? false;
   const source = local ? target : view;
-  const boundary = local ? target : target.ownerDocument;
+  // WebKit emits pointerleave on <html>, but not on Document.
+  const boundary = local ? target : target.ownerDocument.documentElement;
   const properties = ["--lumen-x", "--lumen-y", ...(local ? ["--lumen-attachment", "--lumen-space"] : [])];
   const previous = properties.map(name => [name, target.style.getPropertyValue(name), target.style.getPropertyPriority(name)]);
   const motion = view.matchMedia("(prefers-reduced-motion: reduce)");

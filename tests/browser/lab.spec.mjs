@@ -9,18 +9,18 @@ test("lab loads, renders React masks, and controls update the exported code", as
   await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
   await expect(page.locator("#react-demo mask")).toHaveCount(2);
   await expect(page.locator("#header-demo svg")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Ember", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("radio", { name: "Ember", exact: true })).toBeChecked();
   expect(await page.locator("button:not(.lumenmorph)").count()).toBe(0);
   expect(await page.locator('input[type="range"]:not(.slidebox-range)').count()).toBe(0);
   await page.locator("#glow-size").fill("620");
   await expect(page.locator("#glow-size-value")).toHaveText("620px");
   await expect(page.locator("#snippet")).toContainText("--lumen-glow-size: 620px");
-  await page.getByRole("button", { name: "Ember", exact: true }).click();
+  await page.locator(".presets label").filter({ hasText: "Ember" }).click();
   await expect(page.locator("#snippet")).toContainText("#ffaa71");
-  await page.getByRole("button", { name: "nabous.dev", exact: true }).click();
+  await page.locator(".presets label").filter({ hasText: "Lagoon" }).click();
   await expect(page.locator("#snippet")).toContainText("#00b2b2");
   for (const format of ["SCSS", "Less", "Tailwind"]) {
-    await page.getByRole("group", { name: "Code format" }).getByRole("button", { name: format, exact: true }).click();
+    await page.getByRole("group", { name: "Code format" }).locator("label").filter({ hasText: format }).click();
     await expect(page.locator("#snippet")).toContainText("lumenmorph");
   }
   await page.getByRole("button", { name: "Reset", exact: true }).click();
@@ -40,7 +40,7 @@ test("live SVG demo lazily loads every framework adapter", async ({ page }) => {
   expect(requested).toEqual([]);
   const picker = page.getByRole("group", { name: "SVG implementation" });
   for (const [name, label] of [["Vue", "Vue 3.5"], ["Svelte", "Svelte 5"], ["Angular", "Angular 21"], ["Web Component", "Web Component"], ["React", "React"]]) {
-    await picker.getByRole("button", { name, exact: true }).click();
+    await picker.locator("label").filter({ hasText: name }).click();
     await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", ({ Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component", React: "react" })[name]);
     await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
     await expect(page.locator("#react-demo svg")).toHaveCount(1);
@@ -57,7 +57,7 @@ test("framework switching keeps the preview space while the next bundle loads", 
   let release;
   const hold = new Promise(resolve => { release = resolve; });
   await page.route("**/assets/adapters/vue.mjs", async route => { await hold; await route.continue(); });
-  await page.getByRole("group", { name: "SVG implementation" }).getByRole("button", { name: "Vue", exact: true }).click();
+  await page.getByRole("group", { name: "SVG implementation" }).locator("label").filter({ hasText: "Vue" }).click();
   await expect(page.locator("#react-demo")).toHaveAttribute("aria-busy", "true");
   await expect(page.locator("#react-demo svg")).toBeVisible();
   const loading = await page.locator("#react-demo").boundingBox();
@@ -83,7 +83,7 @@ test("implementation panels use highlighted blocks with per-block copy buttons",
   await page.getByRole("button", { name: "Copy styles.css", exact: true }).click();
   expect(await page.evaluate(() => window.__copiedCode)).toBe(raw);
   await expect(page.locator("#snippet .copy-code .fa-check")).toHaveCount(1);
-  await page.getByRole("group", { name: "SVG implementation" }).getByRole("button", { name: "Web Component", exact: true }).click();
+  await page.getByRole("group", { name: "SVG implementation" }).locator("label").filter({ hasText: "Web Component" }).click();
   await expect(page.locator("#component-snippet code")).toHaveCount(2);
   await expect(page.locator("#component-snippet .copy-code")).toHaveCount(2);
 });
@@ -91,17 +91,17 @@ test("implementation panels use highlighted blocks with per-block copy buttons",
 test("installation switches between npm and a minified no-build CDN setup", async ({ page }) => {
   await page.goto("/lab/");
   await expect(page.locator("#installation-snippet")).toContainText("npm install @monabbous/lumenmorph");
-  await page.getByRole("button", { name: "CDN · minified", exact: true }).click();
+  await page.getByRole("group", { name: "Code format" }).locator("label").filter({ hasText: "CDN · minified" }).click();
   await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
   await expect(page.locator("#installation-snippet")).toContainText("motion.min.css");
   await expect(page.locator("#snippet")).toContainText('<script type="module">');
-  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.1.3/js/pointer.mjs");
+  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.0/js/pointer.mjs");
   await page.locator("#smoothing").uncheck();
   await page.locator("#tracking").uncheck();
   await expect(page.locator("#installation-snippet")).not.toContainText("motion.min.css");
   await expect(page.locator("#snippet")).not.toContainText("trackPointer");
   await expect(page.locator("#snippet")).not.toContainText("lumenmorph-motion");
-  await page.getByRole("button", { name: "Vanilla CSS · npm", exact: true }).click();
+  await page.getByRole("group", { name: "Code format" }).locator("label").filter({ hasText: "Vanilla CSS · npm" }).click();
   await expect(page.locator("#installation-snippet")).toContainText("npm install");
   await expect(page.locator("#snippet")).toContainText('@import "@monabbous/lumenmorph/css"');
 });
@@ -200,7 +200,7 @@ test("hosted lab reuses shell coordinates without changing the host palette", as
   await page.mouse.move(200, 200);
   expect(await page.locator(".lm-lab").evaluate(element => element.style.getPropertyValue("--lumen-x"))).toBe("");
   await expect.poll(() => page.locator(".lm-lab").evaluate(element => getComputedStyle(element).getPropertyValue("--lumen-x").trim())).toBe("450px");
-  await page.getByRole("button", { name: "Ember", exact: true }).click();
+  await page.locator(".presets label").filter({ hasText: "Ember" }).click();
   expect(await page.evaluate(() => document.documentElement.style.getPropertyValue("--accent"))).toBe("#00b2b2");
   await page.locator("#tracking").uncheck();
   await expect.poll(() => page.locator(".lm-lab").evaluate(element => Number.parseFloat(getComputedStyle(element).getPropertyValue("--lumen-x")))) .toBe(await page.evaluate(() => innerWidth / 2));
@@ -256,4 +256,130 @@ test("optional motion transitions one coordinate owner and smooths exit", async 
   await expect(page.locator("#snippet")).toContainText("@monabbous/lumenmorph/motion");
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect(await page.locator(".lm-lab").evaluate(element => getComputedStyle(element).transitionDuration)).toBe("0s");
+});
+
+test("Slidebox presets support arrows, Lilac export, custom edits, and reset", async ({ page }) => {
+  await page.goto("/lab/");
+  const ember = page.getByRole("radio", { name: "Ember", exact: true });
+  await ember.focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Lagoon", exact: true })).toBeChecked();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Lilac", exact: true })).toBeChecked();
+  await expect(page.locator("#glow-color")).toHaveValue("#c4a1ff");
+  await expect(page.locator("#snippet")).toContainText("#e4d4ff");
+  await page.locator("#blur").fill("10");
+  await expect(page.locator(".presets input:checked")).toHaveCount(0);
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await expect(ember).toBeChecked();
+});
+
+test("landing shortcuts select the requested setup and copy the install command", async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } }));
+  await page.goto("/lab/");
+  await page.getByRole("button", { name: "Copy install", exact: true }).click();
+  expect(await page.evaluate(() => window.__copiedCode)).toBe("npm install @monabbous/lumenmorph");
+  const picker = page.getByRole("group", { name: "Choose your stack", exact: true });
+  for (const [name, code] of [["MUI", "cssVariables: true"], ["Mantine", "Paper.extend"], ["Taiga UI v4+", 'appearance="lumenmorph"'], ["shadcn/ui", "lumen-card.json"]]) {
+    await picker.locator("label").filter({ hasText: name }).click();
+    await expect(picker.getByRole("radio", { name, exact: true })).toBeChecked();
+    await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#integrations");
+    await expect(page.getByRole("group", { name: "UI library", exact: true }).getByRole("radio", { name, exact: true })).toBeChecked();
+    await expect(page.locator("#integration-snippet")).toContainText(code);
+  }
+  await picker.locator("label").filter({ hasText: "Tailwind" }).click();
+  await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#code");
+  await picker.getByRole("radio", { name: "Tailwind", exact: true }).focus();
+  await page.keyboard.press("ArrowLeft");
+  await expect(picker.getByRole("radio", { name: "CSS", exact: true })).toBeChecked();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.locator("#snippet")).toContainText("@monabbous/lumenmorph/tailwind/css");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+});
+
+test("preset highlight keeps Slidebox geometry with Lumenmorph paint and accessible fallbacks", async ({ page }) => {
+  await page.goto("/lab/");
+  await page.locator(".presets label").filter({ hasText: "Lilac" }).click();
+  const read = () => page.locator(".presets").evaluate(group => {
+    const anchored = CSS.supports("anchor-scope", "--slidebox-selection") && CSS.supports("left", "anchor(left)");
+    const target = anchored ? group : group.querySelector("input:checked + span");
+    const style = getComputedStyle(target, "::before");
+    return { image: style.backgroundImage, blur: style.backdropFilter, radius: style.borderRadius, position: style.position, duration: style.transitionDuration, color: style.backgroundColor };
+  });
+  let style = await read();
+  expect(style.image).toContain("radial-gradient");
+  expect(style.blur).toContain("blur(12px)");
+  expect(style.radius).toBe("4px");
+  expect(style.position).toBe("absolute");
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  style = await read();
+  expect(style.duration.split(",").every(duration => parseFloat(duration) < 0.01)).toBe(true);
+  await page.emulateMedia({ forcedColors: "active" });
+  style = await read();
+  expect(style.image).toBe("none");
+  await expect(page.getByRole("radio", { name: "Lilac", exact: true })).toBeChecked();
+});
+
+test("URL remembers setup selections while presets and sliders stay local", async ({ page }) => {
+  await page.goto("/lab/?campaign=demo#code");
+  await page.locator("label:has([data-format=tailwind])").click();
+  await expect(page).toHaveURL(/stack=tailwind.*format=tailwind.*#code$/);
+  await expect(page.locator("#snippet")).toContainText("@apply lumen-glow-size-[460px]");
+  await expect(page.locator("#snippet")).toContainText("B. Direct utilities");
+  await expect(page.locator("#theme-snippet")).toContainText(":root");
+  await expect(page.locator("#theme-snippet")).not.toContainText("material-preset");
+  await page.locator("label:has([data-integration=mantine])").click();
+  await page.locator("label:has([data-framework=vue])").click();
+  const shared = page.url();
+  expect(new URL(shared).searchParams.get("library")).toBe("mantine");
+  expect(new URL(shared).searchParams.get("svg")).toBe("vue");
+  expect(new URL(shared).searchParams.get("campaign")).toBe("demo");
+  await page.locator(".presets label").filter({ hasText: "Lilac" }).click();
+  await page.locator("#glow-size").fill("620");
+  expect(page.url()).toBe(shared);
+  await expect(page.locator("#snippet")).toContainText("lumen-glow-size-[620px]");
+  await page.reload();
+  await expect(page.locator("[data-format=tailwind]")).toBeChecked();
+  await expect(page.locator("[data-integration=mantine]")).toBeChecked();
+  await expect(page.locator("input[data-framework=vue]")).toBeChecked();
+  await expect(page.locator('.stack-options input[value="svg"]')).toBeChecked();
+  await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", "vue");
+  await expect(page.getByRole("radio", { name: "Ember", exact: true })).toBeChecked();
+  await expect(page.locator("#glow-size")).toHaveValue("460");
+});
+
+test("invalid URL choices fall back safely and a stack-only link opens its setup", async ({ page }) => {
+  await page.goto("/lab/?stack=__proto__&format=missing&library=constructor&svg=unknown");
+  await expect(page.locator("[data-format=css]")).toBeChecked();
+  await expect(page.locator("[data-integration=shadcn]")).toBeChecked();
+  await expect(page.locator("input[data-framework=react]")).toBeChecked();
+  await page.goto("/lab/?stack=mui");
+  await expect(page.locator("[data-integration=mui]")).toBeChecked();
+  await expect(page.locator("#integration-snippet")).toContainText("cssVariables: true");
+});
+
+
+test("all group highlights follow presets and custom glow colors", async ({ page }) => {
+  await page.goto("/lab/");
+  const checkColors = async color => {
+    const colors = await page.locator(".material-picker").evaluateAll(groups => groups.flatMap(group => {
+      const anchored = CSS.supports("anchor-scope", "--slidebox-selection") && CSS.supports("left", "anchor(left)");
+      const selected = group.querySelector("input:checked + span");
+      const unselected = group.querySelector("input:not(:checked) + span");
+      return [
+        ...(selected ? [getComputedStyle(anchored ? group : selected, "::before")] : []),
+        ...(unselected ? [getComputedStyle(unselected)] : []),
+      ].map(style => style.getPropertyValue("--lumen-glow-color").trim());
+    }));
+    expect(colors.length).toBeGreaterThan(5);
+    expect(colors.every(value => value === color)).toBe(true);
+  };
+  for (const [name, color] of [["Ember", "#ffaa71"], ["Lagoon", "#00b2b2"], ["Lilac", "#c4a1ff"]]) {
+    await page.locator(".presets label").filter({ hasText: name }).click();
+    await checkColors(color);
+  }
+  await page.locator("#glow-color").fill("#33aa77");
+  await checkColors("#33aa77");
+  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  await checkColors("#ffaa71");
 });

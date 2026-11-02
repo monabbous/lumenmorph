@@ -1,0 +1,106 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "lumenmorph",
+  "homepage": "https://nabous.dev/lab/lumenmorph/",
+  "items": [
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "lumenmorph",
+      "type": "registry:item",
+      "title": "Lumenmorph material",
+      "description": "CSS glass surfaces that inherit your shadcn theme. No JavaScript required.",
+      "dependencies": [
+        "@monabbous/lumenmorph@^0.2.0"
+      ],
+      "css": {
+        "@import \"@monabbous/lumenmorph/css\"": {},
+        "@import \"@monabbous/lumenmorph/tailwind/utilities\"": {},
+        "@layer components": {
+          ".lumenmorph-theme": {
+            "--lumen-bg": "color-mix(in oklab, var(--card, #302028) 75%, transparent)",
+            "--lumen-solid-bg": "var(--card, #302028)",
+            "--lumen-glow-color": "var(--primary, #ffaa71)",
+            "--lumen-border-glow-color": "var(--lumen-glow-color)",
+            "--lumen-border-color": "var(--border, #ffffff30)",
+            "--lumen-border-width": "1px",
+            "--lumen-radius": "var(--radius, 0.25rem)",
+            "--lumen-text-color": "var(--card-foreground, #ffffffb3)",
+            "color": "var(--card-foreground, inherit)"
+          },
+          ".lumenmorph-theme[data-lumen-tone=\"ember\"]": {
+            "--lumen-glow-color": "#ffaa71",
+            "--lumen-border-glow-color": "#ffd4a3"
+          },
+          ".lumenmorph-theme[data-lumen-tone=\"lagoon\"]": {
+            "--lumen-glow-color": "#00b2b2",
+            "--lumen-border-glow-color": "#25ded6"
+          },
+          ".lumenmorph-theme[data-lumen-tone=\"lilac\"]": {
+            "--lumen-glow-color": "#c4a1ff",
+            "--lumen-border-glow-color": "#e4d4ff"
+          }
+        }
+      },
+      "docs": "For shadcn projects with Tailwind v4 color tokens. Add lumenmorph lumenmorph-border lumenmorph-theme to an existing surface. The material owns its background, border, radius and ::before; use --lumen-* variables to customize them. No global theme variables are changed."
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "lumen-card",
+      "type": "registry:ui",
+      "title": "Lumen Card",
+      "description": "A glass surface composed with your existing shadcn Card.",
+      "registryDependencies": [
+        "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json",
+        "card"
+      ],
+      "files": [
+        {
+          "path": "registry/lumen-card.tsx",
+          "type": "registry:ui",
+          "content": "import * as React from \"react\";\nimport { Card } from \"@/components/ui/card\";\nimport { cn } from \"@/lib/utils\";\n\nexport type LumenCardProps = React.ComponentProps<typeof Card> & {\n  tone?: \"theme\" | \"ember\" | \"lagoon\" | \"lilac\";\n};\n\nexport const LumenCard = React.forwardRef<HTMLDivElement, LumenCardProps>(function LumenCard({ className, tone = \"theme\", ...props }, ref) {\n  return (\n    <Card\n      {...props}\n      ref={ref}\n      data-lumen-tone={tone}\n      className={cn(\"lumenmorph lumenmorph-border lumenmorph-theme\", className)}\n    />\n  );\n});\n"
+        }
+      ],
+      "docs": "Use tone=\"theme\" (default), \"ember\", \"lagoon\", or \"lilac\". Existing component props and refs are passed through. Your shadcn component supplies layout and behavior; Lumenmorph supplies its material."
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "lumen-button",
+      "type": "registry:ui",
+      "title": "Lumen Button",
+      "description": "An illuminated shadcn Button that keeps native actions and focus behavior.",
+      "registryDependencies": [
+        "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json",
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/lumen-button.tsx",
+          "type": "registry:ui",
+          "content": "import * as React from \"react\";\nimport { Button } from \"@/components/ui/button\";\nimport { cn } from \"@/lib/utils\";\n\nexport type LumenButtonProps = React.ComponentProps<typeof Button> & {\n  tone?: \"theme\" | \"ember\" | \"lagoon\" | \"lilac\";\n};\n\nexport const LumenButton = React.forwardRef<HTMLButtonElement, LumenButtonProps>(function LumenButton({ className, tone = \"theme\", variant = \"outline\", ...props }, ref) {\n  return (\n    <Button\n      {...props}\n      ref={ref}\n      variant={variant}\n      data-lumen-tone={tone}\n      className={cn(\"lumenmorph lumenmorph-border lumenmorph-theme\", className)}\n    />\n  );\n});\n"
+        }
+      ],
+      "docs": "Use tone=\"theme\" (default), \"ember\", \"lagoon\", or \"lilac\". Existing component props and refs are passed through. Your shadcn component supplies layout and behavior; Lumenmorph supplies its material."
+    },
+    {
+      "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+      "name": "lumen-pointer",
+      "type": "registry:ui",
+      "title": "Lumen Pointer",
+      "description": "Optional shared pointer light with cleanup and reduced-motion support.",
+      "registryDependencies": [
+        "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json"
+      ],
+      "files": [
+        {
+          "path": "registry/lumen-pointer.tsx",
+          "type": "registry:ui",
+          "content": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { trackPointer } from \"@monabbous/lumenmorph\";\n\n/** Mount once in your app layout. Cards and buttons remain usable without it. */\nexport function LumenPointer({ smooth = true }: { smooth?: boolean }) {\n  useEffect(() => {\n    const owner = document.documentElement;\n    const hadMotion = owner.classList.contains(\"lumenmorph-motion\");\n    if (smooth && !hadMotion) owner.classList.add(\"lumenmorph-motion\");\n    const stop = trackPointer(owner);\n    return () => {\n      stop();\n      if (smooth && !hadMotion) owner.classList.remove(\"lumenmorph-motion\");\n    };\n  }, [smooth]);\n  return null;\n}\n"
+        }
+      ],
+      "css": {
+        "@import \"@monabbous/lumenmorph/motion\"": {}
+      },
+      "docs": "Mount <LumenPointer /> once in your app layout, not per card. Do not combine it with another trackPointer() on html. Set smooth={false} to disable its smoothing. Touch retains static light; reduced motion is respected. The component renders no wrapper and is safe to import during SSR."
+    }
+  ]
+}

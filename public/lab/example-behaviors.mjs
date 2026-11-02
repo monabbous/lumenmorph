@@ -4,7 +4,8 @@ export const examples = {
     button.addEventListener("click", () => {
       const saved = button.getAttribute("aria-pressed") !== "true";
       button.setAttribute("aria-pressed", String(saved));
-      button.textContent = saved ? "Thought saved ✓" : "Save this thought ↗";
+      button.querySelector("span").textContent = saved ? "Thought saved" : "Save this thought";
+      button.querySelector("i").className = `fa-solid fa-${saved ? "check" : "arrow-right"}`;
     }, { signal });
   },
   player(demo, signal) {
@@ -13,7 +14,7 @@ export const examples = {
       const playing = demo.toggleAttribute("data-playing");
       button.setAttribute("aria-pressed", String(playing));
       button.setAttribute("aria-label", playing ? "Pause waveform" : "Animate waveform");
-      button.textContent = playing ? "Ⅱ" : "▶";
+      button.querySelector("i").className = `fa-solid fa-${playing ? "pause" : "play"}`;
     }, { signal });
   },
   beam(demo, signal) {
@@ -26,8 +27,8 @@ export const examples = {
   },
   dock(demo, signal) {
     const buttons = [...demo.querySelectorAll("[data-dock]")];
-    for (const button of buttons) button.addEventListener("click", () => {
-      for (const other of buttons) other.setAttribute("aria-pressed", String(other === button));
+    for (const button of buttons) button.addEventListener("change", () => {
+      if (!button.checked) return;
       demo.querySelector(".dock-selection").textContent = button.dataset.dock;
     }, { signal });
   },
@@ -125,7 +126,8 @@ export const examples = {
         item.toggleAttribute("data-complete", index < current);
       });
       demo.querySelector(".steps-status").textContent = messages[current];
-      button.textContent = current === items.length - 1 ? "Start again ↗" : "Next step ↗";
+      button.querySelector("span").textContent = current === items.length - 1 ? "Start again" : "Next step";
+      button.querySelector("i").className = `fa-solid fa-${current === items.length - 1 ? "rotate-left" : "arrow-right"}`;
     }, { signal });
   },
   pricing(demo, signal) {
@@ -148,7 +150,8 @@ export const examples = {
     button.addEventListener("click", () => {
       const following = button.getAttribute("aria-pressed") !== "true";
       button.setAttribute("aria-pressed", String(following));
-      button.textContent = following ? "Following demo profile ✓" : "Follow this demo profile";
+      button.querySelector("span").textContent = following ? "Following demo profile" : "Follow this demo profile";
+      button.querySelector("i").className = `fa-solid fa-${following ? "check" : "user-plus"}`;
     }, { signal });
   },
   checklist(demo, signal) {
@@ -178,7 +181,8 @@ export const examples = {
     button.addEventListener("click", () => {
       const details = button.getAttribute("aria-expanded") !== "true";
       button.setAttribute("aria-expanded", String(details));
-      button.textContent = details ? "Back to the ticket ↗" : "See the details ↗";
+      button.querySelector("span").textContent = details ? "Back to the ticket" : "See the details";
+      button.querySelector("i").className = `fa-solid fa-${details ? "arrow-left" : "arrow-right"}`;
       demo.querySelector("[data-ticket-front]").hidden = details;
       demo.querySelector("[data-ticket-back]").hidden = !details;
     }, { signal });
@@ -186,8 +190,8 @@ export const examples = {
   palette(demo, signal) {
     const colors = { Lagoon: "#70d5c5", Ember: "#ffaa71", Lilac: "#d5b7ed" };
     const buttons = [...demo.querySelectorAll("[data-palette]")];
-    for (const button of buttons) button.addEventListener("click", () => {
-      for (const other of buttons) other.setAttribute("aria-pressed", String(other === button));
+    for (const button of buttons) button.addEventListener("change", () => {
+      if (!button.checked) return;
       demo.style.setProperty("--palette-color", colors[button.dataset.palette]);
       demo.querySelector("[data-palette-name]").textContent = button.dataset.palette;
     }, { signal });

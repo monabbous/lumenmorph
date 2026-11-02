@@ -53,3 +53,6 @@ body { margin: 0; background: #102a31; color: var(--editor-ink); font-family: ui
 .editor-toolbar { gap: 6px; }
 @media (max-width: 850px) { .code-editor { height: 380px; } }
 @media (max-width: 600px) { .code-tabs button { padding-inline: 10px; } .code-tabs button i { margin-right: 4px; } .editor-toolbar { flex-wrap: wrap; padding-right: 8px; } .auto-run { font-size: 9px; } }
+
+@media (prefers-reduced-motion: no-preference) { html:has(.example-studio) { scroll-behavior: smooth; } }
+@media (prefers-reduced-motion: reduce) { html:has(.example-studio) { scroll-behavior: auto; } }

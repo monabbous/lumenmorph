@@ -28,8 +28,8 @@ export function initShowcase() {
   for (const card of cards) { resize.observe(card); visibility.observe(card); }
   root.dataset.enhanced = "";
   const filters = [...root.querySelectorAll("[data-filter]")];
-  for (const button of filters) button.addEventListener("click", () => {
-    for (const other of filters) other.setAttribute("aria-pressed", String(other === button));
+  for (const button of filters) button.addEventListener("change", () => {
+    if (!button.checked) return;
     for (const card of cards) card.hidden = button.dataset.filter !== "all" && card.dataset.category !== button.dataset.filter;
     root.querySelector("#showcase-count").textContent = `${cards.filter(card => !card.hidden).length} experiments`;
   }, { signal });

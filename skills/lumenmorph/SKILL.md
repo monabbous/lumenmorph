@@ -37,6 +37,7 @@ Read the target app's styling setup. Use one of:
 | SCSS mixins for custom selectors | `@monabbous/lumenmorph/scss/mixins` |
 | Less mixins | `@monabbous/lumenmorph/less` |
 | Ready-made Less classes | `@monabbous/lumenmorph/less/classes` |
+| Tailwind v4 native utilities | `@monabbous/lumenmorph/tailwind/css` |
 | Tailwind v3.4 / v4 plugin | `@monabbous/lumenmorph/tailwind` |
 
 Don't import vanilla CSS in addition to a route that emits the same rules. Frameworks are optional; don't install React or Tailwind for a static surface.
@@ -67,9 +68,9 @@ For smoothing, import `@monabbous/lumenmorph/motion` and add `lumenmorph-motion`
 
 ## Use public controls
 
-Public properties start with `--lumen-` and inherit. Use the README's Defaults and controls table for types and defaults. Common controls: `glow-color`, `glow-size`, `glow-opacity`, `bg`, `blur`, `saturation`, `radius`, `border-width`, `border-color`, `border-glow-color`, `border-opacity`, and HTML `text-*` controls.
+Public properties start with `--lumen-` and inherit. Use `docs/controls.md` for types and defaults. Common controls: `glow-color`, `glow-size`, `glow-opacity`, `bg`, `blur`, `saturation`, `radius`, `border-width`, `border-color`, `border-glow-color`, `border-opacity`, and HTML `text-*` controls.
 
-Ember is the default material. The lab also supplies nabous.dev teal and Daylight presets. Neither the website shell nor Slidebox is installed with the core library.
+Ember is the default material. The lab also supplies Lagoon and Lilac presets. Neither the website shell nor Slidebox is installed with the core library.
 
 ## Choose HTML or an optional SVG adapter
 
@@ -83,7 +84,7 @@ Prefer `.lumenmorph-text` on HTML for headings and body copy. Choose `LumenText`
 | Angular 21 | `LumenTextComponent`, `LumenIconComponent` from `/angular`; native `svg[lumenText]` / `svg[lumenIcon]` |
 | Web Components | `defineLumenText()`, `defineLumenIcon()` from `/web-component`; explicit browser registration |
 
-Use the full package prefix for those subpaths. Read the README's SVG text and icon component sections for exact props and examples. React uses string children for text; other adapters use `text`. Icons accept filled SVG path data and a view box, not arbitrary HTML or stroke-only line icons. An unlabeled icon is decorative; provide a label or label the enclosing control.
+Use the full package prefix for those subpaths. Read `docs/svg.md` for exact props and examples. React uses string children for text; other adapters use `text`. Icons accept filled SVG path data and a view box, not arbitrary HTML or stroke-only line icons. An unlabeled icon is decorative; provide a label or label the enclosing control.
 
 React's SVG markup supports SSR and uses stable `useId` references. Vue, Svelte, Angular, and Web Components build their effect after mounting. Don't claim that their glyphs are server-rendered. The client-only adapters render an accessible SVG shell before mounting; use HTML text if it must be visible without hydration. Multiple independent React roots need matching server/client `identifierPrefix` values.
 
@@ -99,3 +100,7 @@ SVG internals need the `.lumenmorph` surface rule. Use a ready-made class styles
 - The lab uses Slidebox controls and optional syntax highlighting. Those are lab dependencies, not core runtime dependencies.
 - Follow `AGENTS.md` for repository changes. Build generated outputs, compile each integration, run types and browser checks, and use Conventional Commits.
 - Installation, repository edits, commits, releases, npm publishing, and deployment require the user's authorization. Reading this skill isn't permission to perform them.
+
+## Focused integration guides
+
+Read `docs/README.md` after the README and open the relevant guide. `docs/shadcn.md` covers the registry; `docs/ui-libraries.md` covers MUI, Mantine, and the CSS-only Taiga UI v4+ appearance. The latter does not use the Angular SVG adapter and does not require Angular 21. `docs/tailwind.md` describes native v4 variable utilities. Preserve library loading, disabled, focus, and component semantics; Mantine Button reserves `::before` and must not receive the border class.

@@ -1,0 +1,71 @@
+/* Generated from src/lumenmorph.css. Opt-in mui material; import after the library styles. */
+@layer components {
+  .lumenmorph-mui {
+    --lumen-bg: color-mix(in srgb, var(--mui-palette-background-paper, #302028) 75%, transparent);
+    --lumen-solid-bg: var(--mui-palette-background-paper, #302028);
+    --lumen-glow-color: var(--mui-palette-primary-main, #ffaa71);
+    --lumen-border-color: var(--mui-palette-divider, #ffffff30);
+    --lumen-border-width: 1px;
+    --lumen-radius: var(--mui-shape-borderRadius, 4px);
+  }
+}
+.lumenmorph-mui.lumenmorph-mui {
+  background-color: var(--lumen-bg, #302028b3);
+  border-radius: var(--lumen-radius, 0.25rem);
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+  backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+}
+
+.lumenmorph-mui.lumenmorph-mui {
+  position: relative;
+  border: var(--lumen-border-width, 1.5px) solid var(--lumen-border-color, #ffffff30);
+}
+
+.lumenmorph-mui.lumenmorph-mui::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--lumen-border-width, 1.5px));
+  border-radius: inherit;
+  padding: var(--lumen-border-width, 1.5px);
+  pointer-events: none;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  .lumenmorph-mui.lumenmorph-mui {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+
+  .lumenmorph-mui.lumenmorph-mui::before {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-border-glow-color, var(--lumen-glow-color, #ffd4a3)) calc(var(--lumen-border-opacity, 0.9) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lumenmorph-mui.lumenmorph-mui {
+    background: var(--lumen-solid-bg, #302028);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .lumenmorph-mui.lumenmorph-mui {
+    background: Canvas;
+    color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .lumenmorph-mui.lumenmorph-mui { border-color: CanvasText; }
+  .lumenmorph-mui.lumenmorph-mui::before { display: none; }
+}
+

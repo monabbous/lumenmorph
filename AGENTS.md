@@ -2,7 +2,7 @@
 
 This is `monabbous/lumenmorph`, packaged as `@monabbous/lumenmorph` by Mohamed Nabous.
 
-- Read `skills/lumenmorph/SKILL.md` for integration decisions and `README.md` for exact APIs and limitations.
+- Read `skills/lumenmorph/SKILL.md` for integration decisions and `docs/README.md` for the relevant API and limitations guides.
 - Keep `src/lumenmorph.css` canonical; regenerate CSS, SCSS, Less, Tailwind rules, and lab assets with `npm run build`.
 - React source is `react/src/index.tsx`; build its JavaScript and declarations rather than editing generated `react/index.mjs` / `react/index.d.ts` alone.
 - Preserve the one-element surface and opt-in border pseudo-element. Don't introduce framework dependencies, DOM scanning, or idle animation loops into the core.

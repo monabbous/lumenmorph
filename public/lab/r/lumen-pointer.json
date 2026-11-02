@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lumen-pointer",
+  "type": "registry:ui",
+  "title": "Lumen Pointer",
+  "description": "Optional shared pointer light with cleanup and reduced-motion support.",
+  "registryDependencies": [
+    "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json"
+  ],
+  "files": [
+    {
+      "path": "registry/lumen-pointer.tsx",
+      "type": "registry:ui",
+      "content": "\"use client\";\n\nimport { useEffect } from \"react\";\nimport { trackPointer } from \"@monabbous/lumenmorph\";\n\n/** Mount once in your app layout. Cards and buttons remain usable without it. */\nexport function LumenPointer({ smooth = true }: { smooth?: boolean }) {\n  useEffect(() => {\n    const owner = document.documentElement;\n    const hadMotion = owner.classList.contains(\"lumenmorph-motion\");\n    if (smooth && !hadMotion) owner.classList.add(\"lumenmorph-motion\");\n    const stop = trackPointer(owner);\n    return () => {\n      stop();\n      if (smooth && !hadMotion) owner.classList.remove(\"lumenmorph-motion\");\n    };\n  }, [smooth]);\n  return null;\n}\n"
+    }
+  ],
+  "css": {
+    "@import \"@monabbous/lumenmorph/motion\"": {}
+  },
+  "docs": "Mount <LumenPointer /> once in your app layout, not per card. Do not combine it with another trackPointer() on html. Set smooth={false} to disable its smoothing. Touch retains static light; reduced motion is respected. The component renders no wrapper and is safe to import during SSR."
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lumen-button",
+  "type": "registry:ui",
+  "title": "Lumen Button",
+  "description": "An illuminated shadcn Button that keeps native actions and focus behavior.",
+  "registryDependencies": [
+    "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json",
+    "button"
+  ],
+  "files": [
+    {
+      "path": "registry/lumen-button.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport { Button } from \"@/components/ui/button\";\nimport { cn } from \"@/lib/utils\";\n\nexport type LumenButtonProps = React.ComponentProps<typeof Button> & {\n  tone?: \"theme\" | \"ember\" | \"lagoon\" | \"lilac\";\n};\n\nexport const LumenButton = React.forwardRef<HTMLButtonElement, LumenButtonProps>(function LumenButton({ className, tone = \"theme\", variant = \"outline\", ...props }, ref) {\n  return (\n    <Button\n      {...props}\n      ref={ref}\n      variant={variant}\n      data-lumen-tone={tone}\n      className={cn(\"lumenmorph lumenmorph-border lumenmorph-theme\", className)}\n    />\n  );\n});\n"
+    }
+  ],
+  "docs": "Use tone=\"theme\" (default), \"ember\", \"lagoon\", or \"lilac\". Existing component props and refs are passed through. Your shadcn component supplies layout and behavior; Lumenmorph supplies its material."
+}

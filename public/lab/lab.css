@@ -80,8 +80,7 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .controls-heading { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 8px; }
 .lm-lab .controls h2 { font-size: 16px; letter-spacing: -.04em; margin: 0; }
 .lm-lab .controls-heading button { font-size: 10px; padding: 4px 8px; }
-.lm-lab .presets { display: flex; gap: 4px; margin-bottom: 20px; }
-.lm-lab .presets button, .lm-lab .code-tabs button { font-size: 10px; padding: 7px 9px; }
+.lm-lab .preset-picker legend { border: 0; padding-top: 0; text-transform: none; letter-spacing: 0; margin-bottom: 8px; }
 .lm-lab button[aria-pressed=true] { border-color: var(--lm-accent); color: var(--lm-accent); }
 .lm-lab fieldset { margin: 0 0 22px; padding: 0; border: 0; min-width: 0; }
 .lm-lab legend { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--lm-muted); margin-bottom: 16px; width: 100%; padding-top: 14px; border-top: 1px solid #467b9666; }
@@ -106,8 +105,7 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .code-frame { position: relative; min-width: 0; }
 .lm-lab .code-frame pre { padding-right: 74px; }
 .lm-lab .copy-code { position: absolute; top: 10px; right: 10px; min-height: 32px; min-width: 32px; padding: 5px 8px; font-size: 12px; --lumen-bg: #063c59ee; --lumen-blur: 4px; --lumen-radius: 4px; }
-.lm-lab:not([data-hosted]) .copy-code i { display: none; }
-.lm-lab[data-hosted] .copy-fallback { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.lm-lab .copy-fallback { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .lm-lab .hljs-keyword, .lm-lab .hljs-selector-tag, .lm-lab .hljs-name { color: #ffb77b; }
 .lm-lab .hljs-string, .lm-lab .hljs-attr { color: #8de0cf; }
 .lm-lab .hljs-number, .lm-lab .hljs-literal { color: #edb2e9; }
@@ -118,7 +116,10 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .code-heading .eyebrow { margin-bottom: 8px; }
 .lm-lab .code-heading h2 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
 .lm-lab #copy { white-space: nowrap; }
-.lm-lab .code-tabs { display: flex; gap: 6px; padding: 20px 0 12px; flex-wrap: wrap; }
+.lm-lab .code-tabs { min-width: 0; margin: 20px 0 12px; }
+.lm-lab .format-options { min-width: 650px; }
+.lm-lab .library-options { min-width: 440px; }
+.lm-lab .adapter-options { min-width: 560px; }
 .lm-lab pre { background: #082b4059; border: 1px solid #467b9680; border-radius: 4px; padding: 20px; font: 11px/1.8 ui-monospace, monospace; overflow: auto; max-height: 420px; margin: 0; color: #c2e0e4; tab-size: 2; }
 .lm-lab #copy-status { min-height: 1.5em; font-size: 11px; color: var(--lm-muted); margin: 5px 0; }
 .lm-lab .notes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; padding: 26px 0 35px; }
@@ -127,8 +128,6 @@ body:not(:has([data-nabous-shell])) {
 
 .lm-lab[data-hosted] { --lumen-x: var(--mouse-x, 50vw); --lumen-y: var(--mouse-y, 35vh); }
 .lm-lab[data-tracking=off] { --lumen-x: 50vw; --lumen-y: 35vh; }
-.lm-lab[data-theme=daylight] .specimen { color: #153145; }
-.lm-lab[data-theme=daylight] .specimen :is(p, .chip) { color: #34586a; }
 
 @media (max-width: 1000px) {
   .lm-lab .lm-workspace { grid-template-columns: minmax(0, 1fr) 270px; }
@@ -142,7 +141,7 @@ body:not(:has([data-nabous-shell])) {
   .lm-lab { padding: 0 20px; }
   .lm-lab .lm-intro { padding: 28px 0 24px; }
   .lm-lab .intro-bottom { align-items: flex-start; }
-  .lm-lab .intro-link { display: none; }
+  .lm-lab .intro-bottom { flex-direction: column; gap: 16px; }
   .lm-lab .lm-workspace { grid-template-columns: 1fr; }
   .lm-lab .stage { position: static; }
   .lm-lab .controls form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
@@ -174,3 +173,41 @@ body:not(:has([data-nabous-shell])) {
   .lm-lab .collection-thumbnail img { height: auto; min-height: 0; }
   .lm-lab .collection-copy { padding: 24px; }
 }
+
+/* Adoption paths stay visible on narrow screens; controls keep the site's 4px radius. */
+.lm-lab :is(#code, #integrations, #svg-heading) { scroll-margin-top: 100px; }
+.lm-lab .intro-links { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+.lm-lab .start-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 26px; padding: 16px 20px; border: 1px solid #ffaa7140; border-radius: 4px; background: linear-gradient(100deg, #ffaa7110, #00b2b208); }
+.lm-lab .start-strip > div { flex: 1; min-width: 0; }
+.lm-lab .start-strip .eyebrow { margin-bottom: 4px; font-size: 9px; }
+.lm-lab .start-strip code { font-size: 12px; overflow-wrap: anywhere; }
+.lm-lab #copy-install { --lumen-bg: #ffaa7118; --lumen-border-glow-color: #ffaa71; --lumen-radius: 4px; --lumen-blur: 0px; white-space: nowrap; }
+.lm-lab .stack-picker { margin: 20px 0 0; min-width: 0; }
+.lm-lab .stack-picker legend { padding: 0; border: 0; margin-bottom: 8px; text-transform: none; letter-spacing: 0; font-size: 11px; }
+.lm-lab .stack-scroll { overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; scrollbar-color: #5289a6 transparent; }
+.lm-lab .stack-options { min-width: 630px; }
+.lm-lab .stack-setup { display: inline-flex; align-items: center; min-height: 36px; margin-top: 8px; }
+.lm-lab .playground-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 6px 0 20px; }
+.lm-lab .playground-heading .eyebrow { margin-bottom: 5px; }
+.lm-lab .playground-heading h2 { font-size: 24px; letter-spacing: -.04em; margin: 0; }
+.lm-lab .playground-heading > p { font-size: 11px; color: var(--lm-muted); margin: 0; }
+@media (max-width: 700px) {
+  .lm-lab .start-strip { padding: 14px; gap: 12px; }
+  .lm-lab .start-strip > div { flex-basis: 100%; }
+  .lm-lab .playground-heading { flex-direction: column; align-items: start; gap: 8px; }
+}
+@media (forced-colors: active) {
+  .lm-lab .start-strip { border-color: CanvasText; }
+}
+
+.lm-lab .intro-link, .lm-lab #copy-install, .lm-lab .collection-copy > a { display: inline-flex; align-items: center; gap: 8px; }
+.lm-lab .material-icon i { font-size: 64px; }
+
+/* Native anchor scrolling, including the setup links in the hosted lab. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.lm-lab), .lm-lab .stack-scroll { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has(.lm-lab), .lm-lab .stack-scroll { scroll-behavior: auto; }
+}
+.lm-lab #code { scroll-margin-top: 24px; }

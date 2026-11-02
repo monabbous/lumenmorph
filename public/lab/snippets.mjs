@@ -1,11 +1,15 @@
 const play = "M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z";
 const block = (title, language, code) => ({ title, language, code });
 // Keep CDN examples pinned to the package release.
-const cdn = "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.1.3";
+const cdn = "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.0";
 
 export function installationSnippets(format, { smoothing }) {
   if (format === "cdn") return [block("index.html — inside <head>", "xml", `<link rel="stylesheet" href="${cdn}/dist/css/lumenmorph.min.css">${smoothing ? `\n<link rel="stylesheet" href="${cdn}/dist/css/motion.min.css">` : ""}`)];
   return [block("Terminal — in your project folder", "bash", "npm install @monabbous/lumenmorph")];
+}
+
+export function globalDefaultsSnippet(values) {
+  return block("Global defaults", "css", `:root {\n${Object.entries(values).map(([key, value]) => `  --lumen-${key}: ${value};`).join("\n")}\n}`);
 }
 
 export function foundationSnippets(format, values, { tracking, smoothing }) {
@@ -19,9 +23,15 @@ export function foundationSnippets(format, values, { tracking, smoothing }) {
     css: block("styles.css", "css", `@import "@monabbous/lumenmorph/css";\n${motion}\n${material}`),
     scss: block("styles.scss", "scss", `@use "@monabbous/lumenmorph/scss";\n${smoothing ? '@use "@monabbous/lumenmorph/scss/motion";\n' : ""}\n${material}`),
     less: block("styles.less", "less", `@import "@monabbous/lumenmorph/less/classes";\n${smoothing ? '@import "@monabbous/lumenmorph/less/motion";\n' : ""}\n${material}`),
-    tailwind: block("styles.css (Tailwind v4)", "css", `@import "tailwindcss";\n${motion}@plugin "@monabbous/lumenmorph/tailwind";\n/* Include the internal surface rule for optional SVG components too. */\n@source inline("lumenmorph lumenmorph-border lumenmorph-text");\n\n${material}`),
   };
-  const blocks = [styles[format], block("HTML", "xml", html)];
+  const utilityNames = { "border-glow-color": "border-glow" };
+  const utilities = Object.entries(values).map(([key, value]) => `lumen-${utilityNames[key] ?? key}-[${String(value).replaceAll(" ", "_")}]`);
+  const blocks = format === "tailwind" ? [
+    block("Shared setup — styles.css (Tailwind v4)", "css", `@import "tailwindcss";\n${motion}@import "@monabbous/lumenmorph/tailwind/css";\n/* Include the internal surface rule for optional SVG components too. */\n@source inline("lumenmorph lumenmorph-border lumenmorph-text");\n\n/* Use :root defaults or one of the local options below. */`),
+    block("A. Reusable defaults — @apply", "css", `@layer components {\n  .material {\n    @apply ${utilities.join("\n      ")};\n  }\n}`),
+    block("A. HTML", "xml", html),
+    block("B. Direct utilities", "xml", `${note}<article class="lumenmorph lumenmorph-border\n  ${utilities.join("\n  ")}">\n  <h2 class="lumenmorph-text">Glass &amp; light</h2>\n  Your content\n</article>`),
+  ] : [styles[format], block("HTML", "xml", html)];
   if (tracking) {
     if (format === "cdn") blocks.push(block("index.html — before </body> (optional pointer light)", "xml", `<script type="module">\n  import { trackPointer } from "${cdn}/js/pointer.mjs";\n  const stop = trackPointer();\n  // Call stop() if you remove the effect.\n</script>`));
     else blocks.push(block("pointer.js (browser entry, once per page)", "javascript", `import { trackPointer } from "@monabbous/lumenmorph";\n\nconst stop = trackPointer();\n// Call stop() on unmount. In SSR apps, initialize inside a browser effect.`));

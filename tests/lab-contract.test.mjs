@@ -12,7 +12,7 @@ test("lab supplies content and relative assets, leaving site chrome and fonts to
     assert.ok(match[1].startsWith("./"), `Asset must be relative: ${match[1]}`);
   }
   assert.match(html, /class="slidebox" type="checkbox" role="switch"/);
-  assert.match(html, /data-preset="ember" aria-pressed="true"/);
+  assert.match(html, /data-preset="ember" checked/);
 });
 
 test("article and lab listing share the recorded 16:9 cover, with a static social fallback", async () => {

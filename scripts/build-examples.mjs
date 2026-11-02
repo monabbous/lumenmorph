@@ -13,7 +13,26 @@ const source = await read("examples/index.html");
 const allCss = await read("showcase.css");
 const runtime = await build({ entryPoints: [new URL("../lab/example-runtime.mjs", import.meta.url).pathname], bundle: true, write: false, format: "iife", globalName: "LumenExample", minify: true });
 const runtimeJs = runtime.outputFiles[0].text;
-const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css"].map(read))).join("\n");
+// Embed the solid font for opaque sandbox previews and offline HTML exports.
+// Keep only the icon rules used by the examples, including their interactive states.
+const faRoot = new URL("../node_modules/@fortawesome/fontawesome-free/", import.meta.url);
+const iconRules = new Map();
+postcss.parse(await readFile(new URL("css/fontawesome.css", faRoot), "utf8")).walkRules(rule => {
+  const content = rule.nodes.find(node => node.prop === "content");
+  if (content) for (const selector of rule.selectors) iconRules.set(selector, content.value);
+});
+const iconNames = new Set([...source.matchAll(/fa-solid fa-([\w-]+)/g)].map(match => match[1]));
+for (const name of ["pause", "check", "rotate-left", "arrow-left"]) iconNames.add(name);
+const solidFont = await readFile(new URL("webfonts/fa-solid-900.woff2", faRoot));
+const iconCss = `/* Font Awesome Free 6.5.1 — fontawesome.com/license/free (Font: SIL OFL 1.1, CSS: MIT) */
+@font-face { font-family: 'Font Awesome 6 Free'; font-style: normal; font-weight: 900; font-display: block; src: url(data:font/woff2;base64,${solidFont.toString("base64")}) format('woff2'); }
+.fa-solid { font-family: 'Font Awesome 6 Free'; font-weight: 900; font-style: normal; font-variant: normal; display: inline-block; line-height: 1; text-rendering: auto; -webkit-font-smoothing: antialiased; }
+${[...iconNames].map(name => {
+  const content = iconRules.get(`.fa-${name}::before`);
+  if (!content) throw new Error(`Unknown icon: ${name}`);
+  return `.fa-${name}::before { content: ${content}; }`;
+}).join("\n")}`;
+const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css", "assets/slidebox-group.css", "material-picker.css", "assets/preset-highlight.css"].map(read))).join("\n") + "\n" + iconCss;
 await writeFile(new URL("editor-runtime.json", root), JSON.stringify({ css: runtimeCss, js: runtimeJs }) + "\n");
 // Keep icons local so the gallery and editor do not depend on a CDN.
 for (const file of ["css/all.min.css", "webfonts/fa-solid-900.woff2", "webfonts/fa-brands-400.woff2", "webfonts/fa-regular-400.woff2", "LICENSE.txt"]) {

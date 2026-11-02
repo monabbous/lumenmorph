@@ -61,7 +61,7 @@ test("Less ready-made classes match CSS for surfaces and HTML text", async () =>
 });
 
 test("implementation blocks separate foundations from all SVG adapters", () => {
-  for (const format of ["css", "scss", "less", "tailwind"]) {
+  for (const format of ["css", "scss", "less"]) {
     const blocks = foundationSnippets(format, { "glow-size": "460px" }, { tracking: true, smoothing: true });
     assert.equal(blocks.length, 3);
     assert.match(blocks[0].code, /--lumen-glow-size: 460px/);
@@ -79,7 +79,7 @@ test("implementation blocks separate foundations from all SVG adapters", () => {
 test("CDN snippets use minified CSS and browser-resolvable imports with optional motion", () => {
   assert.match(installationSnippets("css", {})[0].code, /npm install @monabbous\/lumenmorph/);
   const install = installationSnippets("cdn", { smoothing: true })[0].code;
-  assert.match(install, /@0\.1\.3\/dist\/css\/lumenmorph\.min\.css/);
+  assert.match(install, /@0\.2\.0\/dist\/css\/lumenmorph\.min\.css/);
   assert.match(install, /motion\.min\.css/);
   assert.doesNotMatch(installationSnippets("cdn", { smoothing: false })[0].code, /motion/);
   const blocks = foundationSnippets("cdn", { "glow-color": "#ffaa71" }, { tracking: true, smoothing: true });
@@ -87,7 +87,7 @@ test("CDN snippets use minified CSS and browser-resolvable imports with optional
   assert.doesNotMatch(blocks[0].code, /@import/);
   assert.match(blocks[1].code, /lumenmorph-motion/);
   assert.match(blocks[2].code, /<script type="module">/);
-  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.1\.3\/js\/pointer\.mjs/);
+  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.0\/js\/pointer\.mjs/);
   assert.equal(foundationSnippets("cdn", {}, { tracking: false, smoothing: false }).length, 2);
 });
 
@@ -163,4 +163,50 @@ test("motion is optional, inherited, and only transitions its coordinate owner",
     assert.equal(declarations(output, ".lumenmorph-motion", "transition").length, 2);
   }
   assert.doesNotMatch(css, /@property|transition:/);
+});
+
+test("native Tailwind v4 utilities resolve theme colors, presets, arbitrary controls, and variants", async () => {
+  const compiler = await compile('@import "tailwindcss-v4"; @import "./tailwind/lumenmorph.css";', { base: new URL("..", import.meta.url).pathname, onDependency() {} });
+  const output = compiler.build(["lumenmorph", "lumenmorph-border", "lumenmorph-text", "lumen-glow-color-lilac", "hover:lumen-glow-color-teal-400", "lumen-glow-size-[480px]", "lumen-glow-opacity-35", "lumen-border-opacity-[0.7]", "md:lumen-radius-[4px]", "lumen-border-width-1.5"]);
+  assert.match(output, /--lumen-color-lilac: #c4a1ff/);
+  assert.match(output, /--lumen-glow-color: var\(--lumen-color-lilac\)/);
+  assert.match(output, /--lumen-glow-color: var\(--color-teal-400\)/);
+  assert.match(output, /--lumen-glow-size: 480px/);
+  assert.match(output, /--lumen-glow-opacity: calc\(35 \/ 100\)/);
+  assert.match(output, /--lumen-border-opacity: (?:0)?\.7/);
+  assert.match(output, /mask-composite: exclude/);
+  assert.match(output, /forced-colors: active/);
+  assert.match(output, /prefers-reduced-transparency: reduce/);
+});
+
+test("UI themes reuse canonical paint and accessibility without taking over focus or Mantine loading", async () => {
+  for (const [name, surface, border] of [
+    ["mui", ".lumenmorph-mui.lumenmorph-mui", ".lumenmorph-mui.lumenmorph-mui"],
+    ["mantine", ".lumenmorph-mantine.lumenmorph-mantine", ".lumenmorph-mantine-border.lumenmorph-mantine-border"],
+    ["taiga-ui", '[tuiAppearance][data-appearance="lumenmorph"]', '[tuiAppearance][data-appearance="lumenmorph"]'],
+  ]) {
+    const theme = await readFile(new URL(`../dist/css/${name}.css`, import.meta.url), "utf8");
+    assert.deepEqual(declarations(theme, surface, "background-image"), declarations(css, ".lumenmorph", "background-image"));
+    assert.deepEqual(declarations(theme, border + "::before", "background-image"), declarations(css, ".lumenmorph-border::before", "background-image"));
+    assert.match(theme, /forced-colors: active/);
+    assert.match(theme, /prefers-reduced-transparency: reduce/);
+    assert.doesNotMatch(theme, /outline:|opacity:|transition:|!important/);
+    if (name === "mantine") assert.deepEqual(declarations(theme, surface + "::before", "content"), []);
+  }
+});
+
+test("Tailwind lab exports compile both @apply defaults and direct utilities", async () => {
+  const values = { "glow-color": "#ffaa71", "border-glow-color": "#ffd4a3", "glow-size": "460px", "glow-opacity": "0.3", "border-opacity": "0.9", blur: "32px", saturation: "1.6", radius: "4px", "border-width": "1.5px", bg: "#302028b3" };
+  const blocks = foundationSnippets("tailwind", values, { tracking: true, smoothing: true });
+  const setup = blocks[0].code.replace('"tailwindcss"', '"tailwindcss-v4"').replace('"@monabbous/lumenmorph/motion"', '"./dist/css/motion.css"').replace('"@monabbous/lumenmorph/tailwind/css"', '"./tailwind/lumenmorph.css"');
+  const applied = blocks.find(block => block.code.includes("@apply")).code;
+  const direct = blocks.find(block => block.title.startsWith("B.")).code;
+  const compiler = await compile(setup + "\n" + applied, { base: new URL("..", import.meta.url).pathname, onDependency() {} });
+  const classes = [...direct.matchAll(/class="([^"]+)"/g)].flatMap(match => match[1].split(/\s+/));
+  const output = compiler.build(classes);
+  for (const [key, value] of Object.entries(values)) {
+    assert.ok(declarations(output, ".material", `--lumen-${key}`).includes(value), `@apply should set ${key}`);
+    assert.ok(declarations(output, `.lumen-${key === "border-glow-color" ? "border-glow" : key}-\\[${value.replaceAll("#", "\\#").replaceAll(".", "\\.")}\\]`, `--lumen-${key}`).includes(value), `direct utility should set ${key}`);
+  }
+  assert.match(blocks.at(-1).code, /trackPointer/);
 });

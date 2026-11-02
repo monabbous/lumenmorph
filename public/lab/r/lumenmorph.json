@@ -1,0 +1,40 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lumenmorph",
+  "type": "registry:item",
+  "title": "Lumenmorph material",
+  "description": "CSS glass surfaces that inherit your shadcn theme. No JavaScript required.",
+  "dependencies": [
+    "@monabbous/lumenmorph@^0.2.0"
+  ],
+  "css": {
+    "@import \"@monabbous/lumenmorph/css\"": {},
+    "@import \"@monabbous/lumenmorph/tailwind/utilities\"": {},
+    "@layer components": {
+      ".lumenmorph-theme": {
+        "--lumen-bg": "color-mix(in oklab, var(--card, #302028) 75%, transparent)",
+        "--lumen-solid-bg": "var(--card, #302028)",
+        "--lumen-glow-color": "var(--primary, #ffaa71)",
+        "--lumen-border-glow-color": "var(--lumen-glow-color)",
+        "--lumen-border-color": "var(--border, #ffffff30)",
+        "--lumen-border-width": "1px",
+        "--lumen-radius": "var(--radius, 0.25rem)",
+        "--lumen-text-color": "var(--card-foreground, #ffffffb3)",
+        "color": "var(--card-foreground, inherit)"
+      },
+      ".lumenmorph-theme[data-lumen-tone=\"ember\"]": {
+        "--lumen-glow-color": "#ffaa71",
+        "--lumen-border-glow-color": "#ffd4a3"
+      },
+      ".lumenmorph-theme[data-lumen-tone=\"lagoon\"]": {
+        "--lumen-glow-color": "#00b2b2",
+        "--lumen-border-glow-color": "#25ded6"
+      },
+      ".lumenmorph-theme[data-lumen-tone=\"lilac\"]": {
+        "--lumen-glow-color": "#c4a1ff",
+        "--lumen-border-glow-color": "#e4d4ff"
+      }
+    }
+  },
+  "docs": "For shadcn projects with Tailwind v4 color tokens. Add lumenmorph lumenmorph-border lumenmorph-theme to an existing surface. The material owns its background, border, radius and ::before; use --lumen-* variables to customize them. No global theme variables are changed."
+}

@@ -21,7 +21,7 @@ test("masonry keeps every card in bounds and reflows category filters", async ({
   };
   await check();
   for (const [filter, count] of [["surface", 6], ["type", 3], ["control", 9], ["composition", 6], ["all", 24]]) {
-    await page.locator(`[data-filter=${filter}]`).click();
+    await page.locator(`label:has([data-filter=${filter}])`).click();
     await expect(page.locator(".example:visible")).toHaveCount(count);
     await expect(page.locator("#showcase-count")).toHaveText(`${count} experiments`);
     await check();
@@ -40,7 +40,7 @@ test("interactive examples update native state and recover dismissed content", a
   await expect(page.locator("[data-save]")).toHaveAttribute("aria-pressed", "true");
   await page.locator("[data-play]").click();
   await expect(page.locator(".demo-player")).toHaveAttribute("data-playing", "");
-  await page.getByRole("button", { name: "Canvas", exact: true }).click();
+  await page.locator("label:has([data-dock=\"A new canvas\"])").click();
   await expect(page.locator(".dock-selection")).toHaveText("A new canvas");
   await page.locator("[data-warmth]").fill("16");
   const coldColor = await page.locator(".climate-value").evaluate(el => getComputedStyle(el).color);
@@ -71,7 +71,7 @@ test("interactive examples update native state and recover dismissed content", a
   await expect.poll(() => page.locator(".weather-sky").evaluate(el => getComputedStyle(el, "::after").opacity)).toBe("1");
   await page.getByRole("button", { name: "Switch to day", exact: true }).click();
   await expect.poll(() => page.locator(".weather-sky").evaluate(el => getComputedStyle(el, "::after").opacity)).toBe("0");
-  await page.getByRole("radio", { name: "Smoke", exact: true }).check();
+  await page.locator("label:has([name=marble-finish][value=smoke])").click();
   await expect(page.locator(".demo-marbles")).toHaveAttribute("data-finish", "smoke");
   await page.locator("[data-neon]").click();
   await expect(page.locator(".demo-neon")).toHaveAttribute("data-off", "");

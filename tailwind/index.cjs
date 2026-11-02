@@ -24,9 +24,9 @@ module.exports = plugin(function ({ addUtilities, matchUtilities, theme }) {
       return typeof value === "object" && value !== null ? Object.entries(flatten(value, name)) : [[name, value]];
     }));
   }
-  const colors = flatten(theme("colors"));
+  const colors = { ember: "#ffaa71", lagoon: "#00b2b2", lilac: "#c4a1ff", ...flatten(theme("colors")) };
   for (const [name, property] of Object.entries({
-    "glow": "--lumen-glow-color", "bg": "--lumen-bg", "border-color": "--lumen-border-color",
+    "glow": "--lumen-glow-color", "glow-color": "--lumen-glow-color", "solid-bg": "--lumen-solid-bg", "bg": "--lumen-bg", "border-color": "--lumen-border-color",
     "border-glow": "--lumen-border-glow-color", "text-color": "--lumen-text-color",
   })) {
     matchUtilities({ [`lumen-${name}`]: value => ({ [property]: value }) }, { values: colors, type: "color" });

@@ -1,0 +1,36 @@
+.lm-lab .material-picker { display: grid; width: 100%; --slidebox-off: #e8f6fa; --slidebox-border: #5289a6; --slidebox-size: 40px; --slidebox-spacing: .1; --slidebox-radius: 4px; --slidebox-track: #063c5940; --slidebox-selected-text: #f5fbff; }
+.lm-lab .material-picker > label:not(.check) { display: grid; justify-content: stretch; align-items: stretch; gap: 0; margin: 0; font-size: 11px; }
+.lm-lab .material-picker > label > span { width: 100%; padding: 0 6px; text-align: center; line-height: 1.2; }
+.lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before {
+  --lumen-bg: color-mix(in srgb, var(--lm-accent, #ffaa71) 18%, #102a3166);
+  --lumen-solid-bg: #203c46;
+  --lumen-glow-color: var(--lm-accent, #ffaa71);
+  --lumen-glow-opacity: .55;
+  --lumen-glow-size: 180px;
+  --lumen-radius: 4px;
+  --lumen-blur: 12px;
+  --lumen-saturation: 1.4;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lm-accent, #ffaa71) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lm-accent, #ffaa71) 12%, transparent);
+}
+@media (forced-colors: active) {
+  .lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before { box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lm-lab .material-picker { --slidebox-duration: .01ms; }
+}
+
+.lm-lab .material-picker > label > input:not(:checked) + span {
+  --lumen-bg: color-mix(in srgb, var(--lm-accent, #ffaa71) 2.5%, transparent);
+  --lumen-solid-bg: #1c3540;
+  --lumen-glow-color: var(--lm-accent, #ffaa71);
+  --lumen-glow-opacity: .045;
+  --lumen-glow-size: 160px;
+  --lumen-radius: 4px;
+  --lumen-blur: 2px;
+  --lumen-saturation: 1.1;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lm-accent, #ffaa71) 7%, transparent);
+}
+@media (forced-colors: active) {
+  .lm-lab .material-picker > label > input:not(:checked) + span { box-shadow: none; }
+}
+

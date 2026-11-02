@@ -1,0 +1,37 @@
+/* Generated from the canonical Lumenmorph surface. Slidebox owns indicator geometry and motion. */
+@media (forced-colors: none) {
+
+.lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span {
+  background-color: var(--lumen-bg, #302028b3);
+  border-radius: var(--lumen-radius, 0.25rem);
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+  backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  .lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span {
+    background: var(--lumen-solid-bg, #302028);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span {
+    background: Canvas;
+    color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+}

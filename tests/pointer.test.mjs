@@ -21,7 +21,7 @@ function fixture() {
     setProperty(key, value, priority = "") { writes.push(key); values.set(key, value); priorities.set(key, priority); },
     removeProperty: key => values.delete(key),
   };
-  target.ownerDocument = Object.assign(new EventTarget(), { defaultView: view });
+  target.ownerDocument = Object.assign(new EventTarget(), { defaultView: view, documentElement: new EventTarget() });
   target.getBoundingClientRect = () => ({ left: 100, top: 50 });
   target.clientLeft = 1;
   target.clientTop = 1;
@@ -77,7 +77,7 @@ test("pointer exit restores the static light and cancels queued writes", () => {
   const f = fixture();
   const stop = trackPointer(f.target);
   f.move(10, 20);
-  f.target.ownerDocument.dispatchEvent(new Event("pointerleave"));
+  f.target.ownerDocument.documentElement.dispatchEvent(new Event("pointerleave"));
   f.tick(); assert.equal(f.values.size, 0);
   stop();
 });

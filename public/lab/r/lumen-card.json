@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "lumen-card",
+  "type": "registry:ui",
+  "title": "Lumen Card",
+  "description": "A glass surface composed with your existing shadcn Card.",
+  "registryDependencies": [
+    "https://nabous.dev/lab/lumenmorph/r/lumenmorph.json",
+    "card"
+  ],
+  "files": [
+    {
+      "path": "registry/lumen-card.tsx",
+      "type": "registry:ui",
+      "content": "import * as React from \"react\";\nimport { Card } from \"@/components/ui/card\";\nimport { cn } from \"@/lib/utils\";\n\nexport type LumenCardProps = React.ComponentProps<typeof Card> & {\n  tone?: \"theme\" | \"ember\" | \"lagoon\" | \"lilac\";\n};\n\nexport const LumenCard = React.forwardRef<HTMLDivElement, LumenCardProps>(function LumenCard({ className, tone = \"theme\", ...props }, ref) {\n  return (\n    <Card\n      {...props}\n      ref={ref}\n      data-lumen-tone={tone}\n      className={cn(\"lumenmorph lumenmorph-border lumenmorph-theme\", className)}\n    />\n  );\n});\n"
+    }
+  ],
+  "docs": "Use tone=\"theme\" (default), \"ember\", \"lagoon\", or \"lilac\". Existing component props and refs are passed through. Your shadcn component supplies layout and behavior; Lumenmorph supplies its material."
+}

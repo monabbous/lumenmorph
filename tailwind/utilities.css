@@ -1,0 +1,69 @@
+/* Functional utilities write inherited controls; surfaces keep defaults as fallbacks. */
+@theme {
+  --lumen-color-ember: #ffaa71;
+  --lumen-color-lagoon: #00b2b2;
+  --lumen-color-lilac: #c4a1ff;
+}
+
+@utility lumen-glow-color-* {
+  --lumen-glow-color: --value(--lumen-color-*, --color-*, [color]);
+}
+@utility lumen-glow-* {
+  --lumen-glow-color: --value(--lumen-color-*, --color-*, [color]);
+}
+@utility lumen-bg-* {
+  --lumen-bg: --value(--color-*, [color]);
+}
+@utility lumen-solid-bg-* {
+  --lumen-solid-bg: --value(--color-*, [color]);
+}
+@utility lumen-border-color-* {
+  --lumen-border-color: --value(--color-*, [color]);
+}
+@utility lumen-border-glow-* {
+  --lumen-border-glow-color: --value(--lumen-color-*, --color-*, [color]);
+}
+@utility lumen-text-color-* {
+  --lumen-text-color: --value(--color-*, [color]);
+}
+@utility lumen-glow-size-* {
+  --lumen-glow-size: --spacing(--value(number));
+  --lumen-glow-size: --value([length]);
+}
+@utility lumen-text-glow-size-* {
+  --lumen-text-glow-size: --spacing(--value(number));
+  --lumen-text-glow-size: --value([length]);
+}
+@utility lumen-glow-opacity-* {
+  --lumen-glow-opacity: calc(--value(number) / 100);
+  --lumen-glow-opacity: --value([number]);
+}
+@utility lumen-border-opacity-* {
+  --lumen-border-opacity: calc(--value(number) / 100);
+  --lumen-border-opacity: --value([number]);
+}
+@utility lumen-text-glow-opacity-* {
+  --lumen-text-glow-opacity: calc(--value(number) / 100);
+  --lumen-text-glow-opacity: --value([number]);
+}
+@utility lumen-blur-* {
+  --lumen-blur: --value(--blur-*, [length]);
+}
+@utility lumen-blur-none { --lumen-blur: 0px; }
+@utility lumen-radius-* {
+  --lumen-radius: --value(--radius-*, [length]);
+}
+@utility lumen-radius-none { --lumen-radius: 0px; }
+@utility lumen-radius-full { --lumen-radius: 9999px; }
+@utility lumen-border-width-* {
+  --lumen-border-width: calc(--value(number) * 1px);
+  --lumen-border-width: --value([length]);
+}
+@utility lumen-text-stroke-width-* {
+  --lumen-text-stroke-width: calc(--value(number) * 1px);
+  --lumen-text-stroke-width: --value([length]);
+}
+@utility lumen-saturation-* {
+  --lumen-saturation: calc(--value(number) / 100);
+  --lumen-saturation: --value([number]);
+}

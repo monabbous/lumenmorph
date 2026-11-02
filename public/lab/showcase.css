@@ -25,11 +25,11 @@
 .lm-lab .showcase-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 30px; }
 .lm-lab .showcase-heading h2 { margin: 0; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.08; letter-spacing: -.06em; }
 .lm-lab .showcase-heading > p { max-width: 280px; font-size: 12px; line-height: 1.8; color: var(--sg-muted); margin: 0; }
+.lm-lab .filter-scroll { min-width: 0; overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; }
+.lm-lab .showcase-filters { min-width: 570px; }
+.lm-lab .showcase-filters > label > span { display: flex; justify-content: center; gap: 5px; }
+.lm-lab .showcase-filters small { opacity: .6; font-size: inherit; }
 .lm-lab .showcase-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 25px; }
-.lm-lab .showcase-filters { display: flex; gap: 6px; flex-wrap: wrap; }
-.lm-lab .showcase-filters button { --lumen-radius: var(--studio-radius, 4px); font-size: 10px; padding-inline: 13px; min-height: 40px; }
-.lm-lab .showcase-filters button[aria-pressed=true] { --lumen-bg: #ffaa7120; color: var(--sg-ember); border-color: #ffaa7180; }
-.lm-lab .showcase-filters span { opacity: .6; margin-left: 5px; }
 .lm-lab #showcase-count { margin: 0; color: var(--sg-muted); font-size: 10px; white-space: nowrap; }
 .lm-lab .showcase-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .lm-lab .showcase-grid[data-masonry] { grid-auto-rows: 8px; }
@@ -52,7 +52,7 @@
 .lm-lab .showcase :is(button, input, a, pre):focus-visible { outline: 2px solid var(--sg-ember); outline-offset: 3px; }
 .lm-lab .demo-kicker { display: block; color: var(--sg-muted); font-size: 8px; line-height: 1.5; letter-spacing: .13em; }
 .lm-lab .demo-note { display: block; font-size: 9px; color: var(--sg-muted); line-height: 1.6; }
-.lm-lab .showcase-demo :is(button, input, label) { position: relative; }
+.lm-lab .showcase-demo :is(button, input:not([type=radio]), label) { position: relative; }
 
 /* 01 — warm spotlight */
 .lm-lab .demo-spotlight { padding: 20px; background: radial-gradient(ellipse at 85% 0%, #ffb67716, transparent 70%), #241f23; --lumen-glow-color: #ffaa71; --lumen-border-glow-color: #ffd4a3; --lumen-bg: #392a2b88; }
@@ -60,7 +60,9 @@
 .lm-lab .spark-mark { display: block; margin: 28px 0 24px; color: var(--sg-ember); font-size: 50px; line-height: 1; }
 .lm-lab .spotlight-card h3 { font-size: 32px; }
 .lm-lab .spotlight-card p { color: #d0bcb4; font-size: 11px; max-width: 185px; margin-bottom: 27px; }
-.lm-lab .spotlight-card button { display: flex; justify-content: space-between; width: 100%; --lumen-bg: transparent; }
+.lm-lab .spotlight-card button { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; text-align: left; --lumen-bg: transparent; }
+.lm-lab .spotlight-card button > span { min-width: 0; }
+.lm-lab .spotlight-card button > .fa-solid { flex: none; margin: 0; }
 
 /* 02 — HTML text with the library's pointer light */
 .lm-lab .demo-type { min-height: 375px; padding: 30px 26px; background: radial-gradient(ellipse at 100% 100%, #52775d38, transparent 70%), #142820; --lumen-glow-color: #d4f4ab; --lumen-text-color: #cad8c480; --lumen-text-glow-opacity: 1; --lumen-text-glow-size: 220px; }
@@ -97,10 +99,9 @@
 /* 05 — keyboard-friendly dock */
 .lm-lab .demo-dock { text-align: center; padding: 30px 18px; background: radial-gradient(ellipse at 50% 100%, #72966d30, transparent 75%), #132c2e; }
 .lm-lab .dock-selection { min-height: 30px; color: #d7e7db; font-size: 16px; letter-spacing: -.035em; }
-.lm-lab .glass-dock { padding: 8px; display: flex; gap: 7px; justify-content: center; margin: 22px 0; --lumen-radius: 18px; --lumen-bg: #b5d2c50c; }
-.lm-lab .glass-dock button { width: 46px; height: 46px; padding: 4px; font-size: 25px; --lumen-radius: 12px; transition: transform 150ms ease; }
-.lm-lab .glass-dock button:is(:hover, :focus-visible) { transform: translateY(-5px); }
-.lm-lab .glass-dock button[aria-pressed=true] { --lumen-bg: #ffaa7120; border-color: #ffaa7180; }
+
+.lm-lab .glass-dock { margin: 22px 0; --slidebox-size: 44px; }
+.lm-lab .glass-dock > label > span { font-size: 20px; }
 
 /* 06 — interactive temperature */
 .lm-lab .demo-climate { --warmth: 32%; --temperature-color: #70d5c5; --temperature-tint: #70d5c529; text-align: center; padding: 28px 26px; background: radial-gradient(ellipse at 50% 50%, var(--temperature-tint), transparent 70%), #202c2b; }
@@ -203,10 +204,8 @@
 .lm-lab .marble-small { width: 94px; height: 94px; right: 0; bottom: 12px; }
 .lm-lab .demo-marbles[data-finish=clear] { --lumen-blur: 0px; --lumen-bg: #d0f0e50a; }
 .lm-lab .demo-marbles[data-finish=smoke] { --lumen-blur: 16px; --lumen-bg: #173b3bba; }
-.lm-lab .showcase .finish-options { display: flex; flex-wrap: wrap; gap: 5px 14px; margin: 5px 0 0; border: 0; padding: 0; }
+.lm-lab .showcase .finish-options { margin: 5px 0 0; border: 0; padding: 0; min-width: 0; }
 .lm-lab .finish-options legend { border: 0; padding: 0; margin: 0 0 12px; color: #dce8dd; font-size: 8px; }
-.lm-lab .showcase .finish-options label { display: flex; gap: 4px; justify-content: flex-start; font-size: 10px; min-height: 32px; margin: 0; cursor: pointer; }
-.lm-lab .finish-options input { accent-color: #ffaa71; }
 
 /* 15 — switchable sign */
 .lm-lab .demo-neon { background: repeating-linear-gradient(0deg, transparent 0 31px, #b7987e0a 31px 32px), #271e22; text-align: center; min-height: 325px; padding: 30px 24px; }
@@ -238,7 +237,11 @@
   .lm-lab .showcase-grid { grid-template-columns: 1fr; }
   .lm-lab .showcase-heading { display: block; }
   .lm-lab .showcase-heading > p { margin-top: 20px; max-width: none; }
-  .lm-lab .showcase-toolbar { display: block; }
+  .lm-lab .filter-scroll { min-width: 0; overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; }
+.lm-lab .showcase-filters { min-width: 570px; }
+.lm-lab .showcase-filters > label > span { display: flex; justify-content: center; gap: 5px; }
+.lm-lab .showcase-filters small { opacity: .6; font-size: inherit; }
+.lm-lab .showcase-toolbar { display: block; }
   .lm-lab #showcase-count { margin-top: 14px; }
   .lm-lab .showcase-demo { padding-inline: 24px; }
   .lm-lab .demo-mesh { padding: 0; }
@@ -248,7 +251,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .lm-lab .showcase *, .lm-lab .showcase *::before, .lm-lab .showcase *::after { animation: none !important; transition: none !important; }
-  .lm-lab .glass-dock button:is(:hover, :focus-visible) { transform: none; }
 }
 @media (prefers-reduced-transparency: reduce) {
   .lm-lab .showcase .lumenmorph { --lumen-blur: 0px; background: #173538; }
@@ -299,7 +301,7 @@
 .lm-lab .light-ticket button { width: 100%; border-top: 1px dashed #d5b89860; --lumen-bg: transparent; }
 .lm-lab .demo-palette { --palette-color: #70d5c5; --lumen-glow-color: var(--palette-color); --lumen-border-glow-color: var(--palette-color); background: #26313b; text-align: center; padding: 28px 20px; }
 .lm-lab .palette-orb { width: 124px; height: 124px; display: grid; place-items: center; margin: 28px auto 18px; font-size: 64px; line-height: 1; color: var(--palette-color); --lumen-radius: 50%; --lumen-bg: transparent; box-shadow: 0 0 45px color-mix(in srgb, var(--palette-color) 12%, transparent); transition: color 250ms, box-shadow 250ms; }
-.lm-lab .palette-options { display: flex; justify-content: center; gap: 6px; margin-top: 24px; }
+.lm-lab .palette-options { margin-top: 24px; --lm-accent: var(--palette-color); }
 .lm-lab .demo-rating { background: #302c2b; padding: 32px 22px; }
 .lm-lab .demo-rating h3 { font-size: 30px; margin-top: 30px; }
 .lm-lab .showcase .spark-rating { display: flex; gap: 6px; border: 0; padding: 0; margin: 22px 0; }
@@ -319,3 +321,6 @@
 .lm-lab .spark-rating [data-lit] span { color: color-mix(in srgb, #bd875a, #ffe6b9 calc(var(--spark-strength) * 100%)); text-shadow: 0 0 var(--spark-glow) color-mix(in srgb, #ffaa71 calc(var(--spark-strength) * 80%), transparent), 0 0 calc(var(--spark-glow) * .3) #ffb67180; }
 .lm-lab .spark-rating span { transition: color 200ms, text-shadow 200ms; }
 @media (prefers-reduced-motion: reduce) { .lm-lab .focus-tasks label, .lm-lab .spark-rating span, .lm-lab .demo-rating::before { transition: none; } }
+
+.lm-lab .showcase-demo button > .fa-solid { margin-inline-start: 6px; }
+.lm-lab .showcase-demo .round-button > .fa-solid, .lm-lab .notification button > .fa-solid { margin: 0; }
