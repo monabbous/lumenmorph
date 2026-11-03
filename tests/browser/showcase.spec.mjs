@@ -87,7 +87,11 @@ test("every study links to its own published editor", async ({ page, request }) 
     expect(response.status()).toBe(200);
     expect(await response.text()).toContain('property="og:image"');
   }
-  await page.getByRole("link", { name: "Open Degrees of warmth example" }).click();
+  const link = page.getByRole("link", { name: "Open Degrees of warmth example" });
+  // Center the target before clicking: WebKit's automated scroll can still be
+  // moving when it reports a click near the edge of this long gallery.
+  await link.evaluate(el => el.scrollIntoView({ behavior: "instant", block: "center" }));
+  await link.click();
   await expect(page).toHaveURL(/examples\/climate\/$/);
   await expect(page.locator("#preview-state")).toHaveText("Live");
 });
@@ -121,7 +125,10 @@ test("Material Finder light matches its initial selection and subsequent choices
   const panel = page.locator(".command-panel");
   for (const [material, color] of [["Ember", "#ffaa71"], ["Lagoon", "#70d5c5"], ["Moonstone", "#d5c7ec"], ["Ember", "#ffaa71"]]) {
     const button = page.locator(`[data-material="${material}"]`);
-    if (material !== "Ember" || await button.getAttribute("aria-pressed") !== "true") await button.click();
+    if (material !== "Ember" || await button.getAttribute("aria-pressed") !== "true") {
+      await button.evaluate(el => el.scrollIntoView({ behavior: "instant", block: "center" }));
+      await button.click();
+    }
     await expect(button).toHaveAttribute("aria-pressed", "true");
     const colors = await panel.evaluate(el => {
       const style = getComputedStyle(el);
