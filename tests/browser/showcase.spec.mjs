@@ -115,3 +115,18 @@ test("reduced motion stops ornament animation and no-JS keeps the collection rea
   await expect(staticPage.locator(".example:visible")).toHaveCount(24);
   await context.close();
 });
+
+
+test("Material Finder light matches its initial selection and subsequent choices", async ({ page }) => {
+  const panel = page.locator(".command-panel");
+  for (const [material, color] of [["Ember", "#ffaa71"], ["Lagoon", "#70d5c5"], ["Moonstone", "#d5c7ec"], ["Ember", "#ffaa71"]]) {
+    const button = page.locator(`[data-material="${material}"]`);
+    if (material !== "Ember" || await button.getAttribute("aria-pressed") !== "true") await button.click();
+    await expect(button).toHaveAttribute("aria-pressed", "true");
+    const colors = await panel.evaluate(el => {
+      const style = getComputedStyle(el);
+      return ["--lumen-glow-color", "--lumen-border-glow-color"].map(name => style.getPropertyValue(name).trim());
+    });
+    expect(colors).toEqual([color, color]);
+  }
+});

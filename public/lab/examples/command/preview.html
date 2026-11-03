@@ -586,6 +586,8 @@ input {
 .lm-lab .demo-command {
   padding: 26px 18px;
   background: #162d33;
+  --lumen-glow-color: var(--sg-ember);
+  --lumen-border-glow-color: var(--lumen-glow-color);
 }
 .lm-lab .command-panel {
   padding: 16px;
@@ -625,6 +627,9 @@ input {
   text-align: left;
   --lumen-radius: 7px;
   --lumen-bg: #e6f4e405;
+}
+.lm-lab .command-results button[aria-pressed="true"] {
+  color: var(--lumen-glow-color);
 }
 .lm-lab .command-results button span {
   margin-left: auto;
