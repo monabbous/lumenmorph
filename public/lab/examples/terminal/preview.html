@@ -655,9 +655,19 @@ input {
   --lumen-bg: #0a1d1e;
   --lumen-glow-color: #a0dcab;
 }
+.lm-lab .terminal-window > p,
+.lm-lab .terminal-window pre {
+  color: var(--lumen-glow-color);
+  text-shadow:
+    0 0 6px color-mix(in srgb, currentColor 50%, transparent),
+    0 0 18px color-mix(in srgb, currentColor 25%, transparent);
+}
 .lm-lab .terminal-prompt {
   color: #ffaa71;
   margin-right: 10px;
+}
+.lm-lab .terminal-prompt {
+  text-shadow: 0 0 8px #ffaa7180;
 }
 .lm-lab .terminal-window pre {
   min-height: 135px;

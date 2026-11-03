@@ -273,7 +273,9 @@
 .lm-lab .demo-pricing button { width: 100%; margin-top: 24px; --lumen-glow-color: #ffaa71; }
 .lm-lab .demo-terminal { background: #152b29; padding: 28px 18px; }
 .lm-lab .terminal-window { padding: 20px 16px; margin-top: 22px; --lumen-bg: #0a1d1e; --lumen-glow-color: #a0dcab; }
+.lm-lab .terminal-window > p, .lm-lab .terminal-window pre { color: var(--lumen-glow-color); text-shadow: 0 0 6px color-mix(in srgb, currentColor 50%, transparent), 0 0 18px color-mix(in srgb, currentColor 25%, transparent); }
 .lm-lab .terminal-prompt { color: #ffaa71; margin-right: 10px; }
+.lm-lab .terminal-prompt { text-shadow: 0 0 8px #ffaa7180; }
 .lm-lab .terminal-window pre { min-height: 135px; margin: 25px 0 15px; white-space: pre-wrap; font: 10px/1.9 ui-monospace, monospace; color: #a0dcab; }
 .lm-lab .demo-profile { text-align: center; background: radial-gradient(ellipse at 50% 0%, #94d6b52b, transparent 65%), #1d3133; padding: 32px 24px; }
 .lm-lab .profile-avatar { width: 100px; height: 100px; margin: 0 auto 25px; display: grid; place-items: center; font-size: 35px; letter-spacing: -.08em; color: #d6e7d6; --lumen-radius: 50%; --lumen-bg: #b3cab713; box-shadow: 0 0 40px #7bdfba15; }
