@@ -1,6 +1,6 @@
 {
   "name": "@monabbous/lumenmorph",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Low-markup glass surfaces, pointer light, and optional SVG text from nabous.dev.",
   "type": "module",
   "license": "ISC",

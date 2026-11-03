@@ -90,7 +90,7 @@ function render() {
   foundationBlocks = foundationSnippets(format, values, { tracking: tracking.checked, smoothing: smoothing.checked });
   renderBlocks(document.querySelector("#installation-snippet"), installationSnippets(format, { smoothing: smoothing.checked }));
   document.querySelector("#installation-hint").textContent = format === "cdn"
-    ? "Plain HTML, no build step. Add these minified stylesheets to <head>, then link your styles.css after them. CDN URLs are pinned to 0.2.0."
+    ? "Plain HTML, no build step. Add these minified stylesheets to <head>, then link your styles.css after them. CDN URLs are pinned to 0.2.1."
     : "Install the package, then use the styles and HTML below. Package imports need a bundler such as Vite; choose CDN for plain HTML without a build step. Frameworks are optional.";
   renderBlocks(document.querySelector("#theme-snippet"), [globalDefaultsSnippet(values)]);
   componentBlocks = componentSnippets(framework);

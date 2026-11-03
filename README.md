@@ -31,7 +31,7 @@ npm install @monabbous/lumenmorph
 For plain HTML, add the minified CSS to `<head>` instead:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.0/dist/css/lumenmorph.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/dist/css/lumenmorph.min.css">
 ```
 
 Both routes use the same markup. Your app supplies spacing and typography:
@@ -44,6 +44,16 @@ Both routes use the same markup. Your app supplies spacing and typography:
 ```
 
 Static glass needs no JavaScript. [Add pointer light](docs/pointer.md) when you want the glow to follow the cursor. [Installation details](docs/getting-started.md) cover CDN scripts, self-hosting, and HTML glass text.
+
+## Examples
+
+[![Explore 24 editable Lumenmorph examples](https://nabous.dev/lab/lumenmorph/examples/collection.png)](https://nabous.dev/lab/lumenmorph/examples/)
+
+<p align="center">
+  <a href="https://nabous.dev/lab/lumenmorph/examples/">
+    <img src="https://img.shields.io/badge/Explore_examples-%E2%86%92-ffaa71?style=for-the-badge&amp;labelColor=102a31" alt="Explore examples">
+  </a>
+</p>
 
 ## Choose your setup
 
