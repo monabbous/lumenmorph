@@ -56,3 +56,13 @@ body { margin: 0; background: #102a31; color: var(--editor-ink); font-family: ui
 
 @media (prefers-reduced-motion: no-preference) { html:has(.example-studio) { scroll-behavior: smooth; } }
 @media (prefers-reduced-motion: reduce) { html:has(.example-studio) { scroll-behavior: auto; } }
+
+.share-control { position: relative; flex: none; }
+.example-studio .share-options { position: absolute; z-index: 20; top: calc(100% + 8px); right: 0; display: grid; gap: 4px; width: min(260px, calc(100vw - 32px)); padding: 8px; border: 1px solid var(--editor-line); border-radius: var(--studio-radius); background: #102a31; box-shadow: 0 12px 32px #0006; }
+.example-studio .share-options .studio-button { justify-content: flex-start; width: 100%; margin: 0; gap: 10px; text-decoration: none; border-color: transparent; background: transparent; }
+.example-studio .share-options .studio-button:hover { background: #ffaa7112; border-color: #ffaa7140; }
+.example-studio .share-options i { width: 16px; text-align: center; }
+.example-studio .share-options p { margin: 4px 8px; font-size: 10px; line-height: 1.6; }
+.example-studio .share-options #share-status:empty { display: none; }
+@media (max-width: 600px) { .share-control { width: fit-content; } .share-options { left: 0; right: auto; } }
+@media (forced-colors: active) { .example-studio .share-options { background: Canvas; border-color: ButtonText; } }

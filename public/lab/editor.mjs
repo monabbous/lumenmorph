@@ -84,12 +84,53 @@ document.querySelector("#reset-code").addEventListener("click", () => {
   for (const key of Object.keys(editors)) (codeEditors[key] ?? editors[key]).value = original[key];
   run(); status.textContent = "Original restored";
 }, { signal });
-document.querySelector("#share-example").addEventListener("click", async () => {
-  const url = new URL(location.href); url.hash = ""; url.search = "";
-  const field = document.querySelector("#share-url");
-  field.value = url.href;
-  try { await navigator.clipboard.writeText(url.href); document.querySelector("#share-status").textContent = "Example link copied. It opens the published version."; }
-  catch { field.hidden = false; field.focus(); field.select(); document.querySelector("#share-status").textContent = "Copy this example link:"; }
+const shareButton = document.querySelector("#share-example");
+const shareOptions = document.querySelector("#share-options");
+const shareStatus = document.querySelector("#share-status");
+const shareField = document.querySelector("#share-url");
+const shareDevice = document.querySelector("#share-device");
+const shareUrl = new URL(location.href); shareUrl.hash = ""; shareUrl.search = "";
+const shareData = { title: document.title, url: shareUrl.href };
+shareField.value = shareData.url;
+const encodedUrl = encodeURIComponent(shareData.url);
+const encodedTitle = encodeURIComponent(shareData.title);
+const shareLinks = {
+  whatsapp: `https://wa.me/?text=${encodeURIComponent(`${shareData.title} ${shareData.url}`)}`,
+  x: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+  linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+  email: `mailto:?subject=${encodedTitle}&body=${encodedUrl}`,
+};
+for (const link of shareOptions.querySelectorAll("[data-share]")) link.href = shareLinks[link.dataset.share];
+shareDevice.hidden = typeof navigator.share !== "function";
+function closeSharing(restoreFocus = false) {
+  shareOptions.hidden = true;
+  shareButton.setAttribute("aria-expanded", "false");
+  if (restoreFocus) shareButton.focus();
+}
+shareButton.addEventListener("click", () => {
+  if (!shareOptions.hidden) { closeSharing(); return; }
+  shareStatus.textContent = "";
+  shareField.hidden = true;
+  shareOptions.hidden = false;
+  shareButton.setAttribute("aria-expanded", "true");
+  shareOptions.querySelector("button:not([hidden])").focus();
+}, { signal });
+document.addEventListener("click", event => {
+  if (!shareOptions.hidden && !event.target.closest(".share-control")) closeSharing();
+}, { signal });
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && !shareOptions.hidden) { event.preventDefault(); closeSharing(true); }
+}, { signal });
+document.addEventListener("focusin", event => {
+  if (!shareOptions.hidden && !event.target.closest(".share-control")) closeSharing();
+}, { signal });
+shareDevice.addEventListener("click", async () => {
+  try { await navigator.share(shareData); closeSharing(true); }
+  catch (error) { if (error.name !== "AbortError") shareStatus.textContent = "Sharing unavailable. Choose an option or copy the link."; }
+}, { signal });
+document.querySelector("#copy-example-link").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(shareData.url); shareStatus.textContent = "Link copied."; }
+  catch { shareField.hidden = false; shareField.focus(); shareField.select(); shareStatus.textContent = "Copy this link:"; }
 }, { signal });
 document.querySelector("#download-example").addEventListener("click", () => {
   const url = URL.createObjectURL(new Blob([downloadDocument(values(), runtime)], { type: "text/html" }));

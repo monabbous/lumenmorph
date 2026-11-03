@@ -91,3 +91,63 @@ test("editor fits phone and tablet widths and uses the site radius", async ({ pa
     expect(await page.locator(".studio-card").first().evaluate(el => getComputedStyle(el).borderRadius)).toBe("4px");
   }
 });
+
+test("share menu offers explicit actions and dismisses with Escape or outside click", async ({ page }) => {
+  await page.goto("/lab/examples/climate/?campaign=test#preview");
+  await page.evaluate(() => Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async value => { window.copiedLink = value; } } }));
+  const button = page.locator("#share-example");
+  await button.click();
+  await expect(button).toHaveAttribute("aria-expanded", "true");
+  expect(await page.evaluate(() => window.copiedLink)).toBeUndefined();
+  const url = new URL("/lab/examples/climate/", page.url()).href;
+  for (const platform of ["whatsapp", "x", "linkedin", "email"]) {
+    expect(await page.locator(`[data-share=${platform}]`).getAttribute("href")).toContain(encodeURIComponent(url));
+  }
+  await page.getByRole("button", { name: "Copy link", exact: true }).click();
+  expect(await page.evaluate(() => window.copiedLink)).toBe(url);
+  await expect(page.locator("#share-status")).toHaveText("Link copied.");
+  await page.keyboard.press("Escape");
+  await expect(page.locator("#share-options")).toBeHidden();
+  await expect(button).toBeFocused();
+  await button.click();
+  await page.locator("h1").click();
+  await expect(button).toHaveAttribute("aria-expanded", "false");
+  for (const width of [320, 390, 768, 1280]) {
+    await page.setViewportSize({ width, height: 900 });
+    await button.click();
+    const bounds = await page.locator("#share-options").boundingBox();
+    expect(bounds.x).toBeGreaterThanOrEqual(0);
+    expect(bounds.x + bounds.width).toBeLessThanOrEqual(width);
+    await page.keyboard.press("Escape");
+  }
+});
+
+test("native sharing cancellation keeps copy available and denied clipboard exposes the link", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "share", { configurable: true, value: async data => { window.sharedData = data; throw new DOMException("Cancelled", "AbortError"); } });
+    Object.defineProperty(navigator, "clipboard", { configurable: true, value: { writeText: async () => { throw new Error("Denied"); } } });
+  });
+  await page.reload();
+  await page.locator("#share-example").click();
+  await page.locator("#share-device").click();
+  expect((await page.evaluate(() => window.sharedData)).title).toContain("Degrees of warmth");
+  await expect(page.locator("#share-options")).toBeVisible();
+  await expect(page.locator("#share-status")).toHaveText("");
+  await page.locator("#copy-example-link").click();
+  await expect(page.locator("#share-url")).toBeVisible();
+  await expect(page.locator("#share-url")).toBeFocused();
+  expect(await page.locator("#share-url").evaluate(el => el.selectionEnd - el.selectionStart)).toBe((await page.locator("#share-url").inputValue()).length);
+});
+
+test("native sharing succeeds and unavailable browsers retain the other options", async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, "share", { configurable: true, value: location.search.includes("no-native") ? undefined : async data => { window.sharedData = data; } }));
+  await page.reload();
+  await page.locator("#share-example").click();
+  await page.locator("#share-device").click();
+  await expect(page.locator("#share-options")).toBeHidden();
+  await expect(page.locator("#share-example")).toBeFocused();
+  await page.goto("/lab/examples/climate/?no-native");
+  await page.locator("#share-example").click();
+  await expect(page.locator("#share-device")).toBeHidden();
+  await expect(page.locator("#copy-example-link")).toBeFocused();
+});
