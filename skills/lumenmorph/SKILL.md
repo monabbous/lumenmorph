@@ -33,6 +33,7 @@ Read the target app's styling setup. Use one of:
 | Setup | Entry point |
 | --- | --- |
 | Vanilla CSS | `@monabbous/lumenmorph/css` |
+| Slidebox's hosted lab skin (unreleased) | `@monabbous/lumenmorph/slidebox` |
 | Ready-made SCSS classes | `@monabbous/lumenmorph/scss` |
 | SCSS mixins for custom selectors | `@monabbous/lumenmorph/scss/mixins` |
 | Less mixins | `@monabbous/lumenmorph/less` |

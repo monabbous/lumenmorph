@@ -4,4 +4,5 @@ playwright-report/
 *.tgz
 .DS_Store
 public/__adapter-tests/
+public/__slidebox-tests/
 tests/.generated-angular/

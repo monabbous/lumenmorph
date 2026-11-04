@@ -10,6 +10,7 @@ Start with [installation and your first surface](getting-started.md), or try the
 | Use Tailwind utilities | [Tailwind](tailwind.md) |
 | Install shadcn components | [shadcn/ui](shadcn.md) |
 | Theme MUI, Mantine, or Taiga UI | [UI libraries](ui-libraries.md) |
+| Apply the lab's glass skin to Slidebox | [Slidebox](slidebox.md) |
 | Use Sass or Less | [Preprocessors](preprocessors.md) |
 | Render SVG text and icons in your framework | [SVG adapters](svg.md) |
 | Check rendering constraints and accessibility | [Browser support](accessibility.md) |

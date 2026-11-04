@@ -160,6 +160,24 @@ test("core CSS and pointer helper stay within small gzip budgets", async () => {
   assert.ok(gzipSync(js).length < 1800, "Pointer helper exceeds 1.8 kB gzip budget");
 });
 
+test("Slidebox skin reuses canonical paint without replacing native geometry or private controls", async () => {
+  const output = await readFile(new URL("../dist/css/slidebox.css", import.meta.url), "utf8");
+  const lab = await readFile(new URL("../public/lab/assets/lumenmorph-slidebox.css", import.meta.url), "utf8");
+  const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(pkg.exports["./slidebox"], "./dist/css/slidebox.css");
+  assert.equal(output, lab);
+  assert.match(output, /@media \(forced-colors: none\)/);
+  assert.match(output, /prefers-reduced-transparency: reduce/);
+  assert.match(output, /var\(--lumen-blur, 40px\)/);
+  assert.match(output, /var\(--slidebox-track, Field\) 40%, transparent/);
+  assert.match(output, /mask-composite: exclude/);
+  assert.match(output, /::-webkit-slider-thumb/);
+  assert.match(output, /::-moz-range-thumb/);
+  assert.doesNotMatch(output, /var\(--_(?!lumen-)/);
+  assert.doesNotMatch(output, /(?:^|[;{])\s*(?:width|height|margin(?:-[a-z-]+)?|transition(?:-[a-z-]+)?|transform)\s*:/);
+  assert.doesNotMatch(output, /--(?:slidebox|lumen)-(?:size|width|spacing|deform|duration|easing|bg|blur)\s*:/);
+});
+
 test("motion is optional, inherited, and only transitions its coordinate owner", async () => {
   const motion = await readFile(new URL("../dist/css/motion.css", import.meta.url), "utf8");
   const sass = compileString('@use "motion";', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;

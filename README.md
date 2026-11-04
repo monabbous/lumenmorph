@@ -63,6 +63,7 @@ Static glass needs no JavaScript. [Add pointer light](docs/pointer.md) when you 
 | Tailwind v4 or v3.4 | [Variable utilities and variants](docs/tailwind.md) |
 | shadcn/ui | [Install Card, Button, or pointer light](docs/shadcn.md) |
 | MUI / Mantine / Taiga UI v4+ | [Theme integrations](docs/ui-libraries.md) |
+| Slidebox switches, radio groups, and experimental ranges | [Lab glass skin](docs/slidebox.md) (unreleased) |
 | Sass / Less | [Mixins and ready-made classes](docs/preprocessors.md) |
 | React / Vue / Svelte / Angular / Web Components | [Optional SVG text and icons](docs/svg.md) |
 

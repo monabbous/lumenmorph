@@ -24,6 +24,7 @@
     },
     "./css": "./dist/css/lumenmorph.css",
     "./motion": "./dist/css/motion.css",
+    "./slidebox": "./dist/css/slidebox.css",
     "./scss": "./scss/lumenmorph.scss",
     "./scss/mixins": "./scss/_mixins.scss",
     "./scss/motion": "./scss/_motion.scss",
@@ -107,11 +108,11 @@
     }
   },
   "scripts": {
-    "build": "tsc -p react/tsconfig.json && node scripts/build.mjs && node scripts/build-themes.mjs && ngc -p angular/tsconfig.json && node scripts/build-lab-adapters.mjs && node scripts/build-examples.mjs && node scripts/build-registry.mjs",
+    "build": "tsc -p react/tsconfig.json && node scripts/build.mjs && node scripts/build-themes.mjs && node scripts/build-slidebox.mjs && ngc -p angular/tsconfig.json && node scripts/build-lab-adapters.mjs && node scripts/build-examples.mjs && node scripts/build-registry.mjs",
     "dev": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "playwright test",
-    "pretest:browser": "node scripts/build-adapter-tests.mjs && node scripts/build-ui-tests.mjs",
+    "pretest:browser": "node scripts/build-adapter-tests.mjs && node scripts/build-ui-tests.mjs && node scripts/build-slidebox-tests.mjs",
     "test:types": "tsc --noEmit",
     "test:svelte": "svelte-check --no-tsconfig --fail-on-warnings",
     "prepack": "npm run build",
