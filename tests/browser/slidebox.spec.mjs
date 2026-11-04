@@ -45,6 +45,29 @@ test("scoped radios and ranges retain native keyboard controls and focus", async
   await expect(range).not.toHaveCSS("outline-style", "none");
 });
 
+test("group selected and unselected glass match the Lumenmorph lab reference", async ({ page }) => {
+  const paint = (element, selected) => {
+    const anchors = CSS.supports("anchor-scope: --slidebox-selection") && CSS.supports("left: anchor(left)");
+    const target = selected
+      ? (anchors ? element : element.querySelector("input:checked + span"))
+      : element.querySelector("input:not(:checked):not(:disabled) + span");
+    const style = getComputedStyle(target, selected ? "::before" : undefined);
+    return Object.fromEntries(["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter", "borderRadius", "boxShadow"].map(key => [key, style[key]]));
+  };
+  for (const selected of [true, false]) {
+    const actual = await page.locator("#group").evaluate(paint, selected);
+    const reference = await page.locator("#reference-group").evaluate(paint, selected);
+    expect(actual).toEqual(reference);
+  }
+  await expect(page.locator("#group")).toHaveCSS("border-radius", "4px");
+  await page.getByRole("radio", { name: "Day", exact: true }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(page.getByRole("radio", { name: "Week", exact: true })).toBeChecked();
+  const selected = await page.locator("#group").evaluate(paint, true);
+  expect(selected.backdropFilter).toBe("blur(12px) saturate(1.4)");
+  expect(selected.backgroundColor).not.toBe("rgb(255, 170, 113)");
+});
+
 test("public colors inherit, while forced colors and reduced motion keep Slidebox fallbacks", async ({ page }) => {
   const glass = page.locator("#glass");
   await page.evaluate(() => document.body.style.setProperty("--slidebox-on", "#ffaa71"));

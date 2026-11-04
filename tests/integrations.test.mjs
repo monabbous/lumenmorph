@@ -170,6 +170,10 @@ test("Slidebox skin reuses canonical paint without replacing native geometry or 
   assert.match(output, /prefers-reduced-transparency: reduce/);
   assert.match(output, /var\(--lumen-blur, 40px\)/);
   assert.match(output, /var\(--slidebox-track, Field\) 40%, transparent/);
+  assert.match(output, /18%, #102a3166/);
+  assert.match(output, /2\.5%, transparent/);
+  assert.match(output, /var\(--lumen-blur, 12px\)/);
+  assert.match(output, /var\(--lumen-blur, 2px\)/);
   assert.match(output, /mask-composite: exclude/);
   assert.match(output, /::-webkit-slider-thumb/);
   assert.match(output, /::-moz-range-thumb/);

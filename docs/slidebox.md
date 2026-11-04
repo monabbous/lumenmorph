@@ -2,7 +2,7 @@
 
 # Style Slidebox like the lab
 
-The optional `@monabbous/lumenmorph/slidebox` stylesheet ports the hosted Slidebox lab's glass skin: 40%-alpha tracks, opaque thumbs, shared pointer light, and an illuminated switch border. It leaves Slidebox's geometry, elastic motion, labels, and native input behavior intact. It does not include the site's layout, fonts, or palette.
+The optional `@monabbous/lumenmorph/slidebox` stylesheet combines the hosted Slidebox lab's switch/range skin with the glassy radio groups from the Lumenmorph lab. Switches keep 40%-alpha tracks, opaque thumbs, shared pointer light, and an illuminated border. Groups use translucent selected highlights and faint glass on unselected segments, not opaque colored pills. The skin leaves Slidebox's geometry, elastic motion, labels, and native input behavior intact. It does not include the site's layout or fonts.
 
 The `/slidebox` export is unreleased and is not included in Lumenmorph 0.2.2. Until the next npm release, install the integration branch:
 
@@ -50,6 +50,8 @@ import "@monabbous/lumenmorph/slidebox";
 
 The skin paints the shared sliding indicator where CSS anchor positioning is supported. Other browsers keep Slidebox's per-segment highlight. Native arrow-key selection, disabled states, focus outlines, and form values remain Slidebox-owned.
 
+Groups match the Lumenmorph lab's material picker: an 18%-accent selected tint with 12px blur, a softly lit inset edge, and a faint outer glow. Unselected segments use a 2.5%-accent tint with 2px blur. Group corners default to 4px; `--slidebox-radius` and `--lumen-radius` still override them. The accent uses your inherited `--lumen-glow-color` or `--slidebox-on`, falling back to Ember.
+
 ## Style an experimental range
 
 Slidebox ranges remain experimental. Import their stylesheet explicitly:
@@ -83,9 +85,23 @@ Set Slidebox's public color variables on your scope. These are the lab's teal pr
 }
 ```
 
-Add both `settings` and `lumenmorph-slidebox` to your container. Without color overrides, the controls keep Slidebox's system-color defaults. Supply readable foreground colors for your background.
+Add both `settings` and `lumenmorph-slidebox` to your container. Switches and ranges use Slidebox's system-color defaults when you do not override them. Groups default to the lab's dark glass material with an Ember accent; Slidebox still owns their foreground colors. Set readable `--slidebox-text` and `--slidebox-selected-text` values for your page's background.
 
-The skin's defaults match the hosted treatment: 40px blur, saturation 1, 30vmax glow radius, 0.1 glow opacity, a 1px switch border at 25% of the Slidebox border color, and 0.3 border-light opacity. Override these with inherited `--lumen-*` controls. `--lumen-bg` and `--lumen-solid-bg` customize tracks; `--lumen-slidebox-thumb-bg` overrides switch thumbs and selected radio indicators without changing their geometry. Without that override, switch thumbs use `--slidebox-off` and `--slidebox-on` for their respective states.
+For the Lumenmorph lab's Ember groups, override the group separately:
+
+```css
+.settings .slidebox-group {
+  --slidebox-track: #063c5940;
+  --slidebox-border: #5289a6;
+  --slidebox-on: #ffaa71;
+  --lumen-glow-color: #ffaa71;
+  --slidebox-size: 40px;
+  --slidebox-spacing: .1;
+  --slidebox-radius: 4px;
+}
+```
+
+Switches and ranges use the hosted treatment's defaults: 40px blur, saturation 1, 30vmax glow radius, 0.1 glow opacity, a 1px switch border at 25% of the Slidebox border color, and 0.3 border-light opacity. Groups use the separate selected/unselected material defaults described above. Override these with inherited `--lumen-*` controls. `--lumen-bg` and `--lumen-solid-bg` customize the material; `--lumen-slidebox-thumb-bg` overrides switch and native range thumbs without changing their geometry. Without that override, switch thumbs use `--slidebox-off` and `--slidebox-on` for their respective states.
 
 ## Add pointer light
 

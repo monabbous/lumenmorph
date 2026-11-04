@@ -10,6 +10,8 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
 <link rel="stylesheet" href="../lab/assets/slidebox.css">
 <link rel="stylesheet" href="../lab/assets/slidebox-group.css">
 <link rel="stylesheet" href="../lab/assets/slidebox-range.css">
+<link rel="stylesheet" href="../lab/material-picker.css">
+<link rel="stylesheet" href="../lab/assets/preset-highlight.css">
 <link rel="stylesheet" href="../lab/assets/lumenmorph-slidebox.css">
 <style>
   body { margin:24px; max-width:640px; background:#101b24; color:#e8f6fa; font:16px/1.6 system-ui;
@@ -18,6 +20,10 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
     --slidebox-selected-text:#fff; --lumen-glow-color:#00b2b2; }
   label { display:flex; align-items:center; gap:12px; margin:12px 0; }
   .slidebox-group { width:100%; } .slidebox-group > label { margin:0; }
+  #group { --slidebox-track:#063c5940; --slidebox-border:#5289a6; --slidebox-size:40px;
+    --slidebox-spacing:.1; --slidebox-radius:4px; --slidebox-on:#ffaa71; --lumen-glow-color:#ffaa71; }
+  #group > label { font-size:11px; }
+  #group > label > span { padding:0 6px; line-height:1.2; }
   .slidebox-range { max-width:100%; } button { margin:16px 0; }
 </style></head><body>
 <h1>Slidebox glass integration</h1>
@@ -35,6 +41,14 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
   </section>
   <button type="submit">Save settings</button>
 </form>
+<section class="lm-lab" style="--lm-accent:#ffaa71">
+  <h2>Lumenmorph lab reference</h2>
+  <div id="reference-group" class="slidebox-group material-picker" role="group" aria-label="Lab reference">
+    <label><input type="radio" name="reference-period" value="day" aria-label="Reference Day" checked><span>Day</span></label>
+    <label><input type="radio" name="reference-period" value="week" aria-label="Reference Week"><span>Week</span></label>
+    <label><input type="radio" name="reference-period" value="month" aria-label="Reference Month" disabled><span>Month</span></label>
+  </div>
+</section>
 <script type="module">
 import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from './range.mjs';
 window.startRangeEnhancements=()=>{

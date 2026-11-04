@@ -1,8 +1,8 @@
-/* Generated from src/lumenmorph.css and the hosted Slidebox lab skin.
+/* Generated from src/lumenmorph.css and the existing lab skins.
    Import after Slidebox. Opt in with lumenmorph-slidebox on a control or ancestor.
    Slidebox owns geometry, native state, and motion; this file owns paint only. */
 @media (forced-colors: none) {
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range) {
     border-color: var(--lumen-border-color, color-mix(in srgb, var(--slidebox-border, ButtonBorder) 25%, transparent));
     box-shadow: none;
   }
@@ -12,7 +12,7 @@
   @supports (color: AccentColor) {
     .lumenmorph-slidebox { --_lumen-slidebox-accent: AccentColor; }
   }
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox) {
   background-color: var(--lumen-bg, var(--slidebox-track, Field));
   border-radius: var(--lumen-radius, var(--slidebox-radius, 100vw));
   -webkit-backdrop-filter: blur(var(--lumen-blur, 40px)) saturate(var(--lumen-saturation, 1));
@@ -38,7 +38,7 @@
 }
 
 @supports (background: color-mix(in srgb, red, transparent)) {
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox) {
     background-image: radial-gradient(circle var(--lumen-glow-size, 30vmax) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, var(--_lumen-slidebox-accent, light-dark(#0b75ff, SelectedItem)))) calc(var(--lumen-glow-opacity, 0.1) * 100%), transparent), transparent);
     background-attachment: var(--lumen-attachment, fixed);
     background-size: var(--lumen-space, 100vw 100vh);
@@ -54,7 +54,7 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox) {
     background: var(--lumen-solid-bg, var(--slidebox-track, Field));
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
@@ -86,9 +86,9 @@
 }
 
   @supports (background: color-mix(in srgb, red, transparent)) {
-    :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range) { background-color: var(--lumen-bg, color-mix(in srgb, var(--slidebox-track, Field) 40%, transparent)); }
+    :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range) { background-color: var(--lumen-bg, color-mix(in srgb, var(--slidebox-track, Field) 40%, transparent)); }
   }
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
   background-color: var(--lumen-slidebox-thumb-bg, var(--_lumen-slidebox-thumb, var(--slidebox-on, var(--_lumen-slidebox-accent, light-dark(#0b75ff, SelectedItem)))));
   border-radius: inherit;
   -webkit-backdrop-filter: blur(var(--lumen-blur, 40px)) saturate(var(--lumen-saturation, 1));
@@ -96,7 +96,7 @@
 }
 
 @supports (background: color-mix(in srgb, red, transparent)) {
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
     background-image: radial-gradient(circle var(--lumen-glow-size, 30vmax) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, var(--_lumen-slidebox-accent, light-dark(#0b75ff, SelectedItem)))) calc(var(--lumen-glow-opacity, 0.1) * 100%), transparent), transparent);
     background-attachment: var(--lumen-attachment, fixed);
     background-size: var(--lumen-space, 100vw 100vh);
@@ -105,13 +105,72 @@
 }
 
 @media (prefers-reduced-transparency: reduce) {
-  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)::after, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > span {
     background: var(--lumen-slidebox-thumb-bg, var(--_lumen-slidebox-thumb, var(--slidebox-on, var(--_lumen-slidebox-accent, light-dark(#0b75ff, SelectedItem)))));
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
 }
 
+  /* Match Lumenmorph's material-picker groups, not opaque on-color pills. */
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) {
+    background-color: var(--lumen-bg, var(--slidebox-track, #063c5940));
+    border-color: var(--lumen-border-color, var(--slidebox-border, #5289a6));
+    border-radius: var(--lumen-radius, var(--slidebox-radius, 4px));
+  }
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > span { border-radius: var(--lumen-radius, var(--slidebox-radius, 4px)); }
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before {
+  background-color: var(--lumen-bg, color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, #102a3166));
+  border-radius: var(--lumen-radius, var(--slidebox-radius, 4px));
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 12px)) saturate(var(--lumen-saturation, 1.4));
+  backdrop-filter: blur(var(--lumen-blur, 12px)) saturate(var(--lumen-saturation, 1.4));
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 180px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) calc(var(--lumen-glow-opacity, .55) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before {
+    background: var(--lumen-solid-bg, #203c46);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group):has(> label > input:checked)::before, :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:checked + span::before {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 12%, transparent);
+  }
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:not(:checked) + span {
+  background-color: var(--lumen-bg, color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 2.5%, transparent));
+  border-radius: var(--lumen-radius, var(--slidebox-radius, 4px));
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 2px)) saturate(var(--lumen-saturation, 1.1));
+  backdrop-filter: blur(var(--lumen-blur, 2px)) saturate(var(--lumen-saturation, 1.1));
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:not(:checked) + span {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 160px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) calc(var(--lumen-glow-opacity, .045) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:not(:checked) + span {
+    background: var(--lumen-solid-bg, #1c3540);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+  :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) > label > input:not(:checked) + span { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 7%, transparent); }
   :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range)::-webkit-slider-thumb {
   background-color: var(--lumen-slidebox-thumb-bg, var(--_lumen-slidebox-thumb, var(--slidebox-on, var(--_lumen-slidebox-accent, light-dark(#0b75ff, SelectedItem)))));
   border-radius: inherit;
@@ -167,7 +226,8 @@
     background: transparent; box-shadow: none; backdrop-filter: none;
   }
   @media (prefers-reduced-transparency: reduce) {
-    :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range):not([data-slidebox-range-fill]) { background: var(--lumen-solid-bg, var(--slidebox-track, Field)); }
+    :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox), :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range):not([data-slidebox-range-fill]) { background: var(--lumen-solid-bg, var(--slidebox-track, Field)); }
+    :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) { background: var(--lumen-solid-bg, #1c3540); }
     :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range)[data-slidebox-range-fill] { background-color: var(--lumen-solid-bg, var(--slidebox-track, Field)); }
   }
 }
