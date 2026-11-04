@@ -4,13 +4,15 @@
 
 The optional `@monabbous/lumenmorph/slidebox` stylesheet combines the hosted Slidebox lab's switch/range skin with the glassy radio groups from the Lumenmorph lab. Switches keep 40%-alpha tracks, opaque thumbs, shared pointer light, and an illuminated border. Groups use translucent selected highlights and faint glass on unselected segments, not opaque colored pills. The skin leaves Slidebox's geometry, elastic motion, labels, and native input behavior intact. It does not include the site's layout or fonts.
 
-The `/slidebox` export is unreleased and is not included in Lumenmorph 0.2.2. Until the next npm release, install the integration branch:
+The `/slidebox` export requires Lumenmorph 0.3.0 or later:
 
 ```sh
-npm install github:monabbous/lumenmorph#feat/slidebox-integration @monabbous/slidebox
+npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox
 ```
 
 The skin is tested with Slidebox 1.3.2. Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.
+
+In the [lab](https://nabous.dev/lab/lumenmorph/?stack=slidebox#integrations), choose **Slidebox** to see copyable installation, import-order, native markup, and color examples. The optional experimental range example is separate from the default switch/group setup.
 
 Keep the standard `slidebox`, `slidebox-group`, and `slidebox-range` classes even if you generate Slidebox's base rules through Sass, Less, or Tailwind. Do not import a second copy of the base component styles.
 

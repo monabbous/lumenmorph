@@ -1,5 +1,58 @@
 const block = (title, language, code) => ({ title, language, code });
 export const integrations = {
+  slidebox: {
+    name: "Slidebox", guide: "slidebox.md",
+    description: "Use the same translucent radio-group material as this lab. Import the skin after Slidebox and opt in with lumenmorph-slidebox. Switches and grouped radios need no JavaScript; range styling is experimental and pointer tracking remains optional. Requires Lumenmorph 0.3.0 or later.",
+    blocks: [
+      block("Terminal — install both packages", "bash", "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox"),
+      block("main.js — import base styles before the skin", "javascript", `import "@monabbous/slidebox/dist/css/slidebox.css";
+import "@monabbous/slidebox/dist/css/group.css";
+// Optional, experimental range styles:
+// import "@monabbous/slidebox/experimental/range.css";
+import "@monabbous/lumenmorph/slidebox";`),
+      block("HTML — native controls in an opt-in scope", "xml", `<section class="settings lumenmorph-slidebox" aria-label="Settings">
+  <label>
+    <input class="slidebox" type="checkbox" name="notifications">
+    Enable notifications
+  </label>
+  <div class="slidebox-group" role="group" aria-label="Period">
+    <label><input type="radio" name="period" value="day" checked><span>Day</span></label>
+    <label><input type="radio" name="period" value="week"><span>Week</span></label>
+    <label><input type="radio" name="period" value="month"><span>Month</span></label>
+  </div>
+</section>`),
+      block("styles.css — lab colors, separate from specimen defaults", "css", `.settings {
+  color: #e8f6fa;
+  background: #152530;
+  padding: 1rem;
+  --slidebox-track: #2a5b7c;
+  --slidebox-border: #5289a6;
+  --slidebox-off: #e8f6fa;
+  --slidebox-on: #ffaa71;
+  --slidebox-text: #e8f6fa;
+  --slidebox-selected-text: #f5fbff;
+  --slidebox-size: 28px;
+  /* Keep the skin's materials if the page sets surface defaults. */
+  --lumen-bg: initial;
+  --lumen-solid-bg: initial;
+  --lumen-blur: initial;
+  --lumen-saturation: initial;
+  --lumen-radius: initial;
+  --lumen-glow-size: initial;
+  --lumen-glow-opacity: initial;
+}
+.settings .slidebox-group {
+  --slidebox-track: #063c5940;
+  --slidebox-border: #5289a6;
+  --slidebox-size: 40px;
+  --slidebox-spacing: .1;
+  --slidebox-radius: 4px;
+}`),
+      block("Optional experimental range — inside .settings; enable its styles above", "xml", `<label for="intensity">Intensity</label>
+<input id="intensity" class="slidebox-range" type="range"
+  name="intensity" min="0" max="100" value="40">`),
+    ],
+  },
   shadcn: {
     name: "shadcn/ui", guide: "shadcn.md",
     description: "Add glass versions of your existing Card and Button. They inherit your theme and radius; pointer light is optional.",

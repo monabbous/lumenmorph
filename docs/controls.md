@@ -28,4 +28,4 @@ All public custom properties use the `--lumen-` prefix. They inherit, so you can
 
 Glow colors can include alpha; that alpha combines with the intensity. To override the text effect's highlight independently, set `--lumen-glow-color` on the text element.
 
-The optional [Slidebox skin](slidebox.md) uses the labs' defaults instead of the core defaults above, including separate selected/unselected glass materials for radio groups. It also accepts `--lumen-slidebox-thumb-bg` to override the opaque switch and native range thumb color. The skin is currently unreleased.
+The optional [Slidebox skin](slidebox.md), available in 0.3.0 and later, uses the labs' defaults instead of the core defaults above, including separate selected/unselected glass materials for radio groups. It also accepts `--lumen-slidebox-thumb-bg` to override the opaque switch and native range thumb color.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.0 - 2026-11-04
+
+- Add the optional `@monabbous/lumenmorph/slidebox` skin for switches, grouped radios, and experimental ranges. Keep native input behavior, Slidebox geometry and motion, and optional range helpers.
+- Match radio groups to the Lumenmorph lab's translucent selected and unselected materials. Use the exported skin in all five main-lab groups without changing their settled appearance.
+- Add a Slidebox setup choice to the lab with copyable installation, imports, native markup, colors, and optional range examples. Document the integration, inherited controls, and accessibility fallbacks.
+
 ## 0.2.2 - 2026-11-04
 
 - Fix SVG text shifting downward and clipping descenders in Firefox when an earlier fallback font has different vertical metrics. All five adapters now default to `dominant-baseline="middle"`; explicit text positioning still works.

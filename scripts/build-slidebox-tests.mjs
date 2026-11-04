@@ -1,4 +1,6 @@
 import { mkdir, writeFile, copyFile } from "node:fs/promises";
+import { build } from "esbuild";
+import { integrations } from "../public/lab/integration-snippets.mjs";
 
 const root = new URL("../", import.meta.url);
 const output = new URL("public/__slidebox-tests/", root);
@@ -61,3 +63,24 @@ document.querySelector('#form').addEventListener('submit',event=>{
 });
 </script></body></html>`);
 console.log("Built the isolated Slidebox integration fixture (not shipped).");
+
+// Bundle the exact copyable lab examples too, so documentation imports and
+// markup are exercised against the package export rather than hand-written
+// fixture equivalents. Experimental range styling stays a separate choice.
+const blocks = integrations.slidebox.blocks;
+for (const range of [false, true]) {
+  const name = range ? "docs-range" : "docs-basic";
+  const imports = range ? blocks[1].code.replace('// import "@monabbous/slidebox/experimental/range.css";', 'import "@monabbous/slidebox/experimental/range.css";') : blocks[1].code;
+  await build({
+    stdin: { contents: imports, resolveDir: root.pathname, sourcefile: `${name}.mjs`, loader: "js" },
+    outfile: new URL(`${name}.mjs`, output).pathname,
+    bundle: true, format: "esm", platform: "browser",
+  });
+  const markup = range ? blocks[2].code.replace("</section>", `${blocks[4].code}\n</section>`) : blocks[2].code;
+  await writeFile(new URL(`${name}.html`, output), `<!doctype html><html lang="en"><head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Copied Slidebox documentation example</title>
+<link rel="stylesheet" href="./${name}.css"><style>${blocks[3].code}</style>
+</head><body>${markup}<script type="module" src="./${name}.mjs"></script></body></html>`);
+}
+console.log("Bundled the exact Slidebox lab examples (not shipped).");

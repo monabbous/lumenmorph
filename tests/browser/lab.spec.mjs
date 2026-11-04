@@ -95,7 +95,7 @@ test("installation switches between npm and a minified no-build CDN setup", asyn
   await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
   await expect(page.locator("#installation-snippet")).toContainText("motion.min.css");
   await expect(page.locator("#snippet")).toContainText('<script type="module">');
-  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/js/pointer.mjs");
+  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.0/js/pointer.mjs");
   await page.locator("#smoothing").uncheck();
   await page.locator("#tracking").uncheck();
   await expect(page.locator("#installation-snippet")).not.toContainText("motion.min.css");
@@ -441,4 +441,29 @@ test("main lab's imported skin matches its original group styles across demo set
   } finally {
     await original.close();
   }
+});
+
+test("Slidebox setup documents installation, imports, markup, colors, and optional ranges in the lab", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } });
+  });
+  await page.goto("/lab/");
+  await page.locator('.stack-options label:has(input[value="slidebox"])').click();
+  await expect(page.locator('[data-integration="slidebox"]')).toBeChecked();
+  await expect(page.locator("#stack-setup")).toHaveText("View Slidebox setup");
+  await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#integrations");
+  await expect(page.locator("#integration-description")).toContainText("Requires Lumenmorph 0.3.0");
+  await expect(page.locator("#integration-snippet code")).toHaveCount(5);
+  await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox");
+  await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/slidebox"');
+  await expect(page.locator("#integration-snippet")).toContainText('class="settings lumenmorph-slidebox"');
+  await expect(page.locator("#integration-snippet")).toContainText("Optional experimental range");
+  await expect(page.locator("#integration-guide")).toHaveAttribute("href", /\/docs\/slidebox\.md$/);
+  await page.getByRole("button", { name: "Copy main.js — import base styles before the skin", exact: true }).click();
+  expect(await page.evaluate(() => window.__copiedCode)).toContain('import "@monabbous/lumenmorph/slidebox"');
+  expect(new URL(page.url()).searchParams.get("stack")).toBe("slidebox");
+  await page.reload();
+  await expect(page.locator('.stack-options input[value="slidebox"]')).toBeChecked();
+  await expect(page.locator('[data-integration="slidebox"]')).toBeChecked();
+  await expect(page.locator("#integration-snippet code")).toHaveCount(5);
 });

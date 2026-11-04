@@ -106,3 +106,32 @@ test("reduced transparency removes blur without erasing optional range fill", as
   await expect(page.locator("#range")).toHaveCSS("background-image", /linear-gradient/);
   await session.detach();
 });
+
+test("copied lab examples bundle and render with native controls and optional range styling", async ({ page }) => {
+  const errors = [];
+  page.on("pageerror", error => errors.push(error.message));
+  for (const variant of ["basic", "range"]) {
+    await page.goto(`/__slidebox-tests/docs-${variant}.html`);
+    const toggle = page.getByRole("checkbox", { name: "Enable notifications" });
+    await toggle.check();
+    await expect(toggle).toBeChecked();
+    await expect(toggle).toHaveCSS("backdrop-filter", /blur\(40px\)/);
+    await page.getByText("Week", { exact: true }).click();
+    await expect(page.getByRole("radio", { name: "Week", exact: true })).toBeChecked();
+    expect(await page.locator(".slidebox-group").evaluate(group => {
+      const anchored = CSS.supports("anchor-scope", "--slidebox-selection") && CSS.supports("left", "anchor(left)");
+      return getComputedStyle(anchored ? group : group.querySelector("input:checked + span"), "::before").backdropFilter;
+    })).toBe("blur(12px) saturate(1.4)");
+    const range = page.getByRole("slider", { name: "Intensity" });
+    if (variant === "range") {
+      await range.focus();
+      await range.press("ArrowRight");
+      await expect(range).toHaveValue("41");
+      await expect(range).toHaveCSS("backdrop-filter", /blur\(40px\)/);
+      await expect(range).not.toHaveAttribute("data-slidebox-range-fill");
+    } else {
+      await expect(range).toHaveCount(0);
+    }
+  }
+  expect(errors).toEqual([]);
+});
