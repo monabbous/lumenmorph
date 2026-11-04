@@ -66,7 +66,9 @@ function mountGraphic(svg, initial, icon) {
     }
     for (const textNode of [...texts, fallback]) {
       for (const key of previousKeys) textNode.removeAttribute(key);
-      for (const [key, value] of Object.entries({ x: "50%", y: "50%", "dominant-baseline": "central", "text-anchor": "middle", "font-size": fontSize, "font-weight": 700, fill: "white", stroke: "none" })) textNode.setAttribute(key, String(value));
+      // Unlike central, middle doesn't shift Latin fallback glyphs down using
+      // an earlier Arabic font's full em-box metrics in Firefox.
+      for (const [key, value] of Object.entries({ x: "50%", y: "50%", "dominant-baseline": "middle", "text-anchor": "middle", "font-size": fontSize, "font-weight": 700, fill: "white", stroke: "none" })) textNode.setAttribute(key, String(value));
       for (const [key, value] of Object.entries(textProps)) {
         if (textAttributes[key] && (typeof value === "string" || typeof value === "number")) textNode.setAttribute(textAttributes[key], String(value));
       }

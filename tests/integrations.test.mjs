@@ -126,7 +126,16 @@ test("React SVG is accessible, server-renderable, and uses distinct stable mask 
   assert.equal(output, render());
   assert.match(output, /aria-label="Glass &amp; light"/);
   assert.match(output, /foreignObject/);
+  assert.equal([...output.matchAll(/dominant-baseline="middle"/g)].length, 6);
   assert.doesNotMatch(output, /Math.random/);
+});
+
+test("React SVG text preserves explicit baseline and positioning overrides", () => {
+  const output = renderToString(createElement(LumenText, {
+    textProps: { dominantBaseline: "alphabetic", x: 12, y: 95 },
+  }, "Custom baseline"));
+  assert.equal([...output.matchAll(/dominant-baseline="alphabetic"/g)].length, 3);
+  assert.equal([...output.matchAll(/x="12" y="95"/g)].length, 3);
 });
 
 test("React icon ports filled silhouettes with explicit or decorative semantics", () => {

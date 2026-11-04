@@ -44,6 +44,8 @@ Set `--lumen-text-fill` (default `#ffffff30`) and `--lumen-text-outline` (defaul
 
 Size the viewport to fit your text; the component doesn't measure fonts or wrap lines. For responsive layout, use `width: 100%; height: auto` on the SVG. The accessible image name defaults to its string content; use real HTML headings for document structure and selectable, translatable body text.
 
+Text defaults to `dominant-baseline="middle"` to avoid Firefox shifting Latin glyphs downward when an earlier font in the fallback stack has different vertical metrics. You can override the baseline and position with `textProps`. Leave room for descenders and the outline in your viewport.
+
 SVG `foreignObject` backgrounds don't reliably share the document's fixed-background viewport. The optional React component maps the inherited page coordinates through `getScreenCTM().inverse()` and uses local backgrounds. A ResizeObserver and resize/scroll listeners refresh that matrix, coalesced into one animation frame; there is no extra pointer listener or idle animation loop. CSS-animated transforms or unrelated layout shifts that don't resize the observed SVG/parent may leave the matrix stale until a resize or scroll. Prefer an untransformed heading and test your layout.
 
 The SVG effect uses two masks and two HTML `foreignObject` layers. Its outline is a ring around the filled silhouette, produced by SVG dilation and erosion. Stroking the font's raw contours would expose internal seams in fonts with overlapping contours, including Cascadia Mono. The silhouette ring avoids those lines.
@@ -155,4 +157,3 @@ Use the full package prefix, `@monabbous/lumenmorph`, for the entry points above
 Common props are `paths` (a path string or array), `viewBox` (default `0 0 64 64`), numeric `width` / `height` (128 / 128), `strokeWidth` (2, in SVG units), and `label`. Leave room inside the view box for the outline. These are filled silhouettes; stroke-only line icons need conversion to filled paths. Set `--lumen-icon-fill` and `--lumen-icon-outline` to override the inherited text-layer colors.
 
 An unlabeled icon is decorative and hidden from accessibility APIs. Supply `label` for a meaningful image, or label its enclosing button and leave the icon decorative. It has the same client-rendering/SSR boundaries as the text adapter for each framework. The lab's framework selector switches both the text and icon examples.
-
