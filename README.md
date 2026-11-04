@@ -31,7 +31,7 @@ npm install @monabbous/lumenmorph
 For plain HTML, add the minified CSS to `<head>` instead:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/dist/css/lumenmorph.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/dist/css/lumenmorph.min.css">
 ```
 
 Both routes use the same markup. Your app supplies spacing and typography:

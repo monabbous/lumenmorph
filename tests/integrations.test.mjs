@@ -79,7 +79,7 @@ test("implementation blocks separate foundations from all SVG adapters", () => {
 test("CDN snippets use minified CSS and browser-resolvable imports with optional motion", () => {
   assert.match(installationSnippets("css", {})[0].code, /npm install @monabbous\/lumenmorph/);
   const install = installationSnippets("cdn", { smoothing: true })[0].code;
-  assert.match(install, /@0\.2\.1\/dist\/css\/lumenmorph\.min\.css/);
+  assert.match(install, /@0\.2\.2\/dist\/css\/lumenmorph\.min\.css/);
   assert.match(install, /motion\.min\.css/);
   assert.doesNotMatch(installationSnippets("cdn", { smoothing: false })[0].code, /motion/);
   const blocks = foundationSnippets("cdn", { "glow-color": "#ffaa71" }, { tracking: true, smoothing: true });
@@ -87,7 +87,7 @@ test("CDN snippets use minified CSS and browser-resolvable imports with optional
   assert.doesNotMatch(blocks[0].code, /@import/);
   assert.match(blocks[1].code, /lumenmorph-motion/);
   assert.match(blocks[2].code, /<script type="module">/);
-  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.1\/js\/pointer\.mjs/);
+  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.2\/js\/pointer\.mjs/);
   assert.equal(foundationSnippets("cdn", {}, { tracking: false, smoothing: false }).length, 2);
 });
 

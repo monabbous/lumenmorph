@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 - 2026-11-04
+
+- Fix SVG text shifting downward and clipping descenders in Firefox when an earlier fallback font has different vertical metrics. All five adapters now default to `dominant-baseline="middle"`; explicit text positioning still works.
+- Add a bundled fallback-font regression fixture and desktop Firefox CI coverage. Verify the clipping fix on physical Android Firefox and Chrome; the separately reported exposed-layer corruption remains unreproduced.
+
 ## 0.1.0 - 2026-11-02
 
 - Extract glass surfaces, illuminated borders, and HTML glass text into CSS, SCSS, Less, and Tailwind integrations.

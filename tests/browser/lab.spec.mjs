@@ -95,7 +95,7 @@ test("installation switches between npm and a minified no-build CDN setup", asyn
   await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
   await expect(page.locator("#installation-snippet")).toContainText("motion.min.css");
   await expect(page.locator("#snippet")).toContainText('<script type="module">');
-  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/js/pointer.mjs");
+  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/js/pointer.mjs");
   await page.locator("#smoothing").uncheck();
   await page.locator("#tracking").uncheck();
   await expect(page.locator("#installation-snippet")).not.toContainText("motion.min.css");
