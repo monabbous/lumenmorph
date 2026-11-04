@@ -52,6 +52,8 @@ The skin paints the shared sliding indicator where CSS anchor positioning is sup
 
 Groups match the Lumenmorph lab's material picker: an 18%-accent selected tint with 12px blur, a softly lit inset edge, and a faint outer glow. Unselected segments use a 2.5%-accent tint with 2px blur. Group corners default to 4px; `--slidebox-radius` and `--lumen-radius` still override them. The accent uses your inherited `--lumen-glow-color` or `--slidebox-on`, falling back to Ember.
 
+The main lab uses this generated stylesheet for all five radio groups. Its separate `material-picker-layout.css` supplies layout and prevents specimen-only background/blur settings from inheriting into the settings groups; it does not duplicate the skin's paint. The example collection still uses its existing styles.
+
 ## Style an experimental range
 
 Slidebox ranges remain experimental. Import their stylesheet explicitly:

@@ -383,3 +383,62 @@ test("all group highlights follow presets and custom glow colors", async ({ page
   await page.getByRole("button", { name: "Reset", exact: true }).click();
   await checkColors("#ffaa71");
 });
+
+test("main lab's imported skin matches its original group styles across demo settings", async ({ page, context }) => {
+  const requests = [];
+  page.on("request", request => requests.push(new URL(request.url()).pathname));
+  const original = await context.newPage();
+  try {
+    await original.route("**/lab/", async route => {
+      const response = await route.fetch();
+      const body = (await response.text())
+        .replace('href="./material-picker-layout.css"', 'href="./material-picker.css"')
+        .replace('href="./assets/lumenmorph-slidebox.css"', 'href="./assets/preset-highlight.css"')
+        .replaceAll("material-picker lumenmorph-slidebox", "material-picker")
+        .replace('class="code-section lumenmorph-slidebox"', 'class="code-section"');
+      await route.fulfill({ response, body });
+    });
+    for (const view of [original, page]) {
+      await view.goto("/lab/");
+      await expect(view.locator("#react-demo svg")).toBeVisible();
+      await view.evaluate(() => document.fonts.ready);
+      await view.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; }" });
+      await view.locator(".lm-lab").evaluate(root => {
+        root.classList.remove("lumenmorph-motion");
+        root.style.setProperty("--lumen-x", "320px");
+        root.style.setProperty("--lumen-y", "180px");
+      });
+    }
+    expect(requests).toContain("/lab/assets/lumenmorph-slidebox.css");
+    expect(requests).not.toContain("/lab/material-picker.css");
+    expect(requests).not.toContain("/lab/assets/preset-highlight.css");
+    expect(await page.locator(".material-picker").evaluateAll(groups => groups.every(group => !!group.closest(".lumenmorph-slidebox")))).toBe(true);
+    const read = view => view.locator(".material-picker").evaluateAll(groups => {
+      const properties = ["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter", "borderRadius", "boxShadow", "borderColor", "color"];
+      const paint = style => Object.fromEntries(properties.map(key => [key, style[key]]));
+      const anchored = CSS.supports("anchor-scope", "--slidebox-selection") && CSS.supports("left", "anchor(left)");
+      return groups.map(group => {
+        const selected = group.querySelector("input:checked + span"), idle = group.querySelector("input:not(:checked) + span");
+        return {
+          frame: paint(getComputedStyle(group)),
+          size: [group.getBoundingClientRect().width, group.getBoundingClientRect().height],
+          selected: selected ? paint(getComputedStyle(anchored ? group : selected, "::before")) : null,
+          idle: idle ? paint(getComputedStyle(idle)) : null,
+        };
+      });
+    });
+    for (const preset of ["ember", "lagoon", "lilac"]) {
+      for (const view of [original, page]) await view.locator(`[data-preset="${preset}"]`).evaluate(input => input.click());
+      expect(await read(page), `${preset}: imported skin must preserve all five groups`).toEqual(await read(original));
+    }
+    for (const view of [original, page]) {
+      await view.locator("#glow-color").fill("#33aa77");
+      await view.locator("#blur").fill("0");
+      await view.locator("#radius").fill("24");
+      await view.locator("#glow-size").fill("900");
+    }
+    expect(await read(page), "Specimen controls must not change the groups' material").toEqual(await read(original));
+  } finally {
+    await original.close();
+  }
+});
