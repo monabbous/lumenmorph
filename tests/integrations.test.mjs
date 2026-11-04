@@ -79,7 +79,7 @@ test("implementation blocks separate foundations from all SVG adapters", () => {
 test("CDN snippets use minified CSS and browser-resolvable imports with optional motion", () => {
   assert.match(installationSnippets("css", {})[0].code, /npm install @monabbous\/lumenmorph/);
   const install = installationSnippets("cdn", { smoothing: true })[0].code;
-  assert.match(install, /@0\.2\.1\/dist\/css\/lumenmorph\.min\.css/);
+  assert.match(install, /@0\.2\.2\/dist\/css\/lumenmorph\.min\.css/);
   assert.match(install, /motion\.min\.css/);
   assert.doesNotMatch(installationSnippets("cdn", { smoothing: false })[0].code, /motion/);
   const blocks = foundationSnippets("cdn", { "glow-color": "#ffaa71" }, { tracking: true, smoothing: true });
@@ -87,7 +87,7 @@ test("CDN snippets use minified CSS and browser-resolvable imports with optional
   assert.doesNotMatch(blocks[0].code, /@import/);
   assert.match(blocks[1].code, /lumenmorph-motion/);
   assert.match(blocks[2].code, /<script type="module">/);
-  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.1\/js\/pointer\.mjs/);
+  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.2\/js\/pointer\.mjs/);
   assert.equal(foundationSnippets("cdn", {}, { tracking: false, smoothing: false }).length, 2);
 });
 
@@ -126,7 +126,16 @@ test("React SVG is accessible, server-renderable, and uses distinct stable mask 
   assert.equal(output, render());
   assert.match(output, /aria-label="Glass &amp; light"/);
   assert.match(output, /foreignObject/);
+  assert.equal([...output.matchAll(/dominant-baseline="middle"/g)].length, 6);
   assert.doesNotMatch(output, /Math.random/);
+});
+
+test("React SVG text preserves explicit baseline and positioning overrides", () => {
+  const output = renderToString(createElement(LumenText, {
+    textProps: { dominantBaseline: "alphabetic", x: 12, y: 95 },
+  }, "Custom baseline"));
+  assert.equal([...output.matchAll(/dominant-baseline="alphabetic"/g)].length, 3);
+  assert.equal([...output.matchAll(/x="12" y="95"/g)].length, 3);
 });
 
 test("React icon ports filled silhouettes with explicit or decorative semantics", () => {

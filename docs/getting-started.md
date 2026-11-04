@@ -37,7 +37,7 @@ Save this as `index.html` and open it in a browser. The version-pinned jsDelivr 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Lumenmorph — vanilla CSS</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/dist/css/lumenmorph.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/dist/css/lumenmorph.min.css">
     <style>
       body {
         margin: 0;
@@ -70,7 +70,7 @@ To make the light follow the pointer, add this optional module before `</body>`,
 
 ```html
 <script type="module">
-  import { trackPointer } from "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/js/pointer.mjs";
+  import { trackPointer } from "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/js/pointer.mjs";
   const stop = trackPointer();
   // Call stop() if you remove the effect.
 </script>
@@ -79,7 +79,7 @@ To make the light follow the pointer, add this optional module before `</body>`,
 For smooth follow and return, also add this minified stylesheet to `<head>` and set `class="lumenmorph-motion"` on `<html>`:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/dist/css/motion.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/dist/css/motion.min.css">
 ```
 
 Keep all CDN URLs on the same version. The npm package includes `dist/css/lumenmorph.min.css` and `dist/css/motion.min.css`, generated from the same source as the readable stylesheets and ready for CDN delivery or self-hosting.
@@ -99,7 +99,7 @@ Then reference it from your HTML (adjust the URL for your site's public director
 <link rel="stylesheet" href="/vendor/lumenmorph.css">
 ```
 
-You can also download the [minified CDN stylesheet](https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.1/dist/css/lumenmorph.min.css), save it as `public/vendor/lumenmorph.min.css`, and link to `/vendor/lumenmorph.min.css`. No tracking script is required for a static light.
+You can also download the [minified CDN stylesheet](https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2/dist/css/lumenmorph.min.css), save it as `public/vendor/lumenmorph.min.css`, and link to `/vendor/lumenmorph.min.css`. No tracking script is required for a static light.
 
 For unreleased changes, install from GitHub instead of the registry:
 
@@ -141,4 +141,3 @@ The classes don't set your content's text color, padding, width, shadows, typogr
 This ports nabous.dev's `.glassmorphism-text`; that class name also works as an alias in vanilla CSS, the SCSS class entry point, and Tailwind. It layers the background light behind translucent white text, clips it to the glyphs, and disables backdrop filtering. The text remains normal, selectable HTML. Use `lumen.text()` in SCSS or `.lumenmorph-text()` in Less for your own selector.
 
 Control the base color with `--lumen-text-color`, the text light's radius with `--lumen-text-glow-size`, and its intensity with `--lumen-text-glow-opacity`. `--lumen-text-stroke-width` preserves the source treatment's transparent stroke; it doesn't draw an outline. For a visible outline, use the optional SVG component.
-

@@ -37,7 +37,7 @@ jobs:
       - run: npm test
       - run: npm run test:types
       - run: npm run test:svelte
-      - run: npx playwright install --with-deps chromium webkit
+      - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser
       - run: git diff --exit-code -- dist scss less tailwind public/lab/assets public/lab/r public/lab/examples public/lab/editor-runtime.json angular/dist web-component/styles.mjs react/index.mjs react/index.d.ts
       - run: npm run build:previews -- --check

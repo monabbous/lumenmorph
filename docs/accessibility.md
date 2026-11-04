@@ -10,5 +10,4 @@
 - Shared viewport light uses fixed-attachment backgrounds. Transforms, filters, containment, SVG compositing, and mobile engines can change fixed-background behavior. Use a static light or local mode on one untransformed surface when shared alignment isn't reliable.
 - Blur and radial gradients require rendering work. Small JavaScript and low markup don't imply compositor-only rendering or a speed advantage over other glass effects. Avoid many overlapping, full-screen blurred surfaces; test real devices.
 
-Automated browser checks use desktop and mobile-emulated Chromium, plus WebKit for SVG masking and coordinate isolation. Test your target browsers and physical devices, especially for SVG compositing and fixed backgrounds.
-
+Automated browser checks use desktop Firefox, desktop and mobile-emulated Chromium, plus WebKit for SVG masking and coordinate isolation. Desktop Firefox checks do not verify Firefox Android. Test your target browsers and physical devices, especially for SVG compositing and fixed backgrounds.

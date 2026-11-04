@@ -13,7 +13,7 @@ function LumenText({ children, width = 640, height = 120, fontSize = 80, strokeW
     {
       x: "50%",
       y: "50%",
-      dominantBaseline: "central",
+      dominantBaseline: "middle",
       textAnchor: "middle",
       fontSize,
       fontWeight: 700,

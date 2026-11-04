@@ -18,7 +18,7 @@ export function LumenText({ children, width = 640, height = 120, fontSize = 80, 
   useEffect(() => svg.current ? observeSvgGeometry(svg.current) : undefined, [width, height]);
 
   const text = (outline = false, fallback = false) => <text
-    x="50%" y="50%" dominantBaseline="central" textAnchor="middle" fontSize={fontSize} fontWeight={700}
+    x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fontSize={fontSize} fontWeight={700}
     {...textProps} fill={fallback ? "CanvasText" : "white"} stroke="none"
     filter={outline ? `url(#${id}-ring)` : undefined}
     className={fallback ? "lumenmorph-svg-fallback" : undefined}
