@@ -96,9 +96,9 @@ test("Slidebox lab documentation includes installation, ordered styles, native m
   const { guide, description, blocks } = integrations.slidebox;
   assert.equal(guide, "slidebox.md");
   assert.match(description, /Requires Slidebox 1\.4\.1/);
-  assert.match(description, /namespaced skin import is new in the next Lumenmorph release/);
+  assert.match(description, /Lumenmorph 0\.3\.2 or later/);
   assert.equal(blocks.length, 6);
-  assert.equal(blocks[0].code, "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.1");
+  assert.equal(blocks[0].code, "npm install @monabbous/lumenmorph@^0.3.2 @monabbous/slidebox@^1.4.1");
   const imports = blocks[1].code;
   assert.ok(imports.indexOf("slidebox/dist/css/slidebox.css") < imports.indexOf("lumenmorph/skins/slidebox"));
   assert.ok(imports.indexOf("slidebox/dist/css/group.css") < imports.indexOf("lumenmorph/skins/slidebox"));

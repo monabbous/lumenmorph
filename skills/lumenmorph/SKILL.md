@@ -33,7 +33,7 @@ Read the target app's styling setup. Use one of:
 | Setup | Entry point |
 | --- | --- |
 | Vanilla CSS | `@monabbous/lumenmorph/css` |
-| Slidebox skin | `@monabbous/lumenmorph/skins/slidebox` (next release; `/slidebox` alias for 0.3.0–0.3.1) |
+| Slidebox skin (0.3.2+) | `@monabbous/lumenmorph/skins/slidebox` (`/slidebox` remains a compatibility alias) |
 | Ready-made SCSS classes | `@monabbous/lumenmorph/scss` |
 | SCSS mixins for custom selectors | `@monabbous/lumenmorph/scss/mixins` |
 | Less mixins | `@monabbous/lumenmorph/less` |

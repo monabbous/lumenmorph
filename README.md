@@ -45,7 +45,7 @@ Both routes use the same markup. Your app supplies spacing and typography:
 
 Static glass needs no JavaScript. [Add pointer light](docs/pointer.md) when you want the glow to follow the cursor. [Installation details](docs/getting-started.md) cover CDN scripts, self-hosting, and HTML glass text.
 
-The optional [Slidebox skin](docs/slidebox.md) lives in `skins/slidebox.css`. Import it as `@monabbous/lumenmorph/skins/slidebox` after Slidebox's styles. The lab, gallery, and editor reuse that same stylesheet, with layout and theme settings only. This namespaced import is new in the next release; published versions through 0.3.1 use the compatible `/slidebox` alias.
+The optional [Slidebox skin](docs/slidebox.md) lives in `skins/slidebox.css`. Import it as `@monabbous/lumenmorph/skins/slidebox` after Slidebox's styles. The lab, gallery, and editor reuse that same stylesheet, with layout and theme settings only. This namespaced import requires 0.3.2 or later; `/slidebox` remains a compatibility alias.
 
 ## Examples
 

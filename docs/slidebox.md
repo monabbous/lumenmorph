@@ -4,16 +4,16 @@
 
 The optional `@monabbous/lumenmorph/skins/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
 
-The stylesheet lives in `skins/slidebox.css`; the `.css` import suffix is optional. The original `@monabbous/lumenmorph/slidebox` path remains a compatibility alias. The `/skins/slidebox` path is new in the next release; use the original alias with published versions through 0.3.1.
+The stylesheet lives in `skins/slidebox.css`; the `.css` import suffix is optional. The original `@monabbous/lumenmorph/slidebox` path remains a compatibility alias. The `/skins/slidebox` path requires Lumenmorph 0.3.2 or later.
 
 The build copies this exact file to `public/lab/skins/slidebox.css` for the standalone lab and gallery, and embeds it unchanged in the editor runtime. There is no separate lab skin definition.
 
 Unchecked switches use their own fill color for the background, pointer glow, and soft shadow instead of the checked accent. Their fill glow runs at 35% intensity, while the separate thumb border keeps its full accent illumination. Checked switch and range thumbs share the checked group's inset outline and soft accent shadow. These styles do not change thumb geometry or motion and are bypassed in forced colors.
 
-The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later. The persistent thumb/fill tint is available in Lumenmorph 0.3.1:
+Install Lumenmorph 0.3.2 and Slidebox 1.4.1 or later for the namespaced skin, circular thumbs, and separate unchecked-fill illumination:
 
 ```sh
-npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.1
+npm install @monabbous/lumenmorph@^0.3.2 @monabbous/slidebox@^1.4.1
 ```
 
 Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.

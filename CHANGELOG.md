@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2 - 2026-11-05
+
+- Add `@monabbous/lumenmorph/skins/slidebox` and its optional `.css` suffix. Retain `/slidebox` as a compatibility alias.
+- Reuse the exact skin in the lab, gallery, and editor; enable layered switch and range decoration in the examples and remove the old range-paint override.
+- Use the fill's own color for unchecked switch backgrounds, reduced-intensity glow, and shadows while preserving full border illumination. Add group-style shadows to switch and range thumbs.
+- Install Slidebox 1.4.1, fixing circular resting thumbs in the shared two-layer hook without copying geometry into the skin.
+
 ## 0.3.1 - 2026-11-05
 
 - Give switch thumbs and range fill a persistent accent base matching the checked radio-group tint, keeping controls visible away from the pointer light.
