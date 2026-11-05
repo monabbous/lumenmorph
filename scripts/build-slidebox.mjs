@@ -9,9 +9,12 @@ const group = scope("slidebox-group");
 const range = scope("slidebox-range");
 const visual = `:is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual])`;
 const tracks = `${toggle}, ${range}`;
-const thumb = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #302028b3))";
 const border = "var(--lumen-border-color, #ffffff30)";
 const groupAccent = "var(--lumen-glow-color, var(--slidebox-on, #ffaa71))";
+// A persistent accent base keeps small controls legible outside the light.
+// Mix into the inherited card material, retaining its translucency and blur.
+const controlBase = `color-mix(in srgb, ${groupAccent} var(--lumen-slidebox-tint, 18%), var(--lumen-bg, #102a3166))`;
+const thumb = `var(--lumen-slidebox-thumb-bg, ${controlBase})`;
 
 function paint(selector, { thumbs = false, gradient = true, gradientOnly = false, material = {} } = {}) {
   const output = core.clone();
@@ -108,7 +111,7 @@ const css = `/* Generated from src/lumenmorph.css. Native control parts reuse ca
     ${tracks} { background-color: var(--lumen-bg, #302028b3); }
   }
   ${paint(selected, { thumbs: true })}
-  ${paint(rangeFill, { material: { radius: "inherit" } })}
+  ${paint(rangeFill, { material: { bg: controlBase, radius: "inherit" } })}
   ${borderPaint(plainThumb)}
   ${borderPaint(thumbFill, thumbRing, { nativeLayer: true })}
   ${borderPaint(rangeThumb, `${rangeThumb}::before`)}

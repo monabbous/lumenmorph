@@ -3,6 +3,15 @@ import { PNG } from "pngjs";
 
 test.beforeEach(async ({ page }) => { await page.goto("/__slidebox-tests/"); });
 
+const tintedBase = page => page.locator("#reference-card").evaluate(card => {
+  const sample = document.createElement("span");
+  sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))";
+  card.append(sample);
+  const color = getComputedStyle(sample).backgroundColor;
+  sample.remove();
+  return color;
+});
+
 test("lab glass is opt-in and preserves switch geometry, keyboard state, and form values", async ({ page }) => {
   const plain = page.locator("#plain"), glass = page.locator("#glass");
   const geometry = element => {
@@ -15,11 +24,13 @@ test("lab glass is opt-in and preserves switch geometry, keyboard state, and for
   await expect(glass).toHaveCSS("backdrop-filter", card.blur);
   await expect(glass).toHaveCSS("background-color", card.background);
   expect(await glass.evaluate(e => getComputedStyle(e, "::after").pointerEvents)).toBe("none");
-  expect(await glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(card.background);
+  const base = await tintedBase(page);
+  expect(base).not.toBe(card.background);
+  expect(await glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(base);
   await glass.focus();
   await glass.press("Space");
   await expect(glass).toBeChecked();
-  expect(await glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(card.background);
+  expect(await glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(base);
   await expect(page.locator("#disabled")).toBeDisabled();
   await page.getByRole("button", { name: "Save settings" }).click();
   expect(await page.evaluate(() => window.submitted)).toEqual({ glass: "on", period: "day", intensity: "40" });
@@ -67,6 +78,8 @@ test("group selected and unselected glass match the Lumenmorph lab reference", a
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("radio", { name: "Week", exact: true })).toBeChecked();
   const selected = await page.locator("#group").evaluate(paint, true);
+  await page.locator("#glass").evaluate(element => element.style.setProperty("--lumen-glow-color", getComputedStyle(document.querySelector("#group")).getPropertyValue("--lumen-glow-color")));
+  await expect.poll(() => page.locator("#glass").evaluate(element => getComputedStyle(element, "::before").backgroundColor)).toBe(selected.backgroundColor);
   expect(selected.backdropFilter).toBe("blur(12px) saturate(1.4)");
   expect(selected.backgroundColor).not.toBe("rgb(255, 170, 113)");
 });
@@ -78,7 +91,7 @@ test("public colors inherit, while forced colors and reduced motion keep Slidebo
     document.body.style.setProperty("--lumen-border-glow-color", "#ffaa71");
   });
   await glass.check();
-  await expect.poll(() => glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(await page.locator("#reference-card").evaluate(e => getComputedStyle(e).backgroundColor));
+  await expect.poll(() => glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(await tintedBase(page));
   expect(await glass.evaluate(e => getComputedStyle(e, "::after").backgroundImage)).toBe(await page.locator("#reference-card").evaluate(e => getComputedStyle(e, "::before").backgroundImage));
   await page.emulateMedia({ reducedMotion: "reduce" });
   expect(await glass.evaluate(e => getComputedStyle(e, "::after").transitionDuration.split(",").every(t => parseFloat(t) < .001))).toBe(true);
@@ -102,6 +115,35 @@ test("optional range fill and motion are not replaced by the skin", async ({ pag
   await page.evaluate(() => window.stopRange());
   await expect(range).not.toHaveAttribute("data-slidebox-range-fill");
   await expect(range).not.toHaveAttribute("data-slidebox-range-layers");
+});
+
+test("accent base stays visible away from the pointer and supports inherited theme overrides", async ({ page }) => {
+  await page.evaluate(() => {
+    document.body.style.setProperty("--lumen-x", "-5000px");
+    document.body.style.setProperty("--lumen-y", "-5000px");
+    document.body.style.setProperty("--lumen-glow-color", "#80efdf");
+    window.stopRange = window.startRangeEnhancements();
+  });
+  const read = () => page.evaluate(() => {
+    const visual = document.querySelector("#range").nextElementSibling;
+    return [getComputedStyle(document.querySelector("#glass"), "::before").backgroundColor,
+      getComputedStyle(visual, "::before").backgroundColor,
+      getComputedStyle(visual.querySelector("[data-slidebox-range-thumb]")).backgroundColor];
+  });
+  const base = await tintedBase(page);
+  await expect.poll(read).toEqual([base, base, base]);
+  await page.evaluate(() => document.body.style.setProperty("--lumen-slidebox-tint", "0%"));
+  // Compare resolved colors rather than serialization (color(srgb) vs rgba).
+  await expect.poll(() => page.locator("#glass").evaluate(element => {
+    const sample = document.createElement("span");
+    sample.style.backgroundColor = "color-mix(in srgb, transparent 0%, var(--lumen-bg, #102a3166))";
+    document.body.append(sample);
+    const expected = getComputedStyle(sample).backgroundColor;
+    sample.remove();
+    return getComputedStyle(element, "::before").backgroundColor === expected;
+  })).toBe(true);
+  await page.evaluate(() => document.body.style.setProperty("--lumen-slidebox-thumb-bg", "rgb(80, 160, 180)"));
+  await expect.poll(() => page.locator("#glass").evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe("rgb(80, 160, 180)");
 });
 
 test("reduced transparency removes blur without erasing optional range fill", async ({ page, browserName }) => {

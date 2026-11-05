@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.1 - 2026-11-05
+
+- Give switch thumbs and range fill a persistent accent base matching the checked radio-group tint, keeping controls visible away from the pointer light.
+- Apply the same skin in the installable export, lab, gallery, and editor. Keep translucency, illuminated borders, native geometry, and accessibility fallbacks.
+- Add the optional inherited `--lumen-slidebox-tint` percentage; the default is 18% and needs no configuration.
+
 ## 0.3.0 - 2026-11-05
 
 - Add the optional `@monabbous/lumenmorph/slidebox` skin for switches, grouped radios, and experimental ranges. Keep native input behavior, Slidebox geometry and motion, and optional range helpers.

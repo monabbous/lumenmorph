@@ -4,7 +4,7 @@
 
 The optional `@monabbous/lumenmorph/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
 
-The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later:
+The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later. The persistent thumb/fill tint is available in Lumenmorph 0.3.1:
 
 ```sh
 npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0
@@ -125,7 +125,7 @@ For the Lumenmorph lab's Ember groups, override the group separately:
 }
 ```
 
-Thumb and fill paint uses the canonical card defaults from [controls](controls.md), not a separate opaque on/off color recipe. Inherit the same `--lumen-bg`, blur, saturation, glow, and border variables to match a card. `--lumen-slidebox-thumb-bg` optionally changes only the thumb fill; the reduced-transparency fallback uses `--lumen-solid-bg`. Slidebox's public size, spacing, and radius still control native geometry. Groups keep their selected/unselected material defaults described above.
+Thumb and fill paint uses the canonical surface treatment from [controls](controls.md), with the checked group's 18% accent tint and translucent blue-green base so small controls remain visible away from the pointer light. The accent follows `--lumen-glow-color`, falling back to `--slidebox-on` and then Ember. Inherited `--lumen-bg` replaces the base underneath the tint. No lab-only styling or extra configuration is required. Set `--lumen-slidebox-tint` to a percentage to adjust the base tint (`0%` removes the accent). `--lumen-slidebox-thumb-bg` optionally overrides only the thumb fill; the reduced-transparency fallback uses `--lumen-solid-bg`. Blur, light, and illuminated borders still use the inherited card controls. Slidebox's public size, spacing, and radius still control native geometry. Groups keep their selected/unselected material defaults described above.
 
 ## Add pointer light
 

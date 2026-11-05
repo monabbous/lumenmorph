@@ -490,8 +490,13 @@ test("main lab switches and ranges use glass without losing keyboard, fill, or f
         const read = (element, pseudo) => Object.fromEntries(properties.map(key => [key, getComputedStyle(element, pseudo)[key]]));
         const card = document.querySelector(".main-card"), input = document.querySelector("#glow-size"), visual = input.nextElementSibling;
         const thumb = visual.querySelector("[data-slidebox-range-thumb]");
+        const sample = document.createElement("span");
+        sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))";
+        card.append(sample);
+        const tintedCard = { ...read(card), backgroundColor: getComputedStyle(sample).backgroundColor };
+        sample.remove();
         return {
-          card: read(card), toggle: read(document.querySelector("#tracking"), "::before"),
+          card: tintedCard, toggle: read(document.querySelector("#tracking"), "::before"),
           thumb: read(thumb), fill: read(visual, "::before"),
           cardBorder: getComputedStyle(card, "::before").backgroundImage,
           toggleBorder: getComputedStyle(document.querySelector("#tracking"), "::after").backgroundImage,
