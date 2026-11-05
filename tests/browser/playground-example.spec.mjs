@@ -66,6 +66,20 @@ test("one page-wide light follows movement outside the lab container", async ({ 
   await expect(page.locator("iframe")).toHaveCount(0);
 });
 
+test("sample button stays directly below the surface card at every breakpoint", async ({ page }) => {
+  await page.goto("/lab/");
+  expect(await page.locator(".main-card").evaluate(card => card.nextElementSibling?.id)).toBe("sample-button");
+  await expect(page.locator(".type-specimens #sample-button")).toHaveCount(0);
+  for (const width of [1440, 768, 375]) {
+    await page.setViewportSize({ width, height: 1100 });
+    await expect.poll(() => page.evaluate(() => {
+      const card = document.querySelector(".main-card").getBoundingClientRect();
+      const button = document.querySelector("#sample-button").getBoundingClientRect();
+      return button.top >= card.bottom + 8 && Math.abs(button.left - card.left) < 1 && Math.abs(button.width - card.width) < 1;
+    })).toBe(true);
+  }
+});
+
 test("all capabilities are discoverable while advanced controls stay collapsed", async ({ page }) => {
   await page.goto("/lab/");
   await expect(page.locator(".main-card .fa-asterisk")).toBeVisible();
