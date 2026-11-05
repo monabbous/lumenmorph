@@ -39,16 +39,20 @@ export function foundationSnippets(format, values, { tracking, smoothing }) {
   return blocks;
 }
 
-export function componentSnippets(framework) {
-  const jsx = `<div className="material">\n      <LumenText width={640} height={120} fontSize={80}>Lumenmorph</LumenText>\n      <LumenIcon paths={play} label="Play" />\n    </div>`;
+export function componentSnippets(framework, { text = "Lumenmorph", iconPaths = play, iconViewBox = "0 0 64 64", iconLabel = "Play" } = {}) {
+  const js = value => JSON.stringify(value).replaceAll("<", "\\u003c");
+  const attr = value => String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll("{", "&#123;").replaceAll("}", "&#125;");
+  const stroke = Math.max(1, Math.max(...iconViewBox.split(" ").slice(2).map(Number)) / 64);
+  const size = Math.min(80, Math.max(10, 540 / (Array.from(text).length * .65)));
+  const jsx = `<div className="material">\n      <LumenText width={640} height={120} fontSize={${size}}>{${js(text)}}</LumenText>\n      <LumenIcon paths={play} viewBox={${js(iconViewBox)}} strokeWidth={${stroke}} label={${js(iconLabel)}} />\n    </div>`;
   const examples = {
-    react: [block("Preview.jsx", "javascript", `"use client";\nimport { LumenText, LumenIcon } from "@monabbous/lumenmorph/react";\n\nconst play = "${play}";\n\nexport function Preview() {\n  return ${jsx};\n}`)],
-    vue: [block("Preview.vue", "xml", `<script setup>\nimport { LumenText, LumenIcon } from "@monabbous/lumenmorph/vue";\nconst play = "${play}";\n</script>\n\n<template>\n  <div class="material">\n    <LumenText text="Lumenmorph" :width="640" :height="120" :font-size="80" />\n    <LumenIcon :paths="play" label="Play" />\n  </div>\n</template>`)],
-    svelte: [block("Preview.svelte", "xml", `<script>\n  import { LumenText, LumenIcon } from "@monabbous/lumenmorph/svelte";\n  const play = "${play}";\n</script>\n\n<div class="material">\n  <LumenText text="Lumenmorph" width={640} height={120} fontSize={80} />\n  <LumenIcon paths={play} label="Play" />\n</div>`)],
-    angular: [block("preview.component.ts", "typescript", `import { Component } from "@angular/core";\nimport { LumenTextComponent, LumenIconComponent } from "@monabbous/lumenmorph/angular";\n\n@Component({\n  selector: "app-preview",\n  standalone: true,\n  imports: [LumenTextComponent, LumenIconComponent],\n  template: \`<div class="material">\n    <svg lumenText text="Lumenmorph" [width]="640" [height]="120" [fontSize]="80"></svg>\n    <svg lumenIcon [paths]="play" label="Play"></svg>\n  </div>\`,\n})\nexport class PreviewComponent {\n  readonly play = "${play}";\n}`)],
+    react: [block("Preview.jsx", "javascript", `"use client";\nimport { LumenText, LumenIcon } from "@monabbous/lumenmorph/react";\n\nconst play = ${js(iconPaths)};\n\nexport function Preview() {\n  return ${jsx};\n}`)],
+    vue: [block("Preview.vue", "xml", `<script setup>\nimport { LumenText, LumenIcon } from "@monabbous/lumenmorph/vue";\nconst play = ${js(iconPaths)};\n</script>\n\n<template>\n  <div class="material">\n    <LumenText text="${attr(text)}" :width="640" :height="120" :font-size="${size}" />\n    <LumenIcon :paths="play" view-box="${attr(iconViewBox)}" :stroke-width="${stroke}" label="${attr(iconLabel)}" />\n  </div>\n</template>`)],
+    svelte: [block("Preview.svelte", "xml", `<script>\n  import { LumenText, LumenIcon } from "@monabbous/lumenmorph/svelte";\n  const play = ${js(iconPaths)};\n</script>\n\n<div class="material">\n  <LumenText text="${attr(text)}" width={640} height={120} fontSize={${size}} />\n  <LumenIcon paths={play} viewBox="${attr(iconViewBox)}" strokeWidth={${stroke}} label="${attr(iconLabel)}" />\n</div>`)],
+    angular: [block("preview.component.ts", "typescript", `import { Component } from "@angular/core";\nimport { LumenTextComponent, LumenIconComponent } from "@monabbous/lumenmorph/angular";\n\n@Component({\n  selector: "app-preview",\n  standalone: true,\n  imports: [LumenTextComponent, LumenIconComponent],\n  template: \`<div class="material">\n    <svg lumenText [text]="text" [width]="640" [height]="120" [fontSize]="${size}"></svg>\n    <svg lumenIcon [paths]="play" [viewBox]="iconViewBox" [strokeWidth]="${stroke}" [label]="iconLabel"></svg>\n  </div>\`,\n})\nexport class PreviewComponent {\n  readonly text = ${js(text)};\n  readonly play = ${js(iconPaths)};\n  readonly iconViewBox = ${js(iconViewBox)};\n  readonly iconLabel = ${js(iconLabel)};\n}`)],
     "web-component": [
       block("components.js", "javascript", `import { defineLumenText, defineLumenIcon } from "@monabbous/lumenmorph/web-component";\n\ndefineLumenText();\ndefineLumenIcon();`),
-      block("HTML", "xml", `<div class="material">\n  <lumen-text text="Lumenmorph" width="640" height="120" font-size="80"></lumen-text>\n  <lumen-icon path="${play}" aria-label="Play"></lumen-icon>\n</div>`),
+      block("HTML", "xml", `<div class="material">\n  <lumen-text text="${attr(text)}" width="640" height="120" font-size="${size}"></lumen-text>\n  <lumen-icon path="${attr(iconPaths)}" view-box="${attr(iconViewBox)}" stroke-width="${stroke}" aria-label="${attr(iconLabel)}"></lumen-icon>\n</div>`),
     ],
   };
   return examples[framework];

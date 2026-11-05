@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A glassmorphism lab. Tune pointer light, frosted surfaces, and illuminated borders with Lumenmorph.">
+  <meta name="description" content="Try Lumenmorph glass surfaces, shared pointer light, illuminated borders, and text. Edit the preview and copy a working example.">
   <meta name="color-scheme" content="dark light">
   <title>Lumenmorph glass lab</title>
   <link rel="stylesheet" href="./assets/lumenmorph.css">
@@ -15,16 +15,16 @@
   <link rel="stylesheet" href="./lab.css">
   <link rel="stylesheet" href="./material-picker-layout.css">
   <link rel="stylesheet" href="./skins/slidebox.css">
+  <link rel="stylesheet" href="./playground-layout.css">
 
 </head>
 <body>
   <main class="lm-lab lumenmorph-motion">
     <section class="lm-intro" aria-labelledby="lab-title">
-      <p class="eyebrow">CSS GLASS / OPEN SOURCE</p>
       <h1 class="lm-title" id="lab-title"><span class="title-label">Lumenmorph</span><span id="header-demo" aria-hidden="true"></span></h1>
       <div class="intro-bottom"><p class="dek">Give your interface a little light.<br>Glass surfaces and glowing edges, in any framework. Start with CSS; add pointer light when you want it.</p><nav class="intro-links" aria-label="Explore Lumenmorph"><a class="intro-link" href="./examples/">24 editable examples <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a><a class="intro-link" href="https://github.com/monabbous/lumenmorph/tree/main/docs">Documentation <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></nav></div>
       <section class="quick-use" aria-labelledby="quick-use-heading">
-        <div class="quick-use-heading"><h2 id="quick-use-heading">Quick use</h2><p>No install or build step. Add these to your HTML.</p></div>
+        <details id="quick-start"><summary><h2 id="quick-use-heading">Quick use</h2><span>Three CDN steps. No build needed.</span></summary>
         <ol class="quick-steps">
           <li><h3>Load the stylesheet</h3><p>Inside <code>&lt;head&gt;</code>.</p><div class="code-blocks quick-code" data-title="CDN stylesheet"><pre><code data-language="xml">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.2/dist/css/lumenmorph.min.css"&gt;</code></pre></div></li>
           <li><h3>Add your content</h3><p>One element, with an optional glowing border.</p><div class="code-blocks quick-code" data-title="Glass markup"><pre><code data-language="xml">&lt;article class="lumenmorph lumenmorph-border" style="padding: 2rem"&gt;
@@ -38,32 +38,56 @@
 &lt;/script&gt;</code></pre></div></li>
         </ol>
         <a href="#code" class="intro-link">Using npm, Tailwind, or a framework? Find your stack below <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+        </details>
       </section>
     </section>
-    <div class="playground-heading"><div><p class="eyebrow">TRY IT HERE</p><h2>Tune the material.</h2></div><p>Pick a mood. Move the light. Copy your settings below.</p></div>
+    <div class="playground-heading" id="settings-example"><h2>Try the material</h2><p>Pick a theme. Move the light. Copy the result.</p></div>
     <div class="lm-workspace">
       <section class="stage" aria-label="Live preview">
-        <div class="stage-top"><span class="eyebrow">01 / LIVE MATERIAL</span><span class="status"><i></i> Move your pointer</span></div>
+        <div class="stage-top"><span class="stage-label">One material. Shared light.</span><span class="status">Move anywhere on the page</span></div>
         <div class="specimens" id="specimens">
-          <article class="lumenmorph lumenmorph-border specimen main-card"><span class="chip">01 / SURFACE</span><div class="material-icon" aria-hidden="true"><i class="fa-solid fa-asterisk" aria-hidden="true"></i></div><h2>Glass surface</h2><p>Blur the background and catch the pointer light along the edge.</p><a class="sample-link" href="#code">Get the CSS <span aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span></a></article>
-          <div class="small-cards"><button class="lumenmorph lumenmorph-border specimen small-card" id="sample-button" type="button"><span aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span><span>Try this button</span></button><article class="lumenmorph lumenmorph-border specimen small-card"><span class="chip">02 / NO WRAPPER</span><p>A background and one border pseudo-element.</p></article></div>
+          <!-- Playground example: begin -->
+<article class="lumenmorph lumenmorph-border specimen main-card lm-card-demo"><span class="chip">Surface</span><div class="material-icon" aria-hidden="true"><i class="fa-solid fa-asterisk" aria-hidden="true"></i></div><h2>Glass surface</h2><p id="card-description">Blur the background and catch the pointer light along the edge.</p><a class="sample-link" href="#code">Get the CSS <span aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span></a></article>
+<!-- Playground example: end -->
+          <div class="type-specimens"><section class="text-specimen" aria-label="Text previews"><h3>Text</h3><div class="text-line"><span>HTML</span><h3 class="lumenmorph-text html-text-demo">Lumenmorph</h3></div><div class="text-line"><span>SVG</span><div id="react-demo"></div></div><p id="adapter-status" class="sr-only" role="status">Optional SVG adapter.</p></section><section class="icon-specimen" aria-label="Icon preview"><h3>Icon</h3><div id="icon-demo"></div></section><button class="lumenmorph lumenmorph-border specimen small-card" id="sample-button" type="button"><span aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></span><span>Try this button</span></button></div>
         </div>
-        <div class="type-preview"><span class="eyebrow">03 / OPTIONAL SVG TEXT</span><div id="react-demo"></div><p id="adapter-status" role="status">Two SVG masks. Shared page light.</p></div>
-        <div class="type-preview"><span class="eyebrow">04 / HTML TEXT</span><h3 class="lumenmorph-text html-text-demo">Lumenmorph</h3><p>The original glassmorphism-text treatment. Selectable HTML; no component required.</p></div>
-        <div class="type-preview"><span class="eyebrow">05 / SVG ICON</span><div id="icon-demo"></div><p>The SVGGlassMorph icon treatment, without a layout wrapper.</p></div>
+        <section class="preview-editors" aria-labelledby="preview-edit-heading">
+          <h3 id="preview-edit-heading" class="sr-only">Edit preview content</h3>
+          <div class="example-options" id="text-controls"><label for="example-title">Your text</label><input id="example-title" name="preview-text" type="text" value="Lumenmorph" maxlength="80" autocomplete="off"></div>
+          <div id="icon-controls">
+            <div class="icon-current"><p>Icon <strong id="icon-name">GitHub (brands)</strong></p><button class="lumenmorph lumenmorph-border" id="choose-icon" type="button" aria-haspopup="dialog" aria-controls="icon-picker" disabled>Choose icon</button></div>
+            <p id="icon-status" class="hint" role="status">Choose from Font Awesome Free, or use your own filled SVG path.</p>
+            <details id="custom-icon-path"><summary>Use a custom SVG path</summary>
+              <label for="icon-path">Path data</label><textarea id="icon-path" name="icon-path" rows="3" maxlength="50000" spellcheck="false" aria-describedby="icon-status"></textarea>
+              <label for="icon-viewbox">View box</label><input id="icon-viewbox" name="icon-viewbox" type="text" value="0 0 496 512" spellcheck="false" autocomplete="off" aria-describedby="icon-status">
+            </details>
+            <p class="hint"><a href="#svg-heading">Get the code for your SVG adapter</a></p>
+            <dialog id="icon-picker" aria-labelledby="icon-picker-heading">
+              <div class="icon-picker-heading"><div><h2 id="icon-picker-heading">Choose an icon</h2><p>Font Awesome Free · solid, regular, and brands</p></div><button class="lumenmorph lumenmorph-border" id="close-icon-picker" type="button" aria-label="Close icon picker">Close</button></div>
+              <div class="icon-picker-filters"><div><label for="icon-search">Search icons</label><input id="icon-search" name="icon-search" type="search" placeholder="Search names or keywords…" autocomplete="off"></div><div><label for="icon-style">Style</label><select id="icon-style" name="icon-style"><option value="all">All free styles</option><option value="solid">Solid</option><option value="regular">Regular</option><option value="brands">Brands</option></select></div></div>
+              <p id="icon-results-status" role="status">The catalog loads when opened.</p>
+              <ul id="icon-results" aria-label="Matching icons"></ul>
+              <div class="icon-pagination"><button class="lumenmorph lumenmorph-border" id="icon-previous" type="button" disabled>Previous</button><button class="lumenmorph lumenmorph-border" id="icon-next" type="button" disabled>Next</button></div>
+              <p class="hint">Font Awesome Free 6.5.1 · <a href="https://fontawesome.com/license/free">License</a>. Brand icons are trademarks of their owners. Pro icons are not included.</p>
+            </dialog>
+          </div>
+          <noscript><p class="hint">Preview editing needs JavaScript. The static surfaces and HTML text still work.</p></noscript>
+        </section>
       </section>
-      <aside class="controls" aria-labelledby="controls-heading"><div class="controls-heading"><h2 id="controls-heading">Shape the light</h2><button class="lumenmorph lumenmorph-border" id="reset" type="button">Reset</button></div>
+      <aside class="controls" aria-labelledby="controls-heading"><div class="controls-heading"><h2 id="controls-heading">Material</h2><button class="lumenmorph lumenmorph-border" id="reset" type="button">Reset</button></div>
         <fieldset class="preset-picker"><legend>Material presets</legend><div class="slidebox-group material-picker lumenmorph-slidebox presets">
           <label><input type="radio" name="material-preset" value="ember" data-preset="ember" checked><span>Ember</span></label>
           <label><input type="radio" name="material-preset" value="lagoon" data-preset="lagoon"><span>Lagoon</span></label>
           <label><input type="radio" name="material-preset" value="lilac" data-preset="lilac"><span>Lilac</span></label>
         </div></fieldset>
         <form id="controls" class="lumenmorph-slidebox">
+          <div class="color-row"><label for="glow-color">Light color</label><input type="color" id="glow-color" name="glow-color" value="#ffaa71"></div>
+          <label for="glow-opacity">Light intensity <output for="glow-opacity" id="glow-opacity-value"></output></label><input class="slidebox-range" id="glow-opacity" name="glow-opacity" type="range" min="0" max="1" step="0.01" value="0.3">
+          <label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="tracking" checked> Follow pointer</label>
+          <details id="material-settings"><summary>Fine-tune material</summary>
           <fieldset><legend>Light</legend>
             <label for="glow-size">Glow size <output for="glow-size" id="glow-size-value"></output></label><input class="slidebox-range" id="glow-size" name="glow-size" type="range" min="80" max="900" step="10" value="460" data-unit="px">
-            <label for="glow-opacity">Surface intensity <output for="glow-opacity" id="glow-opacity-value"></output></label><input class="slidebox-range" id="glow-opacity" name="glow-opacity" type="range" min="0" max="1" step="0.01" value="0.3">
             <label for="border-opacity">Edge intensity <output for="border-opacity" id="border-opacity-value"></output></label><input class="slidebox-range" id="border-opacity" name="border-opacity" type="range" min="0" max="1" step="0.01" value="0.9">
-            <div class="color-row"><label for="glow-color">Glow color</label><input type="color" id="glow-color" name="glow-color" value="#ffaa71"></div>
             <div class="color-row"><label for="border-glow-color">Edge color</label><input type="color" id="border-glow-color" name="border-glow-color" value="#ffd4a3"></div>
           </fieldset>
           <fieldset><legend>Glass</legend>
@@ -74,11 +98,36 @@
             <label for="radius">Corner radius <output for="radius" id="radius-value"></output></label><input class="slidebox-range" id="radius" name="radius" type="range" min="0" max="48" value="4" data-unit="px">
             <label for="border-width">Border width <output for="border-width" id="border-width-value"></output></label><input class="slidebox-range" id="border-width" name="border-width" type="range" min="0" max="5" step="0.5" value="1.5" data-unit="px">
           </fieldset>
-          <div class="pointer-options"><label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="tracking" checked> Follow pointer</label><label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="smoothing" checked> Smooth follow &amp; return</label><p class="hint">Smoothing animates the shared coordinates once, on the lab container. Reduced motion disables tracking and smoothing. Touch keeps the static light.</p><p class="hint">Controls use <a href="https://github.com/monabbous/slidebox">Slidebox</a>; ranges are experimental.</p></div>
+          <div class="pointer-options"><label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="smoothing" checked> Smooth follow &amp; return</label><p class="hint">Reduced motion disables tracking and smoothing. Touch keeps a static light.</p><p class="hint">Native controls use <a href="https://github.com/monabbous/slidebox">Slidebox</a>; ranges are experimental.</p></div>
+          </details>
         </form>
       </aside>
     </div>
-    <section class="code-section lumenmorph-slidebox" id="code" aria-labelledby="code-heading"><p class="eyebrow">IMPLEMENTATION</p><h2 id="code-heading">Use these settings</h2>
+    <div class="example-actions"><button class="lumenmorph lumenmorph-border use-preview" id="use-preview" type="button">Get code</button></div>
+    <details id="settings-source"><summary>Standalone HTML example</summary><p class="example-contract">The star card and HTML text with your material settings. Published CSS, optional Font Awesome icons. No hidden lab styles.</p><div class="export-secondary"><button class="lumenmorph lumenmorph-border" id="copy-settings" type="button" hidden>Copy HTML</button><button class="lumenmorph lumenmorph-border" id="download-settings" type="button" hidden>Download HTML</button><a id="run-settings" href="./playground/" target="_blank" rel="noopener">Open example</a><span id="settings-copy-status" role="status"></span></div><div id="settings-source-code" class="code-blocks"></div></details>
+    <details id="examples-guide" class="support-guide"><summary>Examples &amp; browser support</summary>
+    <section class="practical-examples" aria-labelledby="practical-heading">
+      <div class="developer-heading"><h2 id="practical-heading">Start with something you need.</h2><p>Try a working interface, edit its source, then export HTML. No framework required.</p></div>
+      <div class="practical-grid">
+        <a href="#settings-example"><strong>Material controls</strong><span>Native switches and ranges in this playground. Change one theme across cards, controls, and text.</span></a>
+        <a href="./examples/command/"><strong>Command menu</strong><span>Filter materials with a real search field and keyboard-friendly buttons.</span></a>
+        <a href="./examples/profile/"><strong>Profile card</strong><span>A compact surface for an account, author, or team member.</span></a>
+        <a href="./examples/player/"><strong>Media player</strong><span>A small control surface with a working play/pause interaction.</span></a>
+      </div>
+    </section>
+    <section class="adoption-notes" aria-labelledby="adoption-heading">
+      <div class="developer-heading"><h2 id="adoption-heading">Before you use it</h2><p>The effect is optional. Native content and controls should still work without it.</p></div>
+      <details id="browser-support"><summary>Which browsers work?</summary><p>Automated checks cover Chromium, Firefox, and WebKit, plus mobile-emulated Chromium—not every physical phone. Without blur, the tint remains. Test your target devices for fixed backgrounds and SVG effects.</p><!-- Caniuse support: begin -->
+<table class="support-table"><caption>Caniuse · share of global browser usage</caption><thead><tr><th scope="col">Feature</th><th scope="col">Full support</th><th scope="col">Partial</th></tr></thead><tbody><tr><th scope="row"><a href="https://caniuse.com/css-backdrop-filter">Backdrop blur</a></th><td>97.25%</td><td>0.00%</td></tr>
+<tr><th scope="row"><a href="https://caniuse.com/css-masks">CSS masking</a></th><td>94.42%</td><td>2.98%</td></tr></tbody></table>
+<p class="hint">Snapshot checked <time datetime="2026-11-05">Nov 5, 2026</time>. <a href="https://github.com/Fyrd/caniuse/commit/5c3262aa56eb2f92c4dd32f077a67651d3c7eb16">Source data</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Full support includes prefixed implementations classified as supported by Caniuse. These are feature-level usage figures—not a percentage of Lumenmorph compatibility. CSS masking is a broad feature; partial support does not guarantee mask compositing.</p>
+<!-- Caniuse support: end --><p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix">color-mix() support</a> also affects the radial light. No combined support percentage is claimed.</p><a href="https://github.com/monabbous/lumenmorph/blob/main/docs/accessibility.md">Browser support and rendering limits</a></details>
+      <details><summary>What about motion, contrast, and accessibility?</summary><p>Use native elements and labels, as this example does. The pointer helper honors reduced motion and ignores touch by default. Forced colors use system colors and hide decorative borders; reduced transparency removes blur where the browser exposes that preference. Your app still needs readable foreground contrast and visible focus styles over its actual background.</p></details>
+      <details><summary>Do I need JavaScript or a framework?</summary><p>Static surfaces and HTML glass text need only CSS. Pointer light is opt-in. The lab also opts into Slidebox's range decoration. React, Vue, Svelte, Angular, and Web Components are optional SVG adapters, not requirements for a card or native control.</p><a href="#code">Choose your styling route or framework</a></details>
+      <details><summary>Where should I use it—and where should I be careful?</summary><p>Start with a few small surfaces: a toolbar, settings panel, or menu. Blur and gradients require rendering work; avoid stacks of full-screen blurred layers. Transforms, filters, and containment can affect shared fixed-background alignment. Keep a static-light fallback and measure in your own app. No compositor-only rendering or performance advantage is assumed.</p></details>
+    </section>
+    </details>
+    <section class="code-section lumenmorph-slidebox" id="code" aria-labelledby="code-heading"><details id="advanced-setup"><summary><h2 id="code-heading">Frameworks &amp; advanced setup</h2></summary>
       <fieldset class="stack-picker"><legend>Choose your stack</legend><div class="stack-scroll"><div class="slidebox-group material-picker lumenmorph-slidebox stack-options">
         <label><input type="radio" name="tech-stack" value="css" checked><span>CSS</span></label>
         <label><input type="radio" name="tech-stack" value="tailwind"><span>Tailwind</span></label>
@@ -104,9 +153,9 @@
       </section>
       <section class="implementation-panel" aria-labelledby="svg-heading"><div class="code-heading"><div><h3 id="svg-heading">SVG components</h3><p class="hint">Optional npm adapters: choose Vanilla CSS · npm above for the install command, then reuse the foundation's styles and .material settings. Initialize the tracker once in your app's browser lifecycle, not per SVG.</p></div></div><div class="code-tabs"><div class="stack-scroll"><div class="slidebox-group material-picker adapter-options" role="group" aria-label="SVG implementation"><label><input type="radio" name="code-adapter" value="react" data-framework="react" checked><span>React</span></label><label><input type="radio" name="code-adapter" value="vue" data-framework="vue"><span>Vue</span></label><label><input type="radio" name="code-adapter" value="svelte" data-framework="svelte"><span>Svelte</span></label><label><input type="radio" name="code-adapter" value="angular" data-framework="angular"><span>Angular</span></label><label><input type="radio" name="code-adapter" value="web-component" data-framework="web-component"><span>Web Component</span></label></div></div></div><p class="hint">Vue, Svelte, Angular, and Web Components render the effect after mounting. Use HTML glass text if it must be visible before hydration.</p><div id="component-snippet" class="code-blocks"></div></section>
       <p id="copy-status" role="status"></p>
+      </details>
     </section>
-    <section class="notes" aria-label="Implementation notes"><div><h3>CSS is the core.</h3><p>No runtime, canvas, wrappers, or event handlers for static surfaces. The border uses one pseudo-element.</p></div><div><h3>One shared light.</h3><p>The optional helper writes two inherited variables, at most once per animation frame. It does nothing while idle.</p></div><div><h3>Use it where it fits.</h3><p>Backdrop blur and gradient painting have a cost. Keep large blurred areas in check and test on your target devices.</p></div></section>
-    <section class="collection-invite" aria-labelledby="collection-heading"><a class="collection-thumbnail" href="./examples/" aria-label="Explore all 24 Lumenmorph examples"><img src="./examples/collection.png" alt="A collage of glowing typography, glass controls, and the weather example." width="1200" height="630" loading="lazy" decoding="async"></a><div class="collection-copy"><p class="eyebrow">THE MATERIAL COLLECTION</p><h2 id="collection-heading">24 ways to play with light.</h2><p>Glass surfaces, glowing type, and small interactive worlds. Explore the collection, share an example, or make it your own in the live editor.</p><a class="lumenmorph lumenmorph-border" href="./examples/">Explore all examples <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></div></section>
+    <p class="lab-footer-link"><a href="./examples/">Browse all 24 editable examples</a></p>
   </main>
   <script type="module" src="./lab.mjs"></script><script type="module" src="./assets/react-demo.mjs"></script>
 </body></html>

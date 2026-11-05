@@ -3,6 +3,9 @@ import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from "./assets/slidebo
 import { installationSnippets, foundationSnippets, componentSnippets, globalDefaultsSnippet } from "./snippets.mjs";
 
 import { integrations } from "./integration-snippets.mjs";
+import { playgroundDocument } from "./playground-example.mjs";
+import { setupIconPicker } from "./icon-picker.mjs";
+import { defaultIcon } from "./assets/default-icon.mjs";
 
 const root = document.querySelector(".lm-lab");
 // The specimen and native thumb/fill layers share the same card material.
@@ -28,6 +31,10 @@ let colorCode;
 let cleanup;
 let demoCleanup;
 let demoVersion = 0;
+let settingsReady = false;
+let textPreviewTimer;
+let textPreviewWidth = 640;
+let iconDefinition = { ...defaultIcon };
 const adapterLoaders = {
   react: () => import("./assets/react-demo.mjs"),
   vue: () => import("./assets/adapters/vue.mjs"),
@@ -49,10 +56,16 @@ async function selectAdapter(name) {
     demoCleanup?.(); demoCleanup = undefined;
     target.replaceChildren();
     iconTarget.replaceChildren();
-    const stop = await module.mountDemo(target, { text: "Lumenmorph", width: 640, height: 130, fontSize: 88, strokeWidth: 1.5, textProps: { fontFamily: "inherit", letterSpacing: -2 } });
+    const text = document.querySelector("#example-title").value || "Lumenmorph";
+    // Match drawing units to CSS pixels: scaling a large morphology mask down
+    // to a thumbnail can quantize a thin outline away entirely.
+    const scale = textPreviewWidth / 640;
+    const fontSize = Math.min(88, Math.max(10, 540 / (Array.from(text).length * .65))) * scale;
+    const stop = await module.mountDemo(target, { text, width: textPreviewWidth, height: 130 * scale, fontSize, strokeWidth: 1.5, textProps: { fontFamily: "inherit", letterSpacing: -2 * scale } });
     stagedCleanup = stop;
     if (version !== demoVersion) { stop(); return; }
-    const stopIcon = await module.mountIconDemo(iconTarget, { paths: "M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z", viewBox: "0 0 64 64", width: 112, height: 112, strokeWidth: 1, label: "Play" });
+    const iconStroke = Math.max(1, Math.max(...iconDefinition.viewBox.split(" ").slice(2).map(Number)) / 64);
+    const stopIcon = await module.mountIconDemo(iconTarget, { ...iconDefinition, width: 112, height: 112, strokeWidth: iconStroke });
     const combined = () => { stop(); stopIcon(); };
     if (version !== demoVersion) { combined(); return; }
     demoCleanup = combined;
@@ -65,6 +78,16 @@ async function selectAdapter(name) {
     if (version === demoVersion) target.setAttribute("aria-busy", "false");
   }
 }
+const textPreviewSize = new ResizeObserver(entries => {
+  const width = entries[0].contentRect.width;
+  if (width <= 0 || Math.abs(width - textPreviewWidth) < .5) return;
+  textPreviewWidth = width;
+  if (demoCleanup) {
+    window.clearTimeout(textPreviewTimer);
+    textPreviewTimer = window.setTimeout(() => selectAdapter(framework), 0);
+  }
+});
+textPreviewSize.observe(document.querySelector("#react-demo"));
 const ranges = [...form.querySelectorAll('input[type="range"]')];
 const rangeCleanup = ranges.flatMap(input => {
   return [enhanceSlideboxRange(input, { layers: true }), enhanceSlideboxRangeFill(input)];
@@ -97,11 +120,16 @@ function render() {
   foundationBlocks = foundationSnippets(format, values, { tracking: tracking.checked, smoothing: smoothing.checked });
   renderBlocks(document.querySelector("#installation-snippet"), installationSnippets(format, { smoothing: smoothing.checked }));
   document.querySelector("#installation-hint").textContent = format === "cdn"
-    ? "Plain HTML, no build step. Add these minified stylesheets to <head>, then link your styles.css after them. CDN URLs are pinned to 0.3.0."
+    ? "Plain HTML, no build step. Add these minified stylesheets to <head>, then link your styles.css after them. CDN URLs are pinned to 0.3.2."
     : "Install the package, then use the styles and HTML below. Package imports need a bundler such as Vite; choose CDN for plain HTML without a build step. Frameworks are optional.";
   renderBlocks(document.querySelector("#theme-snippet"), [globalDefaultsSnippet(values)]);
-  componentBlocks = componentSnippets(framework);
+  renderComponentCode();
   renderBlocks(snippet, foundationBlocks);
+  if (settingsReady) renderSettings();
+}
+
+function renderComponentCode() {
+  componentBlocks = componentSnippets(framework, { text: document.querySelector("#example-title").value || "Lumenmorph", iconPaths: iconDefinition.paths, iconViewBox: iconDefinition.viewBox, iconLabel: iconDefinition.label });
   renderBlocks(document.querySelector("#component-snippet"), componentBlocks);
 }
 
@@ -146,11 +174,13 @@ const codeObserver = new IntersectionObserver(async entries => {
 }, { rootMargin: "200px" });
 codeObserver.observe(document.querySelector("#code"));
 codeObserver.observe(document.querySelector(".quick-use"));
+codeObserver.observe(document.querySelector("#settings-example"));
 
 function syncTracking() {
   cleanup?.();
   root.dataset.tracking = tracking.checked ? "on" : "off";
   // Hosted labs reuse the site's --mouse-x/y; never install a second page listener.
+  // trackPointer's default mode listens on window, including outside .lm-lab.
   cleanup = tracking.checked && !hosted ? trackPointer(root) : undefined;
 }
 function preset(name) {
@@ -165,6 +195,12 @@ form.addEventListener("input", event => {
   else if (event.target === smoothing) root.classList.toggle("lumenmorph-motion", smoothing.checked);
   else for (const button of document.querySelectorAll("[data-preset]")) button.checked = false;
   render();
+});
+document.querySelector("#example-title").addEventListener("input", () => {
+  renderSettings();
+  renderComponentCode();
+  window.clearTimeout(textPreviewTimer);
+  textPreviewTimer = window.setTimeout(() => selectAdapter(framework), 150);
 });
 form.addEventListener("submit", event => event.preventDefault());
 for (const button of document.querySelectorAll("[data-preset]")) button.addEventListener("change", () => { if (button.checked) preset(button.dataset.preset); });
@@ -232,6 +268,73 @@ for (const target of document.querySelectorAll(".quick-code")) {
   renderBlocks(target, [{ title: target.dataset.title, language: code.dataset.language, code: code.textContent }]);
 }
 
+// Export the same star card and HTML text with the current public theme.
+// The existing page tracker owns the light; no iframe or second workspace.
+const settingsSource = document.querySelector("#settings-source");
+let exampleHtml = playgroundDocument();
+let exampleUrl;
+function renderSettingsSource() {
+  renderBlocks(document.querySelector("#settings-source-code"), [{ title: "Star card and HTML text — complete HTML", language: "xml", code: exampleHtml }]);
+}
+function renderSettings() {
+  const text = document.querySelector("#example-title").value || "Lumenmorph";
+  document.querySelector(".html-text-demo").textContent = text;
+  exampleHtml = playgroundDocument({ text, values: variables(), tracking: tracking.checked, smoothing: smoothing.checked });
+  if (settingsSource.open) renderSettingsSource();
+  if (exampleUrl) URL.revokeObjectURL(exampleUrl);
+  exampleUrl = URL.createObjectURL(new Blob([exampleHtml], { type: "text/html;charset=utf-8" }));
+  document.querySelector("#run-settings").href = exampleUrl;
+}
+settingsSource.addEventListener("toggle", () => { if (settingsSource.open) renderSettingsSource(); });
+document.querySelector("#copy-settings").addEventListener("click", async () => {
+  renderSettings();
+  try {
+    await navigator.clipboard.writeText(exampleHtml);
+    document.querySelector("#settings-copy-status").textContent = "Complete HTML copied.";
+  } catch {
+    settingsSource.open = true;
+    renderSettingsSource();
+    document.querySelector("#settings-copy-status").textContent = "Clipboard unavailable. Select the code below, or download the HTML.";
+  }
+});
+document.querySelector("#download-settings").addEventListener("click", () => {
+  renderSettings();
+  const link = document.createElement("a");
+  link.href = exampleUrl;
+  link.download = "lumenmorph-preview.html";
+  link.click();
+});
+for (const button of document.querySelectorAll("#copy-settings, #download-settings")) button.hidden = false;
+const stopIconPicker = setupIconPicker(definition => {
+  iconDefinition = definition;
+  renderComponentCode();
+  window.clearTimeout(textPreviewTimer);
+  textPreviewTimer = window.setTimeout(() => selectAdapter(framework), 150);
+}, iconDefinition);
+settingsReady = true;
+renderSettings();
+document.querySelector("#use-preview").addEventListener("click", () => {
+  settingsSource.open = true;
+  renderSettingsSource();
+  settingsSource.scrollIntoView({ block: "start" });
+});
+function revealDestination(hash) {
+  if (["#code", "#integrations", "#svg-heading"].includes(hash)) document.querySelector("#advanced-setup").open = true;
+}
+document.addEventListener("click", event => {
+  const link = event.target.closest('a[href^="#"]');
+  if (link) revealDestination(link.getAttribute("href"));
+});
+window.addEventListener("hashchange", () => revealDestination(location.hash));
+revealDestination(location.hash);
+window.addEventListener("pagehide", event => {
+  if (event.persisted) return;
+  window.clearTimeout(textPreviewTimer);
+  textPreviewSize.disconnect();
+  stopIconPicker();
+  if (exampleUrl) URL.revokeObjectURL(exampleUrl);
+});
+
 // Share navigation choices, not material edits or pointer preferences.
 // replaceState preserves the current anchor without growing history on every selection.
 function reflectSelections() {
@@ -252,6 +355,7 @@ function reflectSelections() {
 function restoreSelections() {
   restoringSelections = true;
   const params = new URL(location.href).searchParams;
+  if (["stack", "format", "library", "svg"].some(key => params.has(key))) document.querySelector("#advanced-setup").open = true;
   const formats = ["css", "cdn", "scss", "less", "tailwind"];
   const requestedStack = params.get("stack");
   format = formats.includes(params.get("format")) ? params.get("format") : requestedStack === "tailwind" ? "tailwind" : "css";

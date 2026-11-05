@@ -1,0 +1,23 @@
+{
+  "source": "https://github.com/Fyrd/caniuse",
+  "commit": "5c3262aa56eb2f92c4dd32f077a67651d3c7eb16",
+  "committedAt": "2026-11-05T03:18:03Z",
+  "retrievedAt": "2026-11-05T15:32:59.800Z",
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "features": [
+    {
+      "id": "css-backdrop-filter",
+      "title": "CSS Backdrop Filter",
+      "full": 97.25,
+      "partial": 0,
+      "url": "https://caniuse.com/css-backdrop-filter"
+    },
+    {
+      "id": "css-masks",
+      "title": "CSS Masks",
+      "full": 94.42,
+      "partial": 2.98,
+      "url": "https://caniuse.com/css-masks"
+    }
+  ]
+}

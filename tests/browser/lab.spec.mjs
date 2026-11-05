@@ -2,10 +2,15 @@ import { test, expect } from "@playwright/test";
 import { PNG } from "pngjs";
 import { readFile } from "node:fs/promises";
 
+async function openDetails(page, ...ids) {
+  for (const id of ids) await page.locator(id).evaluate(element => { element.open = true; });
+}
+
 test("quick use is first, copyable, and its exact CDN example works", async ({ page, context }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__quickCopied = value; } }, configurable: true }));
   await page.goto("/lab/");
   const quick = page.getByRole("region", { name: "Quick use", exact: true });
+  await page.locator("#quick-start > summary").click();
   await expect(quick.locator("li")).toHaveCount(3);
   await expect(quick.getByRole("button", { name: "Copy CDN stylesheet", exact: true })).toBeVisible();
   const blocks = await quick.locator("code[data-language]").allTextContents();
@@ -57,14 +62,14 @@ test("text links keep underlines when the host shell resets anchors after lab CS
     link.textContent = "Host navigation";
     document.body.prepend(link);
   });
-  for (const selector of [".intro-links a", ".quick-use > a", "#stack-setup", ".pointer-options a", "#integration-guide"]) {
+  for (const selector of [".intro-links a", ".quick-use a", "#stack-setup", ".pointer-options a", "#integration-guide"]) {
     const link = page.locator(selector).first();
     await expect(link).toHaveCSS("text-decoration-line", "underline");
     await expect(link).toHaveCSS("text-decoration-thickness", "1px");
     await expect(link).toHaveCSS("text-underline-offset", "4px");
   }
   // Preserve the intentionally undecorated button-style links and host chrome.
-  for (const selector of [".sample-link", ".collection-copy > a", "#host-link"]) {
+  for (const selector of [".sample-link", "#host-link"]) {
     await expect(page.locator(selector)).toHaveCSS("text-decoration-line", "none");
   }
 });
@@ -72,6 +77,7 @@ test("text links keep underlines when the host shell resets anchors after lab CS
 test("quick-use code highlights on arrival and desktop snippets have room", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/lab/");
+  await openDetails(page, "#quick-start");
   await expect(page.locator(".quick-code code.hljs")).toHaveCount(3);
   expect(await page.locator("#code").evaluate(element => element.getBoundingClientRect().top > innerHeight)).toBe(true);
   for (const code of await page.locator(".quick-code code").all()) {
@@ -91,6 +97,7 @@ test("lab loads, renders React masks, and controls update the exported code", as
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));
   await page.goto("/lab/");
+  await openDetails(page, "#material-settings", "#advanced-setup");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Lumenmorph");
   await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
   await expect(page.locator("#react-demo mask")).toHaveCount(2);
@@ -122,6 +129,7 @@ test("live SVG demo lazily loads every framework adapter", async ({ page }) => {
   page.on("pageerror", error => errors.push(error.message));
   page.on("request", request => { if (request.url().includes("/assets/adapters/")) requested.push(request.url()); });
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup");
   await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
   expect(requested).toEqual([]);
   const picker = page.getByRole("group", { name: "SVG implementation" });
@@ -130,7 +138,7 @@ test("live SVG demo lazily loads every framework adapter", async ({ page }) => {
     await expect(page.locator("#react-demo")).toHaveAttribute("data-framework", ({ Vue: "vue", Svelte: "svelte", Angular: "angular", "Web Component": "web-component", React: "react" })[name]);
     await expect(page.locator("#react-demo svg")).toHaveAttribute("aria-label", "Lumenmorph");
     await expect(page.locator("#react-demo svg")).toHaveCount(1);
-    await expect(page.locator("#icon-demo svg")).toHaveAttribute("aria-label", "Play");
+    await expect(page.locator("#icon-demo svg")).toHaveAttribute("aria-label", "GitHub (brands)");
     await expect(page.locator("#icon-demo mask path")).toHaveCount(2);
   }
   expect(errors).toEqual([]);
@@ -138,6 +146,7 @@ test("live SVG demo lazily loads every framework adapter", async ({ page }) => {
 
 test("framework switching keeps the preview space while the next bundle loads", async ({ page }) => {
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup");
   await expect(page.locator("#react-demo svg")).toBeVisible();
   const before = await page.locator("#react-demo").boundingBox();
   let release;
@@ -159,6 +168,7 @@ test("implementation panels use highlighted blocks with per-block copy buttons",
     Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } });
   });
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup");
   await page.locator("#code").scrollIntoViewIfNeeded();
   await expect(page.getByRole("heading", { name: "Foundations", exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "SVG components", exact: true })).toBeAttached();
@@ -176,6 +186,7 @@ test("implementation panels use highlighted blocks with per-block copy buttons",
 
 test("installation switches between npm and a minified no-build CDN setup", async ({ page }) => {
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup", "#material-settings");
   await expect(page.locator("#installation-snippet")).toContainText("npm install @monabbous/lumenmorph");
   await page.getByRole("group", { name: "Code format" }).locator("label").filter({ hasText: "CDN · minified" }).click();
   await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
@@ -195,6 +206,7 @@ test("installation switches between npm and a minified no-build CDN setup", asyn
 test("native button keeps keyboard behavior and tracking cleans up", async ({ page, isMobile }) => {
   test.skip(isMobile, "Desktop keyboard and mouse interaction");
   await page.goto("/lab/");
+  await openDetails(page, "#material-settings");
   await page.locator("#sample-button").focus();
   await page.keyboard.press("Enter");
   await expect(page.locator("#sample-button")).toContainText("Native click received");
@@ -229,7 +241,7 @@ test("scaled SVG light stays under the viewport pointer coordinates", async ({ p
     const layer = fill.querySelector("div");
     for (const [key, value] of Object.entries({ bg: "#000", blur: "0px", saturation: "1", "glow-color": "#fff", "glow-opacity": "1" })) layer.style.setProperty(`--lumen-${key}`, value);
   });
-  await expect.poll(() => page.locator("#header-demo svg").evaluate(svg => svg.style.getPropertyValue("--_lumen-svg-a"))).toBe("2");
+  await expect.poll(() => page.locator("#header-demo svg").evaluate(svg => Math.abs(Number(svg.style.getPropertyValue("--_lumen-svg-a")) - svg.viewBox.baseVal.width / 400))).toBeLessThan(.001);
   const image = PNG.sync.read(await page.locator("#header-demo svg").screenshot({ scale: "css" }));
   let peak = { brightness: 0, x: 0, y: 0 };
   for (let y = 1; y < image.height - 1; y++) for (let x = 1; x < image.width - 1; x++) {
@@ -248,6 +260,8 @@ test("SVG outline doesn't reveal internal seams between overlapping glyph contou
   await expect(page.locator("#header-demo svg")).toBeVisible();
   await page.locator("#header-demo svg").evaluate(svg => {
     Object.assign(svg.style, { position: "fixed", left: "0px", top: "0px", width: "800px", height: "160px", zIndex: "100000", background: "#000" });
+    svg.setAttribute("viewBox", "0 0 800 160");
+    for (const element of svg.querySelectorAll("filter, mask, foreignObject")) { element.setAttribute("width", "800"); element.setAttribute("height", "160"); }
     for (const [key, value] of Object.entries({ "--lumen-text-fill": "transparent", "--lumen-text-outline": "#fff", "--lumen-glow-color": "transparent" })) svg.style.setProperty(key, value);
     for (const text of svg.querySelectorAll("mask text")) {
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
@@ -319,6 +333,7 @@ test("static CSS works without JavaScript", async ({ browser, baseURL }) => {
 test("optional motion transitions one coordinate owner and smooths exit", async ({ page, isMobile }) => {
   test.skip(isMobile, "Desktop hover exit behavior");
   await page.goto("/lab/");
+  await openDetails(page, "#material-settings");
   await page.locator("#smoothing").check();
   await expect(page.locator(".lm-lab")).toHaveClass(/lumenmorph-motion/);
   const durations = await page.locator(".main-card").evaluate(surface => ({
@@ -346,6 +361,7 @@ test("optional motion transitions one coordinate owner and smooths exit", async 
 
 test("Slidebox presets support arrows, Lilac export, custom edits, and reset", async ({ page }) => {
   await page.goto("/lab/");
+  await openDetails(page, "#material-settings");
   const ember = page.getByRole("radio", { name: "Ember", exact: true });
   await ember.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
   await ember.focus();
@@ -366,6 +382,7 @@ test("Slidebox presets support arrows, Lilac export, custom edits, and reset", a
 test("detailed setup selects each stack and retains the npm install command", async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } }));
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup");
   const copy = page.locator("#installation-snippet").getByRole("button", { name: "Copy Terminal — in your project folder", exact: true });
   await copy.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
   await copy.click();
@@ -413,6 +430,7 @@ test("preset highlight keeps Slidebox geometry with Lumenmorph paint and accessi
 
 test("URL remembers setup selections while presets and sliders stay local", async ({ page }) => {
   await page.goto("/lab/?campaign=demo#code");
+  await openDetails(page, "#material-settings");
   const select = async selector => {
     const label = page.locator(selector);
     await label.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
@@ -420,7 +438,8 @@ test("URL remembers setup selections while presets and sliders stay local", asyn
   };
   await select("label:has([data-format=tailwind])");
   await expect(page).toHaveURL(/stack=tailwind.*format=tailwind.*#code$/);
-  await expect(page.locator("#snippet")).toContainText("@apply lumen-glow-size-[460px]");
+  await expect(page.locator("#snippet code").nth(1)).toContainText("@apply");
+  await expect(page.locator("#snippet code").nth(1)).toContainText("lumen-glow-size-[460px]");
   await expect(page.locator("#snippet")).toContainText("B. Direct utilities");
   await expect(page.locator("#theme-snippet")).toContainText(":root");
   await expect(page.locator("#theme-snippet")).not.toContainText("material-preset");
@@ -472,7 +491,10 @@ test("all group highlights follow presets and custom glow colors", async ({ page
     expect(colors.every(value => value === color)).toBe(true);
   };
   for (const [name, color] of [["Ember", "#ffaa71"], ["Lagoon", "#00b2b2"], ["Lilac", "#c4a1ff"]]) {
-    await page.locator(".presets label").filter({ hasText: name }).click();
+    const label = page.locator(".presets label").filter({ hasText: name });
+    await label.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+    await label.click();
+    await expect(label.locator("input")).toBeChecked();
     await checkColors(color);
   }
   await page.locator("#glow-color").fill("#33aa77");
@@ -498,6 +520,7 @@ test("main lab's imported skin matches its original group styles across demo set
     });
     for (const view of [original, page]) {
       await view.goto("/lab/");
+      await openDetails(view, "#material-settings", "#advanced-setup");
       await expect(view.locator("#react-demo svg")).toBeVisible();
       await view.evaluate(() => document.fonts.ready);
       await view.addStyleTag({ content: "*, *::before, *::after { transition: none !important; animation: none !important; }" });
@@ -546,6 +569,7 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
     Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } });
   });
   await page.goto("/lab/");
+  await openDetails(page, "#advanced-setup");
   await page.locator('.stack-options label:has(input[value="slidebox"])').click();
   await expect(page.locator('[data-integration="slidebox"]')).toBeChecked();
   await expect(page.locator("#stack-setup")).toHaveText("View Slidebox setup");
@@ -568,6 +592,7 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
 
 test("main lab switches and ranges use glass without losing keyboard, fill, or forced-color behavior", async ({ page }) => {
   await page.goto("/lab/");
+  await openDetails(page, "#material-settings");
   await expect(page.locator("#header-demo svg")).toBeVisible();
   const tracking = page.locator("#tracking"), range = page.locator("#glow-size");
   await expect.poll(() => range.evaluate(input => Math.abs(input.getBoundingClientRect().top - input.nextElementSibling.getBoundingClientRect().top))).toBeLessThan(.5);
