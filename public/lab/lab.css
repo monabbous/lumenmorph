@@ -142,7 +142,6 @@ body:not(:has([data-nabous-shell])) {
   .lm-lab .intro-bottom { flex-direction: column; gap: 16px; }
   .lm-lab .lm-workspace { grid-template-columns: 1fr; }
   .lm-lab .stage { position: static; }
-  .lm-lab .controls form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
   .lm-lab .controls .hint { margin: 0; }
   .lm-lab .small-card { min-height: 145px; }
   .lm-lab .notes { grid-template-columns: 1fr; gap: 22px; }
