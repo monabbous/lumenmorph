@@ -46,6 +46,24 @@ test("quick-use snippets remain readable without JavaScript", async ({ browser, 
   await context.close();
 });
 
+test("quick-use code highlights on arrival and desktop snippets have room", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1100 });
+  await page.goto("/lab/");
+  await expect(page.locator(".quick-code code.hljs")).toHaveCount(3);
+  expect(await page.locator("#code").evaluate(element => element.getBoundingClientRect().top > innerHeight)).toBe(true);
+  for (const code of await page.locator(".quick-code code").all()) {
+    await expect(code.locator("[class^=hljs-]").first()).toBeAttached();
+  }
+  const widths = await page.locator(".quick-steps > li").evaluateAll(items => items.map(item => item.getBoundingClientRect().width));
+  expect(widths[0]).toBeGreaterThan(1000);
+  expect(widths[1]).toBeGreaterThan(480);
+  expect(widths[2]).toBeGreaterThan(480);
+  for (const width of [768, 375]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+});
+
 test("lab loads, renders React masks, and controls update the exported code", async ({ page }) => {
   const errors = [];
   page.on("pageerror", error => errors.push(error.message));

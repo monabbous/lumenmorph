@@ -145,6 +145,7 @@ const codeObserver = new IntersectionObserver(async entries => {
   } catch { /* Plain text remains readable when the optional highlighter cannot load. */ }
 }, { rootMargin: "200px" });
 codeObserver.observe(document.querySelector("#code"));
+codeObserver.observe(document.querySelector(".quick-use"));
 
 function syncTracking() {
   cleanup?.();

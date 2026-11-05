@@ -181,13 +181,14 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .quick-use-heading { display: flex; align-items: baseline; gap: 12px 24px; flex-wrap: wrap; }
 .lm-lab .quick-use h2 { margin: 0; font-size: 20px; letter-spacing: -.04em; }
 .lm-lab .quick-use-heading p, .lm-lab .quick-steps > li > p { margin: 0; font-size: 11px; color: var(--lm-muted); }
-.lm-lab .quick-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; margin: 20px 0 14px; list-style-position: inside; }
+.lm-lab .quick-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 24px; padding: 0; margin: 20px 0 14px; list-style-position: inside; }
 .lm-lab .quick-steps > li { min-width: 0; font-size: 12px; }
+.lm-lab .quick-steps > li:first-child { grid-column: 1 / -1; }
 .lm-lab .quick-steps > li::marker { color: var(--lm-accent); }
 .lm-lab .quick-steps h3 { display: inline; font-size: 12px; }
-.lm-lab .quick-steps > li > p { min-height: 3.6em; margin: 6px 0 10px; }
+.lm-lab .quick-steps > li > p { margin: 6px 0 10px; }
 .lm-lab .quick-code .code-label { display: none; }
-.lm-lab .quick-code pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+.lm-lab .quick-code pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
 .lm-lab .quick-use > .intro-link { white-space: normal; }
 .lm-lab .stack-picker { margin: 20px 0 0; min-width: 0; }
 .lm-lab .stack-picker legend { padding: 0; border: 0; margin-bottom: 8px; text-transform: none; letter-spacing: 0; font-size: 11px; }
