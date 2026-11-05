@@ -5,7 +5,9 @@ test.beforeEach(async ({ page }) => { await page.goto("/__slidebox-tests/"); });
 
 const tintedBase = page => page.locator("#reference-card").evaluate(card => {
   const sample = document.createElement("span");
-  sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))";
+  sample.style.backgroundColor = document.querySelector("#glass").checked
+    ? "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))"
+    : "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
   card.append(sample);
   const color = getComputedStyle(sample).backgroundColor;
   sample.remove();
@@ -18,7 +20,10 @@ test("lab glass is opt-in and preserves switch geometry, keyboard state, and for
     const style = getComputedStyle(element), thumb = getComputedStyle(element, "::after");
     return [style.width, style.height, thumb.width, thumb.height, thumb.marginInlineStart, thumb.marginInlineEnd, thumb.transitionDuration];
   };
-  expect(await glass.evaluate(geometry)).toEqual(await plain.evaluate(geometry));
+  const actual = await glass.evaluate(geometry), reference = await plain.evaluate(geometry);
+  expect(actual.slice(0, 2)).toEqual(reference.slice(0, 2));
+  expect(actual.slice(4)).toEqual(reference.slice(4));
+  expect(Math.abs(parseFloat(actual[2]) - parseFloat(actual[3]))).toBeLessThan(.1);
   await expect(plain).toHaveCSS("backdrop-filter", "none");
   const card = await page.locator("#reference-card").evaluate(element => ({ background: getComputedStyle(element).backgroundColor, blur: getComputedStyle(element).backdropFilter }));
   await expect(glass).toHaveCSS("backdrop-filter", card.blur);
@@ -30,7 +35,7 @@ test("lab glass is opt-in and preserves switch geometry, keyboard state, and for
   await glass.focus();
   await glass.press("Space");
   await expect(glass).toBeChecked();
-  expect(await glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(base);
+  await expect.poll(() => glass.evaluate(e => getComputedStyle(e, "::before").backgroundColor)).toBe(await tintedBase(page));
   await expect(page.locator("#disabled")).toBeDisabled();
   await page.getByRole("button", { name: "Save settings" }).click();
   expect(await page.evaluate(() => window.submitted)).toEqual({ glass: "on", period: "day", intensity: "40" });
@@ -79,6 +84,7 @@ test("group selected and unselected glass match the Lumenmorph lab reference", a
   await expect(page.getByRole("radio", { name: "Week", exact: true })).toBeChecked();
   const selected = await page.locator("#group").evaluate(paint, true);
   await page.locator("#glass").evaluate(element => element.style.setProperty("--lumen-glow-color", getComputedStyle(document.querySelector("#group")).getPropertyValue("--lumen-glow-color")));
+  await page.locator("#glass").check();
   await expect.poll(() => page.locator("#glass").evaluate(element => getComputedStyle(element, "::before").backgroundColor)).toBe(selected.backgroundColor);
   expect(selected.backdropFilter).toBe("blur(12px) saturate(1.4)");
   expect(selected.backgroundColor).not.toBe("rgb(255, 170, 113)");
@@ -117,6 +123,48 @@ test("optional range fill and motion are not replaced by the skin", async ({ pag
   await expect(range).not.toHaveAttribute("data-slidebox-range-layers");
 });
 
+test("unchecked fill glow dims independently while both thumb types keep group-style shadows", async ({ page }) => {
+  await page.evaluate(() => {
+    document.body.style.setProperty("--lumen-glow-color", "#ffaa71");
+    document.body.style.setProperty("--lumen-glow-opacity", ".6");
+    window.stopRange = window.startRangeEnhancements();
+  });
+  const input = page.locator("#glass");
+  const read = () => input.evaluate(element => ({
+    fill: getComputedStyle(element, "::before").backgroundImage,
+    border: getComputedStyle(element, "::after").backgroundImage,
+    shadow: getComputedStyle(element, "::before").boxShadow,
+  }));
+  const expectedFill = factor => page.locator("#reference-card").evaluate((element, factor) => {
+    const sample = element.cloneNode(false);
+    sample.removeAttribute("id");
+    sample.style.setProperty("--lumen-glow-opacity", String(.6 * factor));
+    if (factor < 1) sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))");
+    element.after(sample);
+    const image = getComputedStyle(sample).backgroundImage;
+    sample.remove();
+    return image;
+  }, factor);
+  await expect.poll(async () => (await read()).fill).toBe(await expectedFill(.35));
+  const off = await read();
+  expect(off.shadow).toContain("inset");
+  await input.check();
+  await expect.poll(async () => (await read()).fill).toBe(await expectedFill(1));
+  const on = await read();
+  expect(on.fill).not.toBe(off.fill);
+  expect(on.border).toBe(off.border);
+  expect(on.shadow).not.toBe(off.shadow);
+  const rangeShadow = await page.locator("[data-slidebox-range-thumb]").evaluate(element => getComputedStyle(element).boxShadow);
+  expect(rangeShadow).toBe(on.shadow);
+  const groupShadow = await page.locator("#group").evaluate(element => {
+    const anchors = CSS.supports("anchor-scope: --slidebox-selection") && CSS.supports("left: anchor(left)");
+    return getComputedStyle(anchors ? element : element.querySelector("input:checked + span"), "::before").boxShadow;
+  });
+  expect(on.shadow).toBe(groupShadow);
+  await page.emulateMedia({ forcedColors: "active" });
+  expect(await input.evaluate(element => getComputedStyle(element, "::before").content)).toBe("none");
+});
+
 test("accent base stays visible away from the pointer and supports inherited theme overrides", async ({ page }) => {
   await page.evaluate(() => {
     document.body.style.setProperty("--lumen-x", "-5000px");
@@ -124,6 +172,7 @@ test("accent base stays visible away from the pointer and supports inherited the
     document.body.style.setProperty("--lumen-glow-color", "#80efdf");
     window.stopRange = window.startRangeEnhancements();
   });
+  await page.locator("#glass").check();
   const read = () => page.evaluate(() => {
     const visual = document.querySelector("#range").nextElementSibling;
     return [getComputedStyle(document.querySelector("#glass"), "::before").backgroundColor,

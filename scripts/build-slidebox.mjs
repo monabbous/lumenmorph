@@ -15,6 +15,8 @@ const groupAccent = "var(--lumen-glow-color, var(--slidebox-on, #ffaa71))";
 // Mix into the inherited card material, retaining its translucency and blur.
 const controlBase = `color-mix(in srgb, ${groupAccent} var(--lumen-slidebox-tint, 18%), var(--lumen-bg, #102a3166))`;
 const thumb = `var(--lumen-slidebox-thumb-bg, ${controlBase})`;
+const offFill = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
+const shadow = color => `inset 0 0 0 1px color-mix(in srgb, ${color} 55%, transparent), 0 0 16px color-mix(in srgb, ${color} 12%, transparent)`;
 
 function paint(selector, { thumbs = false, gradient = true, gradientOnly = false, material = {} } = {}) {
   const output = core.clone();
@@ -42,7 +44,7 @@ function paint(selector, { thumbs = false, gradient = true, gradientOnly = false
       .replaceAll("var(--lumen-radius, 0.25rem)", material.radius ?? (thumbs ? "inherit" : "var(--slidebox-radius, 100vw)"))
       .replaceAll("var(--lumen-glow-size, 460px)", `var(--lumen-glow-size, ${material.size ?? "460px"})`)
       .replaceAll("var(--lumen-glow-color, #ffaa71)", material.glow ?? "var(--lumen-glow-color, #ffaa71)")
-      .replaceAll("var(--lumen-glow-opacity, 0.3)", `var(--lumen-glow-opacity, ${material.opacity ?? "0.3"})`);
+      .replaceAll("var(--lumen-glow-opacity, 0.3)", material.opacityValue ?? `var(--lumen-glow-opacity, ${material.opacity ?? "0.3"})`);
     if (!gradient && ["background-image", "background-attachment", "background-size", "background-repeat"].includes(declaration.prop)) declaration.remove();
     if (gradientOnly && !["background-image", "background-attachment", "background-size", "background-repeat"].includes(declaration.prop)) declaration.remove();
   });
@@ -80,6 +82,8 @@ const thumbRing = `${toggle}[data-slidebox-thumb-layers]::after`;
 const rangeThumb = `${visual} > [data-slidebox-range-thumb]`;
 const rangeFill = `${range}[data-slidebox-range-layers][data-slidebox-range-fill] + [data-slidebox-range-visual]::before`;
 const selected = `${plainThumb}, ${thumbFill}, ${rangeThumb}`;
+const uncheckedFill = `${toggle}:not(:checked):not([data-slidebox-thumb-layers])::after, ${toggle}:not(:checked)[data-slidebox-thumb-layers]::before`;
+const selectionShadow = shadow(groupAccent);
 const groupSelected = `${group}:has(> label > input:checked)::before, ${group} > label > input:checked + span::before`;
 const groupIdle = `${group} > label > input:not(:checked) + span`;
 const groupRadius = "var(--lumen-radius, var(--slidebox-radius, 4px))";
@@ -111,10 +115,15 @@ const css = `/* Generated from src/lumenmorph.css. Native control parts reuse ca
     ${tracks} { background-color: var(--lumen-bg, #302028b3); }
   }
   ${paint(selected, { thumbs: true })}
+  /* Off-state paint uses its own fill color, not the checked accent. */
+  ${paint(uncheckedFill, { thumbs: true, material: { bg: offFill, glow: offFill, opacityValue: "calc(var(--lumen-glow-opacity, 0.3) * .35)" } })}
+  ${paint(`${toggle}:not(:checked)`, { gradientOnly: true, material: { glow: "var(--lumen-bg, #302028b3)", opacityValue: "calc(var(--lumen-glow-opacity, 0.3) * .35)" } })}
   ${paint(rangeFill, { material: { bg: controlBase, radius: "inherit" } })}
   ${borderPaint(plainThumb)}
   ${borderPaint(thumbFill, thumbRing, { nativeLayer: true })}
   ${borderPaint(rangeThumb, `${rangeThumb}::before`)}
+  ${selected} { box-shadow: ${selectionShadow}; }
+  ${uncheckedFill} { box-shadow: ${shadow(offFill)}; }
   /* Match Lumenmorph's material-picker groups, not opaque on-color pills. */
   ${group} {
     background-color: var(--lumen-bg, var(--slidebox-track, #063c5940));
@@ -124,12 +133,14 @@ const css = `/* Generated from src/lumenmorph.css. Native control parts reuse ca
   ${group} > label > span { border-radius: ${groupRadius}; }
   ${paint(groupSelected, { material: groupMaterial })}
   ${groupSelected} {
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, ${groupAccent} 55%, transparent), 0 0 16px color-mix(in srgb, ${groupAccent} 12%, transparent);
+    box-shadow: ${selectionShadow};
   }
   ${paint(groupIdle, { material: groupIdleMaterial })}
   ${groupIdle} { box-shadow: inset 0 0 0 1px color-mix(in srgb, ${groupAccent} 7%, transparent); }
   ${paint(`${range}:not([data-slidebox-range-layers])::-webkit-slider-thumb`, { thumbs: true })}
   ${paint(`${range}:not([data-slidebox-range-layers])::-moz-range-thumb`, { thumbs: true })}
+  ${range}:not([data-slidebox-range-layers])::-webkit-slider-thumb { box-shadow: ${selectionShadow}; }
+  ${range}:not([data-slidebox-range-layers])::-moz-range-thumb { box-shadow: ${selectionShadow}; }
   ${range}[data-slidebox-range-dragging]::-webkit-slider-thumb {
     background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
   }

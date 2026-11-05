@@ -144,6 +144,8 @@
   content: "";
   grid-area: 1 / 1;
   width: auto;
+  height: auto;
+  align-self: stretch;
 }
 .slidebox[data-slidebox-thumb-layers]::before { z-index: 0; }
 .slidebox[data-slidebox-thumb-layers]::after { z-index: 1; }
@@ -523,6 +525,40 @@
   }
 }
 
+  /* Off-state paint uses its own fill color, not the checked accent. */
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked):not([data-slidebox-thumb-layers])::after, :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked)[data-slidebox-thumb-layers]::before {
+  background-color: var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166));
+  border-radius: inherit;
+  -webkit-backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+  backdrop-filter: blur(var(--lumen-blur, 32px)) saturate(var(--lumen-saturation, 1.6));
+}
+
+@supports (background: color-mix(in srgb, red, transparent)) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked):not([data-slidebox-thumb-layers])::after, :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked)[data-slidebox-thumb-layers]::before {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166)) calc(calc(var(--lumen-glow-opacity, 0.3) * .35) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked):not([data-slidebox-thumb-layers])::after, :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked)[data-slidebox-thumb-layers]::before {
+    background: var(--lumen-solid-bg, #302028);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+  @supports (background: color-mix(in srgb, red, transparent)) {
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked) {
+    background-image: radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-bg, #302028b3) calc(calc(var(--lumen-glow-opacity, 0.3) * .35) * 100%), transparent), transparent);
+    background-attachment: var(--lumen-attachment, fixed);
+    background-size: var(--lumen-space, 100vw 100vh);
+    background-repeat: no-repeat;
+  }
+}
+
   :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range)[data-slidebox-range-layers][data-slidebox-range-fill] + [data-slidebox-range-visual]::before {
   background-color: color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) var(--lumen-slidebox-tint, 18%), var(--lumen-bg, #102a3166));
   border-radius: inherit;
@@ -608,6 +644,8 @@
   }
 }
 
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not([data-slidebox-thumb-layers])::after, :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox)[data-slidebox-thumb-layers]::before, :is(.lumenmorph-slidebox [data-slidebox-range-visual], .slidebox-range.lumenmorph-slidebox + [data-slidebox-range-visual]) > [data-slidebox-range-thumb] { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 12%, transparent); }
+  :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked):not([data-slidebox-thumb-layers])::after, :is(.slidebox.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox):not(:checked)[data-slidebox-thumb-layers]::before { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166)) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166)) 12%, transparent); }
   /* Match Lumenmorph's material-picker groups, not opaque on-color pills. */
   :is(.slidebox-group.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-group) {
     background-color: var(--lumen-bg, var(--slidebox-track, #063c5940));
@@ -715,6 +753,8 @@
   }
 }
 
+  :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range):not([data-slidebox-range-layers])::-webkit-slider-thumb { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 12%, transparent); }
+  :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range):not([data-slidebox-range-layers])::-moz-range-thumb { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 55%, transparent), 0 0 16px color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 12%, transparent); }
   :is(.slidebox-range.lumenmorph-slidebox, .lumenmorph-slidebox .slidebox-range)[data-slidebox-range-dragging]::-webkit-slider-thumb {
     background: transparent; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none;
   }

@@ -2,9 +2,9 @@ const block = (title, language, code) => ({ title, language, code });
 export const integrations = {
   slidebox: {
     name: "Slidebox", guide: "slidebox.md",
-    description: "Thumbs and range fill use the card material, with real illuminated thumb borders. Checkboxes use two pseudo-elements on one input; ranges opt into Slidebox's existing two-span helper. Groups keep this lab's translucent material. Requires Slidebox 1.4.0 or later. The namespaced skin import is new in the next Lumenmorph release; with published 0.3.1, use @monabbous/lumenmorph/slidebox instead.",
+    description: "Thumbs and range fill use the card material, with real illuminated thumb borders. Checkboxes use two pseudo-elements on one input; ranges opt into Slidebox's existing two-span helper. Groups keep this lab's translucent material. Requires Slidebox 1.4.1 or later. The namespaced skin import is new in the next Lumenmorph release; with published 0.3.1, use @monabbous/lumenmorph/slidebox instead.",
     blocks: [
-      block("Terminal — install both packages", "bash", "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0"),
+      block("Terminal — install both packages", "bash", "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.1"),
       block("main.js — import base styles before the skin", "javascript", `import "@monabbous/slidebox/dist/css/slidebox.css";
 import "@monabbous/slidebox/dist/css/group.css";
 // Optional, experimental range styles:

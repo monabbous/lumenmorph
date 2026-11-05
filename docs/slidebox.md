@@ -8,13 +8,17 @@ The stylesheet lives in `skins/slidebox.css`; the `.css` import suffix is option
 
 The build copies this exact file to `public/lab/skins/slidebox.css` for the standalone lab and gallery, and embeds it unchanged in the editor runtime. There is no separate lab skin definition.
 
+Unchecked switches use their own fill color for the background, pointer glow, and soft shadow instead of the checked accent. Their fill glow runs at 35% intensity, while the separate thumb border keeps its full accent illumination. Checked switch and range thumbs share the checked group's inset outline and soft accent shadow. These styles do not change thumb geometry or motion and are bypassed in forced colors.
+
 The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later. The persistent thumb/fill tint is available in Lumenmorph 0.3.1:
 
 ```sh
-npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0
+npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.1
 ```
 
 Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.
+
+Use Slidebox 1.4.1 or later for circular two-layer checkbox thumbs; 1.4.0 had a resting-height bug in that opt-in hook.
 
 In the [lab](https://nabous.dev/lab/lumenmorph/?stack=slidebox#integrations), choose **Slidebox** to see copyable installation, import-order, native markup, and color examples. The optional experimental range example is separate from the default switch/group setup.
 

@@ -153,7 +153,7 @@
     "@lezer/highlight": "^1.2.5",
     "@mantine/core": "^9.7.4",
     "@mantine/hooks": "^9.7.4",
-    "@monabbous/slidebox": "1.4.0",
+    "@monabbous/slidebox": "1.4.1",
     "@mui/material": "^9.5.0",
     "@playwright/test": "1.63.0",
     "@tailwindcss/node": "^4.1.0",

@@ -459,9 +459,9 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
   await expect(page.locator('[data-integration="slidebox"]')).toBeChecked();
   await expect(page.locator("#stack-setup")).toHaveText("View Slidebox setup");
   await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#integrations");
-  await expect(page.locator("#integration-description")).toContainText("Requires Lumenmorph 0.3.0");
+  await expect(page.locator("#integration-description")).toContainText("Requires Slidebox 1.4.1");
   await expect(page.locator("#integration-snippet code")).toHaveCount(6);
-  await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0");
+  await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.1");
   await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/skins/slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText('class="settings lumenmorph-slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText("Optional experimental range");
@@ -494,9 +494,18 @@ test("main lab switches and ranges use glass without losing keyboard, fill, or f
         sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))";
         card.append(sample);
         const tintedCard = { ...read(card), backgroundColor: getComputedStyle(sample).backgroundColor };
+        const toggleMaterial = { ...tintedCard };
+        if (!document.querySelector("#tracking").checked) {
+          sample.className = "lumenmorph";
+          sample.style.backgroundColor = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
+          sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))");
+          sample.style.setProperty("--lumen-glow-opacity", String(Number.parseFloat(getComputedStyle(card).getPropertyValue("--lumen-glow-opacity")) * .35));
+          toggleMaterial.backgroundColor = getComputedStyle(sample).backgroundColor;
+          toggleMaterial.backgroundImage = getComputedStyle(sample).backgroundImage;
+        }
         sample.remove();
         return {
-          card: tintedCard, toggle: read(document.querySelector("#tracking"), "::before"),
+          card: tintedCard, toggleReference: toggleMaterial, toggle: read(document.querySelector("#tracking"), "::before"),
           thumb: read(thumb), fill: read(visual, "::before"),
           cardBorder: getComputedStyle(card, "::before").backgroundImage,
           toggleBorder: getComputedStyle(document.querySelector("#tracking"), "::after").backgroundImage,
@@ -504,7 +513,7 @@ test("main lab switches and ranges use glass without losing keyboard, fill, or f
           nodes: visual.querySelectorAll("*").length,
         };
       });
-      expect(materials.toggle).toEqual(materials.card);
+      expect(materials.toggle).toEqual(materials.toggleReference);
       expect(materials.thumb).toEqual(materials.card);
       expect(materials.fill).toEqual(materials.card);
       expect(materials.toggleBorder).toBe(materials.cardBorder);
