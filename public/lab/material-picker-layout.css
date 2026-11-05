@@ -1,0 +1,14 @@
+/* Lab layout and public theme configuration only. All control paint comes
+   from the exported Slidebox skin; keep material implementations out here. */
+.lm-lab .material-picker {
+  display: grid; width: 100%;
+  --slidebox-off: #e8f6fa; --slidebox-border: #5289a6;
+  --slidebox-size: 40px; --slidebox-spacing: .1; --slidebox-radius: 4px;
+  --slidebox-track: #063c5940; --slidebox-selected-text: #f5fbff;
+  --lumen-glow-color: var(--lm-accent, #ffaa71);
+}
+.lm-lab .material-picker > label:not(.check) { display: grid; justify-content: stretch; align-items: stretch; gap: 0; margin: 0; font-size: 11px; }
+.lm-lab .material-picker > label > span { width: 100%; padding: 0 6px; text-align: center; line-height: 1.2; }
+@media (prefers-reduced-motion: reduce) {
+  .lm-lab .material-picker { --slidebox-duration: .01ms; }
+}

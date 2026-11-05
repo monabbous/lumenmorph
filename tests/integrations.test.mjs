@@ -13,6 +13,7 @@ import { renderToString } from "react-dom/server";
 import { LumenText, LumenIcon } from "../react/index.mjs";
 import { highlight } from "../lab/highlight.mjs";
 import { installationSnippets, foundationSnippets, componentSnippets } from "../public/lab/snippets.mjs";
+import { integrations } from "../public/lab/integration-snippets.mjs";
 
 const require = createRequire(import.meta.url);
 const css = await readFile(new URL("../dist/css/lumenmorph.css", import.meta.url), "utf8");
@@ -79,7 +80,7 @@ test("implementation blocks separate foundations from all SVG adapters", () => {
 test("CDN snippets use minified CSS and browser-resolvable imports with optional motion", () => {
   assert.match(installationSnippets("css", {})[0].code, /npm install @monabbous\/lumenmorph/);
   const install = installationSnippets("cdn", { smoothing: true })[0].code;
-  assert.match(install, /@0\.2\.2\/dist\/css\/lumenmorph\.min\.css/);
+  assert.match(install, /@0\.3\.0\/dist\/css\/lumenmorph\.min\.css/);
   assert.match(install, /motion\.min\.css/);
   assert.doesNotMatch(installationSnippets("cdn", { smoothing: false })[0].code, /motion/);
   const blocks = foundationSnippets("cdn", { "glow-color": "#ffaa71" }, { tracking: true, smoothing: true });
@@ -87,8 +88,27 @@ test("CDN snippets use minified CSS and browser-resolvable imports with optional
   assert.doesNotMatch(blocks[0].code, /@import/);
   assert.match(blocks[1].code, /lumenmorph-motion/);
   assert.match(blocks[2].code, /<script type="module">/);
-  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.2\.2\/js\/pointer\.mjs/);
+  assert.match(blocks[2].code, /https:\/\/cdn\.jsdelivr\.net\/npm\/@monabbous\/lumenmorph@0\.3\.0\/js\/pointer\.mjs/);
   assert.equal(foundationSnippets("cdn", {}, { tracking: false, smoothing: false }).length, 2);
+});
+
+test("Slidebox lab documentation includes installation, ordered styles, native markup, and opt-in ranges", () => {
+  const { guide, description, blocks } = integrations.slidebox;
+  assert.equal(guide, "slidebox.md");
+  assert.match(description, /Requires Lumenmorph 0\.3\.0/);
+  assert.equal(blocks.length, 6);
+  assert.equal(blocks[0].code, "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0");
+  const imports = blocks[1].code;
+  assert.ok(imports.indexOf("slidebox/dist/css/slidebox.css") < imports.indexOf("lumenmorph/slidebox"));
+  assert.ok(imports.indexOf("slidebox/dist/css/group.css") < imports.indexOf("lumenmorph/slidebox"));
+  assert.match(imports, /\/\/ import "@monabbous\/slidebox\/experimental\/range\.css"/);
+  assert.match(blocks[2].code, /settings lumenmorph-slidebox/);
+  assert.match(blocks[2].code, /type="checkbox"/);
+  assert.match(blocks[2].code, /type="radio"/);
+  assert.match(blocks[2].code, /data-slidebox-thumb-layers/);
+  assert.match(blocks[4].code, /type="range"/);
+  assert.match(blocks[5].code, /enhanceSlideboxRange\(input, \{ layers: true \}\)/);
+  assert.doesNotMatch(blocks.slice(0, 5).map(block => block.code).join("\n"), /trackPointer\(|enhanceSlidebox|--_(?!lumen-)/);
 });
 
 test("code highlighting escapes markup and colors supported languages", () => {
@@ -158,6 +178,30 @@ test("core CSS and pointer helper stay within small gzip budgets", async () => {
   const js = await readFile(new URL("../js/pointer.mjs", import.meta.url));
   assert.ok(gzipSync(css).length < 1800, "CSS exceeds 1.8 kB gzip budget");
   assert.ok(gzipSync(js).length < 1800, "Pointer helper exceeds 1.8 kB gzip budget");
+});
+
+test("Slidebox skin reuses canonical paint without replacing native geometry or private controls", async () => {
+  const output = await readFile(new URL("../dist/css/slidebox.css", import.meta.url), "utf8");
+  const lab = await readFile(new URL("../public/lab/assets/lumenmorph-slidebox.css", import.meta.url), "utf8");
+  const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
+  assert.equal(pkg.exports["./slidebox"], "./dist/css/slidebox.css");
+  assert.equal(output, lab);
+  assert.match(output, /@media \(forced-colors: none\)/);
+  assert.match(output, /prefers-reduced-transparency: reduce/);
+  assert.ok(output.includes(declarations(css, ".lumenmorph", "backdrop-filter")[0]));
+  assert.ok(output.includes(declarations(css, ".lumenmorph", "background-color")[0]));
+  assert.match(output, /data-slidebox-thumb-layers/);
+  assert.match(output, /data-slidebox-range-thumb/);
+  assert.match(output, /18%, #102a3166/);
+  assert.match(output, /2\.5%, transparent/);
+  assert.match(output, /var\(--lumen-blur, 12px\)/);
+  assert.match(output, /var\(--lumen-blur, 2px\)/);
+  assert.match(output, /mask-composite: exclude/);
+  assert.match(output, /::-webkit-slider-thumb/);
+  assert.match(output, /::-moz-range-thumb/);
+  assert.doesNotMatch(output, /var\(--_(?!lumen-)/);
+  assert.doesNotMatch(output, /(?:^|[;{])\s*(?:width|height|margin(?:-[a-z-]+)?|transition(?:-[a-z-]+)?|transform)\s*:/);
+  assert.doesNotMatch(output, /--(?:slidebox|lumen)-(?:size|width|spacing|deform|duration|easing|bg|blur)\s*:/);
 });
 
 test("motion is optional, inherited, and only transitions its coordinate owner", async () => {

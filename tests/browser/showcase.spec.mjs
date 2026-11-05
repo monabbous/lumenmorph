@@ -3,6 +3,10 @@ import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
   await page.goto("/lab/examples/");
   await expect(page.locator(".showcase")).toHaveAttribute("data-enhanced", "");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
 });
 
 test("masonry keeps every card in bounds and reflows category filters", async ({ page }) => {
@@ -50,7 +54,10 @@ test("interactive examples update native state and recover dismissed content", a
   expect(warmColor).toBe("rgb(255, 170, 113)");
   await page.locator("[data-warmth]").fill("28");
   await expect(page.locator(".climate-value")).toHaveText("28°");
-  await page.locator("[data-foil]").check();
+  const foilLabel = page.locator("label:has([data-foil])");
+  await foilLabel.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+  await foilLabel.click();
+  await expect(page.locator("[data-foil]")).toBeChecked();
   await expect(page.locator(".demo-foil")).toHaveAttribute("data-holographic", "");
   await page.locator("[data-ignite]").click();
   await expect(page.locator(".ignite-message")).toHaveText("Keep it glowing.");
@@ -97,25 +104,33 @@ test("every study links to its own published editor", async ({ page, request }) 
 });
 
 test("new checklist and rating respond with material light", async ({ page }) => {
+  const check = async input => {
+    // Exercise the associated label's native action. WebKit can retarget a
+    // tiny checkbox click to its glass label during masonry/scroll updates.
+    const label = input.locator("..");
+    await label.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+    await label.click();
+    await expect(input).toBeChecked();
+  };
   const task = page.locator("[data-task]").first();
-  await task.check();
+  await check(task);
   await expect(page.locator(".focus-tasks label").first()).toHaveAttribute("data-complete", "");
-  await page.getByRole("radio", { name: "1 star", exact: true }).check();
+  await check(page.getByRole("radio", { name: "1 star", exact: true }));
   const low = await page.locator(".demo-rating").evaluate(el => getComputedStyle(el).getPropertyValue("--spark-strength"));
-  await page.getByRole("radio", { name: "5 stars", exact: true }).check();
+  await check(page.getByRole("radio", { name: "5 stars", exact: true }));
   const high = await page.locator(".demo-rating").evaluate(el => getComputedStyle(el).getPropertyValue("--spark-strength"));
   expect(Number(high)).toBeGreaterThan(Number(low));
   await expect(page.locator(".spark-rating [data-lit]")).toHaveCount(5);
 });
 
-test("reduced motion stops ornament animation and no-JS keeps the collection readable", async ({ page, browser }) => {
+test("reduced motion stops ornament animation and no-JS keeps the collection readable", async ({ page, browser, baseURL }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("[data-play]").click();
   expect(await page.locator(".waveform i").first().evaluate(element => getComputedStyle(element).animationName)).toBe("none");
   expect(await page.locator(".weather-sky").evaluate(element => getComputedStyle(element, "::after").transitionDuration)).toBe("0s");
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const staticPage = await context.newPage();
-  await staticPage.goto("http://127.0.0.1:4173/lab/examples/");
+  await staticPage.goto("/lab/examples/");
   await expect(staticPage.locator(".example:visible")).toHaveCount(24);
   await context.close();
 });

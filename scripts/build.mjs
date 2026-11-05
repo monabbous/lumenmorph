@@ -60,10 +60,7 @@ function object(container) {
 
 const functionalUtilities = await readFile(new URL("src/tailwind-utilities.css", root), "utf8");
 const nativeUtilities = Object.entries({ lumenmorph: ".lumenmorph", "lumenmorph-border": ".lumenmorph-border", "lumenmorph-text": ".lumenmorph-text", "glassmorphism-text": ".lumenmorph-text" }).map(([name, selector]) => `@utility ${name} {\n${indent(nested(ast, selector).toString())}\n}`).join("\n\n");
-const presetHighlight = nested(ast, ".lumenmorph");
-presetHighlight.walkRules(rule => { rule.selector = '.lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span'; });
 const outputs = {
-  "public/lab/assets/preset-highlight.css": `/* Generated from the canonical Lumenmorph surface. Slidebox owns indicator geometry and motion. */\n@media (forced-colors: none) {\n${presetHighlight}\n}\n`,
   "tailwind/lumenmorph.css": `/* Generated from src/lumenmorph.css. Tailwind v4 only. */\n@import "./utilities.css";\n\n${nativeUtilities}\n`,
   "tailwind/utilities.css": functionalUtilities,
   "dist/css/lumenmorph.css": css,

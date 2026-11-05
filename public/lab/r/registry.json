@@ -10,7 +10,7 @@
       "title": "Lumenmorph material",
       "description": "CSS glass surfaces that inherit your shadcn theme. No JavaScript required.",
       "dependencies": [
-        "@monabbous/lumenmorph@^0.2.2"
+        "@monabbous/lumenmorph@^0.3.0"
       ],
       "css": {
         "@import \"@monabbous/lumenmorph/css\"": {},

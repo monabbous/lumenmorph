@@ -1,7 +1,7 @@
 const play = "M18 12Q14 10 14 15v34q0 5 4 3l36-19q4-2 0-4Z";
 const block = (title, language, code) => ({ title, language, code });
 // Keep CDN examples pinned to the package release.
-const cdn = "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.2.2";
+const cdn = "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.0";
 
 export function installationSnippets(format, { smoothing }) {
   if (format === "cdn") return [block("index.html — inside <head>", "xml", `<link rel="stylesheet" href="${cdn}/dist/css/lumenmorph.min.css">${smoothing ? `\n<link rel="stylesheet" href="${cdn}/dist/css/motion.min.css">` : ""}`)];

@@ -118,7 +118,7 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab #copy { white-space: nowrap; }
 .lm-lab .code-tabs { min-width: 0; margin: 20px 0 12px; }
 .lm-lab .format-options { min-width: 650px; }
-.lm-lab .library-options { min-width: 440px; }
+.lm-lab .library-options { min-width: 550px; }
 .lm-lab .adapter-options { min-width: 560px; }
 .lm-lab pre { background: #082b4059; border: 1px solid #467b9680; border-radius: 4px; padding: 20px; font: 11px/1.8 ui-monospace, monospace; overflow: auto; max-height: 420px; margin: 0; color: #c2e0e4; tab-size: 2; }
 .lm-lab #copy-status { min-height: 1.5em; font-size: 11px; color: var(--lm-muted); margin: 5px 0; }
@@ -185,7 +185,7 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .stack-picker { margin: 20px 0 0; min-width: 0; }
 .lm-lab .stack-picker legend { padding: 0; border: 0; margin-bottom: 8px; text-transform: none; letter-spacing: 0; font-size: 11px; }
 .lm-lab .stack-scroll { overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; scrollbar-color: #5289a6 transparent; }
-.lm-lab .stack-options { min-width: 630px; }
+.lm-lab .stack-options { min-width: 720px; }
 .lm-lab .stack-setup { display: inline-flex; align-items: center; min-height: 36px; margin-top: 8px; }
 .lm-lab .playground-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin: 6px 0 20px; }
 .lm-lab .playground-heading .eyebrow { margin-bottom: 5px; }
