@@ -3,6 +3,10 @@ import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
   await page.goto("/lab/examples/");
   await expect(page.locator(".showcase")).toHaveAttribute("data-enhanced", "");
+  await page.evaluate(async () => {
+    await document.fonts.ready;
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  });
 });
 
 test("masonry keeps every card in bounds and reflows category filters", async ({ page }) => {
@@ -98,8 +102,12 @@ test("every study links to its own published editor", async ({ page, request }) 
 
 test("new checklist and rating respond with material light", async ({ page }) => {
   const check = async input => {
-    await input.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
-    await input.check();
+    // Exercise the associated label's native action. WebKit can retarget a
+    // tiny checkbox click to its glass label during masonry/scroll updates.
+    const label = input.locator("..");
+    await label.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+    await label.click();
+    await expect(input).toBeChecked();
   };
   const task = page.locator("[data-task]").first();
   await check(task);
