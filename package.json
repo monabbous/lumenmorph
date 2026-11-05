@@ -150,7 +150,7 @@
     "@lezer/highlight": "^1.2.5",
     "@mantine/core": "^9.7.4",
     "@mantine/hooks": "^9.7.4",
-    "@monabbous/slidebox": "1.3.2",
+    "@monabbous/slidebox": "git+https://github.com/monabbous/slidebox.git#dbbec681be3590d5464bd360fd8f0d9d90d3e6d5",
     "@mui/material": "^9.5.0",
     "@playwright/test": "1.63.0",
     "@tailwindcss/node": "^4.1.0",

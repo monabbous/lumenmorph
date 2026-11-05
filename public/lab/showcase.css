@@ -21,6 +21,14 @@
   scroll-margin-top: 100px;
 }
 .lm-lab .showcase * { box-sizing: border-box; }
+/* Illustration materials may wrap controls. Keep their public palette but
+   let the exported group skin supply its own selected/unselected material. */
+.lm-lab .showcase .material-picker {
+  --lumen-bg: initial; --lumen-solid-bg: initial;
+  --lumen-blur: initial; --lumen-saturation: initial; --lumen-radius: initial;
+  --lumen-glow-size: initial; --lumen-glow-opacity: initial;
+  --lumen-border-color: initial;
+}
 .lm-lab .showcase [hidden] { display: none !important; }
 .lm-lab .showcase-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 30px; }
 .lm-lab .showcase-heading h2 { margin: 0; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.08; letter-spacing: -.06em; }

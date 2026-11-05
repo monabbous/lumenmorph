@@ -219,10 +219,10 @@ test("reduced motion retains a static light and forced colors retains readable c
   await expect(page.locator("#header-demo foreignObject").first()).toBeHidden();
 });
 
-test("static CSS works without JavaScript", async ({ browser }) => {
-  const context = await browser.newContext({ javaScriptEnabled: false });
+test("static CSS works without JavaScript", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4173/lab/");
+  await page.goto("/lab/");
   const style = await page.locator(".main-card").evaluate(element => ({ image: getComputedStyle(element).backgroundImage, backdrop: getComputedStyle(element).backdropFilter }));
   expect(style.image).toContain("radial-gradient");
   expect(style.backdrop).toContain("blur(32px)");
@@ -322,14 +322,20 @@ test("preset highlight keeps Slidebox geometry with Lumenmorph paint and accessi
 
 test("URL remembers setup selections while presets and sliders stay local", async ({ page }) => {
   await page.goto("/lab/?campaign=demo#code");
-  await page.locator("label:has([data-format=tailwind])").click();
+  const select = async selector => {
+    const label = page.locator(selector);
+    await label.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+    await label.click();
+  };
+  await select("label:has([data-format=tailwind])");
   await expect(page).toHaveURL(/stack=tailwind.*format=tailwind.*#code$/);
   await expect(page.locator("#snippet")).toContainText("@apply lumen-glow-size-[460px]");
   await expect(page.locator("#snippet")).toContainText("B. Direct utilities");
   await expect(page.locator("#theme-snippet")).toContainText(":root");
   await expect(page.locator("#theme-snippet")).not.toContainText("material-preset");
-  await page.locator("label:has([data-integration=mantine])").click();
-  await page.locator("label:has([data-framework=vue])").click();
+  await select("label:has([data-integration=mantine])");
+  await expect(page.locator("[data-integration=mantine]")).toBeChecked();
+  await select("label:has([data-framework=vue])");
   const shared = page.url();
   expect(new URL(shared).searchParams.get("library")).toBe("mantine");
   expect(new URL(shared).searchParams.get("svg")).toBe("vue");
@@ -392,9 +398,10 @@ test("main lab's imported skin matches its original group styles across demo set
     await original.route("**/lab/", async route => {
       const response = await route.fetch();
       const body = (await response.text())
-        .replace('href="./material-picker-layout.css"', 'href="./material-picker.css"')
-        .replace('href="./assets/lumenmorph-slidebox.css"', 'href="./assets/preset-highlight.css"')
+        .replace('href="./material-picker-layout.css"', 'href="/__slidebox-tests/legacy-material-picker.css"')
+        .replace('href="./assets/lumenmorph-slidebox.css"', 'href="/__slidebox-tests/legacy-preset-highlight.css"')
         .replaceAll("material-picker lumenmorph-slidebox", "material-picker")
+        .replace('id="controls" class="lumenmorph-slidebox"', 'id="controls"')
         .replace('class="code-section lumenmorph-slidebox"', 'class="code-section"');
       await route.fulfill({ response, body });
     });
@@ -453,8 +460,8 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
   await expect(page.locator("#stack-setup")).toHaveText("View Slidebox setup");
   await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#integrations");
   await expect(page.locator("#integration-description")).toContainText("Requires Lumenmorph 0.3.0");
-  await expect(page.locator("#integration-snippet code")).toHaveCount(5);
-  await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox");
+  await expect(page.locator("#integration-snippet code")).toHaveCount(6);
+  await expect(page.locator("#integration-snippet")).toContainText("npm install github:monabbous/lumenmorph");
   await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText('class="settings lumenmorph-slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText("Optional experimental range");
@@ -465,5 +472,64 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
   await page.reload();
   await expect(page.locator('.stack-options input[value="slidebox"]')).toBeChecked();
   await expect(page.locator('[data-integration="slidebox"]')).toBeChecked();
-  await expect(page.locator("#integration-snippet code")).toHaveCount(5);
+  await expect(page.locator("#integration-snippet code")).toHaveCount(6);
+});
+
+test("main lab switches and ranges use glass without losing keyboard, fill, or forced-color behavior", async ({ page }) => {
+  await page.goto("/lab/");
+  await expect(page.locator("#header-demo svg")).toBeVisible();
+  const tracking = page.locator("#tracking"), range = page.locator("#glow-size");
+  await expect.poll(() => range.evaluate(input => Math.abs(input.getBoundingClientRect().top - input.nextElementSibling.getBoundingClientRect().top))).toBeLessThan(.5);
+  const checkMaterial = async () => {
+    const materials = await page.evaluate(() => {
+      const properties = ["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter"];
+      const read = (element, pseudo) => Object.fromEntries(properties.map(key => [key, getComputedStyle(element, pseudo)[key]]));
+      const card = document.querySelector(".main-card"), input = document.querySelector("#glow-size"), visual = input.nextElementSibling;
+      const thumb = visual.querySelector("[data-slidebox-range-thumb]");
+      return {
+        card: read(card), toggle: read(document.querySelector("#tracking"), "::before"),
+        thumb: read(thumb), fill: read(visual, "::before"),
+        cardBorder: getComputedStyle(card, "::before").backgroundImage,
+        toggleBorder: getComputedStyle(document.querySelector("#tracking"), "::after").backgroundImage,
+        rangeBorder: getComputedStyle(thumb, "::before").backgroundImage,
+        nodes: visual.querySelectorAll("*").length,
+      };
+    });
+    expect(materials.toggle).toEqual(materials.card);
+    expect(materials.thumb).toEqual(materials.card);
+    expect(materials.fill).toEqual(materials.card);
+    expect(materials.toggleBorder).toBe(materials.cardBorder);
+    expect(materials.rangeBorder).toBe(materials.cardBorder);
+    expect(materials.nodes).toBe(1); // Existing wrapper + thumb; fill/border are pseudos.
+  };
+  await checkMaterial();
+  await expect(tracking).toHaveCSS("border-top-width", "1px");
+  await expect(tracking).toHaveCSS("height", "22px");
+  expect(await tracking.evaluate(input => getComputedStyle(input, "::after").pointerEvents)).toBe("none");
+  await expect(range).toHaveAttribute("data-slidebox-range-fill", "");
+  await expect(range).toHaveAttribute("data-slidebox-range-layers", "");
+  await tracking.focus();
+  await tracking.press("Space");
+  await expect(tracking).not.toBeChecked();
+  await expect(page.locator(".lm-lab")).toHaveAttribute("data-tracking", "off");
+  const nextValue = String(Number(await range.inputValue()) + Number(await range.getAttribute("step") ?? 1));
+  await range.focus();
+  await range.press("ArrowRight");
+  await expect(range).toHaveValue(nextValue);
+  await expect(page.locator("#glow-size-value")).toHaveText(`${nextValue}px`);
+  await expect(page.locator("#snippet")).toContainText(`--lumen-glow-size: ${nextValue}px`);
+  await page.locator("#blur").fill("0");
+  await page.locator("#radius").fill("24");
+  await page.locator("#border-width").fill("5");
+  expect(await page.locator(".lm-lab").evaluate(root => root.style.getPropertyValue("--lumen-blur"))).toBe("");
+  expect(await page.locator(".stage").evaluate(stage => stage.style.getPropertyValue("--lumen-blur"))).toBe("0px");
+  expect(await page.locator("#header-demo").evaluate(header => header.style.getPropertyValue("--lumen-glow-size"))).toBe(`${nextValue}px`);
+  await expect(tracking).toHaveCSS("border-top-width", "1px");
+  await checkMaterial();
+  await page.emulateMedia({ forcedColors: "active" });
+  await expect(tracking).toHaveCSS("backdrop-filter", "none");
+  await expect(range).toHaveCSS("backdrop-filter", "none");
+  await expect(tracking).not.toBeChecked();
+  await expect(range).toHaveValue(nextValue);
+  await expect(page.locator("[data-slidebox-range-visual]")).toHaveCount(0);
 });

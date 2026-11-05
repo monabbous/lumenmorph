@@ -11,7 +11,7 @@ test("lab supplies content and relative assets, leaving site chrome and fonts to
   for (const match of html.matchAll(/<(?:script|link)\b[^>]*(?:src|href)="([^"]+)"/g)) {
     assert.ok(match[1].startsWith("./"), `Asset must be relative: ${match[1]}`);
   }
-  assert.match(html, /class="slidebox" type="checkbox" role="switch"/);
+  assert.match(html, /class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch"/);
   assert.match(html, /data-preset="ember" checked/);
 });
 
@@ -33,8 +33,18 @@ test("main lab consumes the exported Slidebox skin without legacy group paint", 
   const layout = await readFile(new URL("../public/lab/material-picker-layout.css", import.meta.url), "utf8");
   assert.match(html, /href="\.\/assets\/lumenmorph-slidebox\.css"/);
   assert.match(html, /href="\.\/material-picker-layout\.css"/);
+  assert.match(html, /<form id="controls" class="lumenmorph-slidebox">/);
   assert.doesNotMatch(html, /href="\.\/(?:material-picker\.css|assets\/preset-highlight\.css)"/);
   assert.doesNotMatch(layout, /(?:background(?:-image|-color)?|backdrop-filter|box-shadow)\s*:/);
-  assert.match(layout, /--lumen-bg: initial/);
-  assert.match(layout, /--lumen-blur: initial/);
+  assert.doesNotMatch(layout, /--lumen-(?:bg|blur|border-width):/);
+});
+
+test("gallery and editor runtime consume the same exported Slidebox skin", async () => {
+  const gallery = await readFile(new URL("../public/lab/examples/index.html", import.meta.url), "utf8");
+  const runtime = JSON.parse(await readFile(new URL("../public/lab/editor-runtime.json", import.meta.url), "utf8"));
+  const skin = await readFile(new URL("../dist/css/slidebox.css", import.meta.url), "utf8");
+  assert.match(gallery, /href="\.\.\/assets\/lumenmorph-slidebox\.css"/);
+  assert.doesNotMatch(gallery, /href="\.\.\/(?:material-picker\.css|assets\/preset-highlight\.css)"/);
+  assert.equal(runtime.css.split(skin).length - 1, 1, "Editor embeds the exported CSS once, not another skin implementation");
+  assert.doesNotMatch(runtime.css, /Frozen pre-integration|Generated from the canonical Lumenmorph surface\. Slidebox owns indicator/);
 });

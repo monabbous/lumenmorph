@@ -97,25 +97,29 @@ test("every study links to its own published editor", async ({ page, request }) 
 });
 
 test("new checklist and rating respond with material light", async ({ page }) => {
+  const check = async input => {
+    await input.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+    await input.check();
+  };
   const task = page.locator("[data-task]").first();
-  await task.check();
+  await check(task);
   await expect(page.locator(".focus-tasks label").first()).toHaveAttribute("data-complete", "");
-  await page.getByRole("radio", { name: "1 star", exact: true }).check();
+  await check(page.getByRole("radio", { name: "1 star", exact: true }));
   const low = await page.locator(".demo-rating").evaluate(el => getComputedStyle(el).getPropertyValue("--spark-strength"));
-  await page.getByRole("radio", { name: "5 stars", exact: true }).check();
+  await check(page.getByRole("radio", { name: "5 stars", exact: true }));
   const high = await page.locator(".demo-rating").evaluate(el => getComputedStyle(el).getPropertyValue("--spark-strength"));
   expect(Number(high)).toBeGreaterThan(Number(low));
   await expect(page.locator(".spark-rating [data-lit]")).toHaveCount(5);
 });
 
-test("reduced motion stops ornament animation and no-JS keeps the collection readable", async ({ page, browser }) => {
+test("reduced motion stops ornament animation and no-JS keeps the collection readable", async ({ page, browser, baseURL }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.locator("[data-play]").click();
   expect(await page.locator(".waveform i").first().evaluate(element => getComputedStyle(element).animationName)).toBe("none");
   expect(await page.locator(".weather-sky").evaluate(element => getComputedStyle(element, "::after").transitionDuration)).toBe("0s");
-  const context = await browser.newContext({ javaScriptEnabled: false });
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
   const staticPage = await context.newPage();
-  await staticPage.goto("http://127.0.0.1:4173/lab/examples/");
+  await staticPage.goto("/lab/examples/");
   await expect(staticPage.locator(".example:visible")).toHaveCount(24);
   await context.close();
 });

@@ -1,4 +1,4 @@
-/* Generated from the canonical Lumenmorph surface. Slidebox owns indicator geometry and motion. */
+/* Frozen pre-integration paint reference. Test-only; not a production skin. */
 @media (forced-colors: none) {
 
 .lm-lab .material-picker:has(> label > input:checked)::before, .lm-lab .material-picker > label > input:checked + span::before, .lm-lab .material-picker > label > input:not(:checked) + span {

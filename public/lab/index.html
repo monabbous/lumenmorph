@@ -53,7 +53,7 @@
           <label><input type="radio" name="material-preset" value="lagoon" data-preset="lagoon"><span>Lagoon</span></label>
           <label><input type="radio" name="material-preset" value="lilac" data-preset="lilac"><span>Lilac</span></label>
         </div></fieldset>
-        <form id="controls">
+        <form id="controls" class="lumenmorph-slidebox">
           <fieldset><legend>Light</legend>
             <label for="glow-size">Glow size <output for="glow-size" id="glow-size-value"></output></label><input class="slidebox-range" id="glow-size" name="glow-size" type="range" min="80" max="900" step="10" value="460" data-unit="px">
             <label for="glow-opacity">Surface intensity <output for="glow-opacity" id="glow-opacity-value"></output></label><input class="slidebox-range" id="glow-opacity" name="glow-opacity" type="range" min="0" max="1" step="0.01" value="0.3">
@@ -69,7 +69,7 @@
             <label for="radius">Corner radius <output for="radius" id="radius-value"></output></label><input class="slidebox-range" id="radius" name="radius" type="range" min="0" max="48" value="4" data-unit="px">
             <label for="border-width">Border width <output for="border-width" id="border-width-value"></output></label><input class="slidebox-range" id="border-width" name="border-width" type="range" min="0" max="5" step="0.5" value="1.5" data-unit="px">
           </fieldset>
-          <div class="pointer-options"><label class="check"><input class="slidebox" type="checkbox" role="switch" id="tracking" checked> Follow pointer</label><label class="check"><input class="slidebox" type="checkbox" role="switch" id="smoothing" checked> Smooth follow &amp; return</label><p class="hint">Smoothing animates the shared coordinates once, on the lab container. Reduced motion disables tracking and smoothing. Touch keeps the static light.</p><p class="hint">Controls use <a href="https://github.com/monabbous/slidebox">Slidebox</a>; ranges are experimental.</p></div>
+          <div class="pointer-options"><label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="tracking" checked> Follow pointer</label><label class="check"><input class="slidebox" data-slidebox-thumb-layers type="checkbox" role="switch" id="smoothing" checked> Smooth follow &amp; return</label><p class="hint">Smoothing animates the shared coordinates once, on the lab container. Reduced motion disables tracking and smoothing. Touch keeps the static light.</p><p class="hint">Controls use <a href="https://github.com/monabbous/slidebox">Slidebox</a>; ranges are experimental.</p></div>
         </form>
       </aside>
     </div>

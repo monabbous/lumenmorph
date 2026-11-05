@@ -1,10 +1,10 @@
 const block = (title, language, code) => ({ title, language, code });
 export const integrations = {
   slidebox: {
-    name: "Slidebox", guide: "slidebox.md",
-    description: "Use the same translucent radio-group material as this lab. Import the skin after Slidebox and opt in with lumenmorph-slidebox. Switches and grouped radios need no JavaScript; range styling is experimental and pointer tracking remains optional. Requires Lumenmorph 0.3.0 or later.",
+    name: "Slidebox", guide: "slidebox.md", guideRef: "feat/slidebox-integration",
+    description: "Thumbs and range fill use the card material, with real illuminated thumb borders. Checkboxes use two pseudo-elements on one input; ranges opt into Slidebox's existing two-span helper. Groups keep this lab's translucent material. Requires Lumenmorph 0.3.0 and the shared Slidebox thumb-layer update, currently unreleased.",
     blocks: [
-      block("Terminal — install both packages", "bash", "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox"),
+      block("Terminal — preview branches; thumb layers are not released yet", "bash", "npm install github:monabbous/lumenmorph#feat/slidebox-integration github:monabbous/slidebox#feat/thumb-decoration-layers"),
       block("main.js — import base styles before the skin", "javascript", `import "@monabbous/slidebox/dist/css/slidebox.css";
 import "@monabbous/slidebox/dist/css/group.css";
 // Optional, experimental range styles:
@@ -12,7 +12,7 @@ import "@monabbous/slidebox/dist/css/group.css";
 import "@monabbous/lumenmorph/slidebox";`),
       block("HTML — native controls in an opt-in scope", "xml", `<section class="settings lumenmorph-slidebox" aria-label="Settings">
   <label>
-    <input class="slidebox" type="checkbox" name="notifications">
+    <input class="slidebox" data-slidebox-thumb-layers type="checkbox" name="notifications">
     Enable notifications
   </label>
   <div class="slidebox-group" role="group" aria-label="Period">
@@ -21,7 +21,7 @@ import "@monabbous/lumenmorph/slidebox";`),
     <label><input type="radio" name="period" value="month"><span>Month</span></label>
   </div>
 </section>`),
-      block("styles.css — lab colors, separate from specimen defaults", "css", `.settings {
+      block("styles.css — palette and native size; paint comes from the export", "css", `.settings {
   color: #e8f6fa;
   background: #152530;
   padding: 1rem;
@@ -32,14 +32,6 @@ import "@monabbous/lumenmorph/slidebox";`),
   --slidebox-text: #e8f6fa;
   --slidebox-selected-text: #f5fbff;
   --slidebox-size: 28px;
-  /* Keep the skin's materials if the page sets surface defaults. */
-  --lumen-bg: initial;
-  --lumen-solid-bg: initial;
-  --lumen-blur: initial;
-  --lumen-saturation: initial;
-  --lumen-radius: initial;
-  --lumen-glow-size: initial;
-  --lumen-glow-opacity: initial;
 }
 .settings .slidebox-group {
   --slidebox-track: #063c5940;
@@ -51,6 +43,14 @@ import "@monabbous/lumenmorph/slidebox";`),
       block("Optional experimental range — inside .settings; enable its styles above", "xml", `<label for="intensity">Intensity</label>
 <input id="intensity" class="slidebox-range" type="range"
   name="intensity" min="0" max="100" value="40">`),
+      block("Optional range layers — after mounting; same geometry and motion helper", "javascript", `import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from "@monabbous/slidebox/experimental/range.mjs";
+
+const input = document.querySelector("#intensity");
+const stopRange = enhanceSlideboxRange(input, { layers: true });
+const stopFill = enhanceSlideboxRangeFill(input);
+
+// Call these on unmount; no idle animation loop is started.
+window.addEventListener("pagehide", () => { stopRange(); stopFill(); });`),
     ],
   },
   shadcn: {

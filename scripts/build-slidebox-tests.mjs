@@ -5,15 +5,19 @@ import { integrations } from "../public/lab/integration-snippets.mjs";
 const root = new URL("../", import.meta.url);
 const output = new URL("public/__slidebox-tests/", root);
 await mkdir(output, { recursive: true });
+for (const name of ["material-picker", "preset-highlight"]) {
+  await copyFile(new URL(`tests/fixtures/legacy-${name}.css`, root), new URL(`legacy-${name}.css`, output));
+}
 await copyFile(new URL("node_modules/@monabbous/slidebox/experimental/range.mjs", root), new URL("range.mjs", output));
 await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Slidebox glass integration</title>
+<link rel="stylesheet" href="../lab/assets/lumenmorph.css">
 <link rel="stylesheet" href="../lab/assets/slidebox.css">
 <link rel="stylesheet" href="../lab/assets/slidebox-group.css">
 <link rel="stylesheet" href="../lab/assets/slidebox-range.css">
-<link rel="stylesheet" href="../lab/material-picker.css">
-<link rel="stylesheet" href="../lab/assets/preset-highlight.css">
+<link rel="stylesheet" href="./legacy-material-picker.css">
+<link rel="stylesheet" href="./legacy-preset-highlight.css">
 <link rel="stylesheet" href="../lab/assets/lumenmorph-slidebox.css">
 <style>
   body { margin:24px; max-width:640px; background:#101b24; color:#e8f6fa; font:16px/1.6 system-ui;
@@ -31,8 +35,8 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
 <h1>Slidebox glass integration</h1>
 <form id="form">
   <label><input id="plain" class="slidebox" type="checkbox" name="plain">Unstyled reference</label>
-  <label><input id="glass" class="slidebox lumenmorph-slidebox" type="checkbox" name="glass" value="on">Glass switch</label>
-  <label><input id="disabled" class="slidebox lumenmorph-slidebox" type="checkbox" name="disabled" disabled checked>Disabled switch</label>
+  <label><input id="glass" class="slidebox lumenmorph-slidebox" data-slidebox-thumb-layers type="checkbox" name="glass" value="on">Glass switch</label>
+  <label><input id="disabled" class="slidebox lumenmorph-slidebox" data-slidebox-thumb-layers type="checkbox" name="disabled" disabled checked>Disabled switch</label>
   <section class="lumenmorph-slidebox" id="scope">
     <div class="slidebox-group" id="group" role="group" aria-label="Period">
       <label><input type="radio" name="period" value="day" checked><span>Day</span></label>
@@ -43,6 +47,7 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
   </section>
   <button type="submit">Save settings</button>
 </form>
+<article id="reference-card" class="lumenmorph lumenmorph-border" style="padding:16px;margin-top:24px">Card material reference</article>
 <section class="lm-lab" style="--lm-accent:#ffaa71">
   <h2>Lumenmorph lab reference</h2>
   <div id="reference-group" class="slidebox-group material-picker" role="group" aria-label="Lab reference">
@@ -55,7 +60,7 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
 import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from './range.mjs';
 window.startRangeEnhancements=()=>{
   const range=document.querySelector('#range');
-  const stopMotion=enhanceSlideboxRange(range), stopFill=enhanceSlideboxRangeFill(range);
+  const stopMotion=enhanceSlideboxRange(range,{layers:true}), stopFill=enhanceSlideboxRangeFill(range);
   return ()=>{stopMotion();stopFill();};
 };
 document.querySelector('#form').addEventListener('submit',event=>{
@@ -70,7 +75,7 @@ console.log("Built the isolated Slidebox integration fixture (not shipped).");
 const blocks = integrations.slidebox.blocks;
 for (const range of [false, true]) {
   const name = range ? "docs-range" : "docs-basic";
-  const imports = range ? blocks[1].code.replace('// import "@monabbous/slidebox/experimental/range.css";', 'import "@monabbous/slidebox/experimental/range.css";') : blocks[1].code;
+  const imports = range ? blocks[1].code.replace('// import "@monabbous/slidebox/experimental/range.css";', 'import "@monabbous/slidebox/experimental/range.css";') + "\n" + blocks[5].code : blocks[1].code;
   await build({
     stdin: { contents: imports, resolveDir: root.pathname, sourcefile: `${name}.mjs`, loader: "js" },
     outfile: new URL(`${name}.mjs`, output).pathname,

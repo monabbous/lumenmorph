@@ -5,6 +5,9 @@ import { installationSnippets, foundationSnippets, componentSnippets, globalDefa
 import { integrations } from "./integration-snippets.mjs";
 
 const root = document.querySelector(".lm-lab");
+// The specimen and native thumb/fill layers share the same card material.
+// Group pickers keep their separate material; geometry stays in Slidebox.
+const materialTargets = [document.querySelector(".stage"), document.querySelector("#header-demo"), document.querySelector("#controls")];
 const hosted = Boolean(document.querySelector("[data-nabous-shell]"));
 if (hosted) root.dataset.hosted = "";
 const form = document.querySelector("#controls");
@@ -64,7 +67,7 @@ async function selectAdapter(name) {
 }
 const ranges = [...form.querySelectorAll('input[type="range"]')];
 const rangeCleanup = ranges.flatMap(input => {
-  return [enhanceSlideboxRange(input), enhanceSlideboxRangeFill(input)];
+  return [enhanceSlideboxRange(input, { layers: true }), enhanceSlideboxRangeFill(input)];
 });
 
 function variables() {
@@ -82,7 +85,11 @@ function variables() {
 function render() {
   const values = variables();
   root.style.setProperty("--lm-accent", values["glow-color"]);
-  for (const [name, value] of Object.entries(values)) root.style.setProperty(`--lumen-${name}`, value);
+  root.style.setProperty("--lumen-glow-color", values["glow-color"]);
+  root.style.setProperty("--lumen-border-glow-color", values["border-glow-color"]);
+  for (const target of materialTargets) {
+    for (const [name, value] of Object.entries(values)) target.style.setProperty(`--lumen-${name}`, value);
+  }
   for (const input of ranges) {
     document.querySelector(`#${input.id}-value`).value = input.value + (input.dataset.unit ?? "");
     input.dispatchEvent(new Event("input")); // Update Slidebox's optional fill after preset changes.
@@ -194,7 +201,7 @@ function selectIntegration(name) {
   const item = integrations[name];
   for (const button of document.querySelectorAll("[data-integration]")) button.checked = button.dataset.integration === name;
   document.querySelector("#integration-description").textContent = item.description;
-  document.querySelector("#integration-guide").href = `https://github.com/monabbous/lumenmorph/blob/main/docs/${item.guide}`;
+  document.querySelector("#integration-guide").href = `https://github.com/monabbous/lumenmorph/blob/${item.guideRef ?? "main"}/docs/${item.guide}`;
   renderBlocks(document.querySelector("#integration-snippet"), item.blocks);
 }
 for (const button of document.querySelectorAll("[data-integration]")) button.addEventListener("change", () => {

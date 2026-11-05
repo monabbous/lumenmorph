@@ -2,15 +2,15 @@
 
 # Style Slidebox like the lab
 
-The optional `@monabbous/lumenmorph/slidebox` stylesheet combines the hosted Slidebox lab's switch/range skin with the glassy radio groups from the Lumenmorph lab. Switches keep 40%-alpha tracks, opaque thumbs, shared pointer light, and an illuminated border. Groups use translucent selected highlights and faint glass on unselected segments, not opaque colored pills. The skin leaves Slidebox's geometry, elastic motion, labels, and native input behavior intact. It does not include the site's layout or fonts.
+The optional `@monabbous/lumenmorph/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
 
-The `/slidebox` export requires Lumenmorph 0.3.0 or later:
+This is an unreleased preview of Lumenmorph 0.3.0 and Slidebox's shared thumb-layer hooks. Registry Slidebox 1.3.2 does not include those hooks. Until both updates are released, use the preview branches:
 
 ```sh
-npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox
+npm install github:monabbous/lumenmorph#feat/slidebox-integration github:monabbous/slidebox#feat/thumb-decoration-layers
 ```
 
-The skin is tested with Slidebox 1.3.2. Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.
+Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.
 
 In the [lab](https://nabous.dev/lab/lumenmorph/?stack=slidebox#integrations), choose **Slidebox** to see copyable installation, import-order, native markup, and color examples. The optional experimental range example is separate from the default switch/group setup.
 
@@ -25,12 +25,14 @@ import "@monabbous/lumenmorph/slidebox";
 
 ```html
 <label>
-  <input type="checkbox" class="slidebox lumenmorph-slidebox" name="notifications">
+  <input type="checkbox" class="slidebox lumenmorph-slidebox" data-slidebox-thumb-layers name="notifications">
   Enable notifications
 </label>
 ```
 
 Alternatively, put `lumenmorph-slidebox` on an ancestor to style its Slidebox controls. Controls outside that scope retain their original appearance.
+
+`data-slidebox-thumb-layers` gives the same input two co-located pseudo-elements. Slidebox owns their shared geometry and margin transitions; the skin paints `::before` as the card fill and `::after` as the masked illuminated border. It adds no DOM nodes and needs no JavaScript. Without that attribute, the thumb keeps a static border fallback.
 
 ## Style grouped radios
 
@@ -54,7 +56,7 @@ The skin paints the shared sliding indicator where CSS anchor positioning is sup
 
 Groups match the Lumenmorph lab's material picker: an 18%-accent selected tint with 12px blur, a softly lit inset edge, and a faint outer glow. Unselected segments use a 2.5%-accent tint with 2px blur. Group corners default to 4px; `--slidebox-radius` and `--lumen-radius` still override them. The accent uses your inherited `--lumen-glow-color` or `--slidebox-on`, falling back to Ember.
 
-The main lab uses this generated stylesheet for all five radio groups. Its separate `material-picker-layout.css` supplies layout and prevents specimen-only background/blur settings from inheriting into the settings groups; it does not duplicate the skin's paint. The example collection still uses its existing styles.
+The main lab uses this generated stylesheet for all five radio groups, its pointer-option switches, and its experimental ranges. The specimen, header, and thumb/fill layers share the card material. Slidebox still owns control shape and dimensions. `material-picker-layout.css` contains layout and public palette configuration only. Gallery groups and the editor/export runtime consume the same exported stylesheet too; there is no separate lab skin implementation.
 
 ## Style an experimental range
 
@@ -71,7 +73,25 @@ import "@monabbous/lumenmorph/slidebox";
   name="intensity" min="0" max="100" value="40">
 ```
 
-The skin does not start dragging, range motion, or progress-fill helpers. If you opt into those helpers separately, Slidebox keeps ownership of the progress-fill background and native thumb hit area. Filled tracks retain that fill rather than replacing it with the pointer gradient. Animated overlay thumbs use the helper's existing opaque color.
+For card-material fill and the full illuminated thumb border, opt into the shared layers after mounting:
+
+```js
+import { enhanceSlideboxRange, enhanceSlideboxRangeFill } from "@monabbous/slidebox/experimental/range.mjs";
+
+const input = document.querySelector("#intensity");
+const stopRange = enhanceSlideboxRange(input, { layers: true });
+const stopFill = enhanceSlideboxRangeFill(input);
+
+// On unmount:
+// stopRange();
+// stopFill();
+```
+
+This reuses Slidebox's existing two decorative, `aria-hidden` spans. The fill and border are pseudo-elements, not additional nodes. The native input continues to own its value, hit area, keyboard behavior, and events. The helper has no idle animation loop. It updates on input, scrolling, and input/document resizing; call `stopRange.refresh()` after other programmatic position or theme changes. Call cleanup before unmounting or changing enhancement options.
+
+Set layered-range material variables on a shared ancestor, such as your existing settings container or label, so the decorative sibling inherits the same theme as the input. This avoids an integration-specific variable-copying or motion implementation.
+
+The stylesheet does not initialize helpers. Without layers mode, ranges retain native progress paint and a static thumb-outline fallback. The lab explicitly enables layers and fill in `lab.mjs`; reduced motion keeps the decoration static, and forced colors restore the native visual.
 
 ## Match the lab colors
 
@@ -89,7 +109,7 @@ Set Slidebox's public color variables on your scope. These are the lab's teal pr
 }
 ```
 
-Add both `settings` and `lumenmorph-slidebox` to your container. Switches and ranges use Slidebox's system-color defaults when you do not override them. Groups default to the lab's dark glass material with an Ember accent; Slidebox still owns their foreground colors. Set readable `--slidebox-text` and `--slidebox-selected-text` values for your page's background.
+Add both `settings` and `lumenmorph-slidebox` to your container. Switch and range material comes from `--lumen-*`, like a card; Slidebox colors continue to supply focus, native fallbacks, and foregrounds. Groups default to the lab's dark glass material with an Ember accent. Set readable `--slidebox-text` and `--slidebox-selected-text` values for your page's background.
 
 For the Lumenmorph lab's Ember groups, override the group separately:
 
@@ -105,11 +125,11 @@ For the Lumenmorph lab's Ember groups, override the group separately:
 }
 ```
 
-Switches and ranges use the hosted treatment's defaults: 40px blur, saturation 1, 30vmax glow radius, 0.1 glow opacity, a 1px switch border at 25% of the Slidebox border color, and 0.3 border-light opacity. Groups use the separate selected/unselected material defaults described above. Override these with inherited `--lumen-*` controls. `--lumen-bg` and `--lumen-solid-bg` customize the material; `--lumen-slidebox-thumb-bg` overrides switch and native range thumbs without changing their geometry. Without that override, switch thumbs use `--slidebox-off` and `--slidebox-on` for their respective states.
+Thumb and fill paint uses the canonical card defaults from [controls](controls.md), not a separate opaque on/off color recipe. Inherit the same `--lumen-bg`, blur, saturation, glow, and border variables to match a card. `--lumen-slidebox-thumb-bg` optionally changes only the thumb fill; the reduced-transparency fallback uses `--lumen-solid-bg`. Slidebox's public size, spacing, and radius still control native geometry. Groups keep their selected/unselected material defaults described above.
 
 ## Add pointer light
 
-The skin is CSS-only. A static light needs no JavaScript. To move the light, initialize the optional tracker once in a browser lifecycle and call its cleanup function when the page or component unmounts:
+Switch/group skinning is CSS-only. Full range decoration uses the explicit helper above; a static light needs no pointer-tracking script. To move the light, initialize the optional tracker once in a browser lifecycle and call its cleanup function when the page or component unmounts:
 
 ```js
 import { trackPointer } from "@monabbous/lumenmorph";

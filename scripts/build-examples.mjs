@@ -32,7 +32,7 @@ ${[...iconNames].map(name => {
   if (!content) throw new Error(`Unknown icon: ${name}`);
   return `.fa-${name}::before { content: ${content}; }`;
 }).join("\n")}`;
-const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css", "assets/slidebox-group.css", "material-picker.css", "assets/preset-highlight.css"].map(read))).join("\n") + "\n" + iconCss;
+const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css", "assets/slidebox-group.css", "material-picker-layout.css", "assets/lumenmorph-slidebox.css"].map(read))).join("\n") + "\n" + iconCss;
 await writeFile(new URL("editor-runtime.json", root), JSON.stringify({ css: runtimeCss, js: runtimeJs }) + "\n");
 // Keep icons local so the gallery and editor do not depend on a CDN.
 for (const file of ["css/all.min.css", "webfonts/fa-solid-900.woff2", "webfonts/fa-brands-400.woff2", "webfonts/fa-regular-400.woff2", "LICENSE.txt"]) {

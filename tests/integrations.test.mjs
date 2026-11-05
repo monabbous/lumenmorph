@@ -96,8 +96,8 @@ test("Slidebox lab documentation includes installation, ordered styles, native m
   const { guide, description, blocks } = integrations.slidebox;
   assert.equal(guide, "slidebox.md");
   assert.match(description, /Requires Lumenmorph 0\.3\.0/);
-  assert.equal(blocks.length, 5);
-  assert.match(blocks[0].code, /npm install @monabbous\/lumenmorph@\^0\.3\.0 @monabbous\/slidebox/);
+  assert.equal(blocks.length, 6);
+  assert.match(blocks[0].code, /npm install github:monabbous\/lumenmorph.*github:monabbous\/slidebox/);
   const imports = blocks[1].code;
   assert.ok(imports.indexOf("slidebox/dist/css/slidebox.css") < imports.indexOf("lumenmorph/slidebox"));
   assert.ok(imports.indexOf("slidebox/dist/css/group.css") < imports.indexOf("lumenmorph/slidebox"));
@@ -105,9 +105,10 @@ test("Slidebox lab documentation includes installation, ordered styles, native m
   assert.match(blocks[2].code, /settings lumenmorph-slidebox/);
   assert.match(blocks[2].code, /type="checkbox"/);
   assert.match(blocks[2].code, /type="radio"/);
-  assert.match(blocks[3].code, /--lumen-bg: initial/);
+  assert.match(blocks[2].code, /data-slidebox-thumb-layers/);
   assert.match(blocks[4].code, /type="range"/);
-  assert.doesNotMatch(blocks.map(block => block.code).join("\n"), /trackPointer\(|enhanceSlidebox|--_(?!lumen-)/);
+  assert.match(blocks[5].code, /enhanceSlideboxRange\(input, \{ layers: true \}\)/);
+  assert.doesNotMatch(blocks.slice(0, 5).map(block => block.code).join("\n"), /trackPointer\(|enhanceSlidebox|--_(?!lumen-)/);
 });
 
 test("code highlighting escapes markup and colors supported languages", () => {
@@ -187,8 +188,10 @@ test("Slidebox skin reuses canonical paint without replacing native geometry or 
   assert.equal(output, lab);
   assert.match(output, /@media \(forced-colors: none\)/);
   assert.match(output, /prefers-reduced-transparency: reduce/);
-  assert.match(output, /var\(--lumen-blur, 40px\)/);
-  assert.match(output, /var\(--slidebox-track, Field\) 40%, transparent/);
+  assert.ok(output.includes(declarations(css, ".lumenmorph", "backdrop-filter")[0]));
+  assert.ok(output.includes(declarations(css, ".lumenmorph", "background-color")[0]));
+  assert.match(output, /data-slidebox-thumb-layers/);
+  assert.match(output, /data-slidebox-range-thumb/);
   assert.match(output, /18%, #102a3166/);
   assert.match(output, /2\.5%, transparent/);
   assert.match(output, /var\(--lumen-blur, 12px\)/);
