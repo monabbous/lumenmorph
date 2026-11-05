@@ -177,11 +177,18 @@ body:not(:has([data-nabous-shell])) {
 /* Adoption paths stay visible on narrow screens; controls keep the site's 4px radius. */
 .lm-lab :is(#code, #integrations, #svg-heading) { scroll-margin-top: 100px; }
 .lm-lab .intro-links { display: flex; flex-wrap: wrap; gap: 12px 24px; }
-.lm-lab .start-strip { display: flex; align-items: center; flex-wrap: wrap; gap: 16px; margin-top: 26px; padding: 16px 20px; border: 1px solid #ffaa7140; border-radius: 4px; background: linear-gradient(100deg, #ffaa7110, #00b2b208); }
-.lm-lab .start-strip > div { flex: 1; min-width: 0; }
-.lm-lab .start-strip .eyebrow { margin-bottom: 4px; font-size: 9px; }
-.lm-lab .start-strip code { font-size: 12px; overflow-wrap: anywhere; }
-.lm-lab #copy-install { --lumen-bg: #ffaa7118; --lumen-border-glow-color: #ffaa71; --lumen-radius: 4px; --lumen-blur: 0px; white-space: nowrap; }
+.lm-lab .quick-use { margin-top: 28px; padding-top: 22px; border-top: 1px solid #467b9666; }
+.lm-lab .quick-use-heading { display: flex; align-items: baseline; gap: 12px 24px; flex-wrap: wrap; }
+.lm-lab .quick-use h2 { margin: 0; font-size: 20px; letter-spacing: -.04em; }
+.lm-lab .quick-use-heading p, .lm-lab .quick-steps > li > p { margin: 0; font-size: 11px; color: var(--lm-muted); }
+.lm-lab .quick-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; padding: 0; margin: 20px 0 14px; list-style-position: inside; }
+.lm-lab .quick-steps > li { min-width: 0; font-size: 12px; }
+.lm-lab .quick-steps > li::marker { color: var(--lm-accent); }
+.lm-lab .quick-steps h3 { display: inline; font-size: 12px; }
+.lm-lab .quick-steps > li > p { min-height: 3.6em; margin: 6px 0 10px; }
+.lm-lab .quick-code .code-label { display: none; }
+.lm-lab .quick-code pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 11px; }
+.lm-lab .quick-use > .intro-link { white-space: normal; }
 .lm-lab .stack-picker { margin: 20px 0 0; min-width: 0; }
 .lm-lab .stack-picker legend { padding: 0; border: 0; margin-bottom: 8px; text-transform: none; letter-spacing: 0; font-size: 11px; }
 .lm-lab .stack-scroll { overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; scrollbar-color: #5289a6 transparent; }
@@ -192,15 +199,15 @@ body:not(:has([data-nabous-shell])) {
 .lm-lab .playground-heading h2 { font-size: 24px; letter-spacing: -.04em; margin: 0; }
 .lm-lab .playground-heading > p { font-size: 11px; color: var(--lm-muted); margin: 0; }
 @media (max-width: 700px) {
-  .lm-lab .start-strip { padding: 14px; gap: 12px; }
-  .lm-lab .start-strip > div { flex-basis: 100%; }
+  .lm-lab .quick-steps { grid-template-columns: 1fr; gap: 18px; }
+  .lm-lab .quick-steps > li > p { min-height: 0; }
   .lm-lab .playground-heading { flex-direction: column; align-items: start; gap: 8px; }
 }
 @media (forced-colors: active) {
-  .lm-lab .start-strip { border-color: CanvasText; }
+  .lm-lab .quick-use { border-color: CanvasText; }
 }
 
-.lm-lab .intro-link, .lm-lab #copy-install, .lm-lab .collection-copy > a { display: inline-flex; align-items: center; gap: 8px; }
+.lm-lab .intro-link, .lm-lab .collection-copy > a { display: inline-flex; align-items: center; gap: 8px; }
 .lm-lab .material-icon i { font-size: 64px; }
 
 /* Native anchor scrolling, including the setup links in the hosted lab. */

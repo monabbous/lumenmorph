@@ -1,5 +1,50 @@
 import { test, expect } from "@playwright/test";
 import { PNG } from "pngjs";
+import { readFile } from "node:fs/promises";
+
+test("quick use is first, copyable, and its exact CDN example works", async ({ page, context }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__quickCopied = value; } }, configurable: true }));
+  await page.goto("/lab/");
+  const quick = page.getByRole("region", { name: "Quick use", exact: true });
+  await expect(quick.locator("li")).toHaveCount(3);
+  await expect(quick.getByRole("button", { name: "Copy CDN stylesheet", exact: true })).toBeVisible();
+  const blocks = await quick.locator("code[data-language]").allTextContents();
+  expect(blocks[0]).toContain("@monabbous/lumenmorph@0.3.2/dist/css/lumenmorph.min.css");
+  expect(blocks[1]).toContain('class="lumenmorph lumenmorph-border"');
+  expect(blocks[2]).toContain("/js/pointer.mjs");
+  for (const [index, name] of ["CDN stylesheet", "Glass markup", "Optional pointer light"].entries()) {
+    await quick.getByRole("button", { name: `Copy ${name}`, exact: true }).click();
+    expect(await page.evaluate(() => window.__quickCopied)).toBe(blocks[index]);
+  }
+  expect(await page.locator(".stack-picker").evaluate(element => Boolean(element.closest("#code")))).toBe(true);
+  await expect(page.locator(".lm-intro .stack-picker")).toHaveCount(0);
+  await expect(quick.getByRole("link")).toHaveAttribute("href", "#code");
+
+  // Exercise copied code against local copies of the released files, not CDN availability.
+  const example = await context.newPage();
+  await example.route("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.2/**", async route => {
+    const css = route.request().url().endsWith(".css");
+    const body = await readFile(new URL(css ? "../../dist/css/lumenmorph.min.css" : "../../js/pointer.mjs", import.meta.url));
+    await route.fulfill({ body, contentType: css ? "text/css" : "text/javascript", headers: { "Access-Control-Allow-Origin": "*" } });
+  });
+  await example.setContent(`<!doctype html><html><head>${blocks[0]}</head><body>${blocks[1]}${blocks[2]}</body></html>`);
+  await expect(example.locator("article")).toHaveCSS("backdrop-filter", /blur\(32px\)/);
+  await expect.poll(() => example.evaluate(() => getComputedStyle(document.querySelector("article"), "::before").maskComposite)).toContain("exclude");
+  await example.waitForLoadState("networkidle");
+  await example.mouse.move(120, 90);
+  await expect.poll(() => example.evaluate(() => parseFloat(document.documentElement.style.getPropertyValue("--lumen-x")))).toBeCloseTo(120, 1);
+  await example.close();
+});
+
+test("quick-use snippets remain readable without JavaScript", async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
+  const page = await context.newPage();
+  await page.goto("/lab/");
+  await expect(page.locator(".quick-use code[data-language]")).toHaveCount(3);
+  await expect(page.locator(".quick-use")).toContainText("trackPointer");
+  await expect(page.locator(".quick-use")).not.toContainText("npm install");
+  await context.close();
+});
 
 test("lab loads, renders React masks, and controls update the exported code", async ({ page }) => {
   const errors = [];
@@ -95,7 +140,7 @@ test("installation switches between npm and a minified no-build CDN setup", asyn
   await expect(page.locator("#installation-snippet")).toContainText("lumenmorph.min.css");
   await expect(page.locator("#installation-snippet")).toContainText("motion.min.css");
   await expect(page.locator("#snippet")).toContainText('<script type="module">');
-  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.0/js/pointer.mjs");
+  await expect(page.locator("#snippet")).toContainText("https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.2/js/pointer.mjs");
   await page.locator("#smoothing").uncheck();
   await page.locator("#tracking").uncheck();
   await expect(page.locator("#installation-snippet")).not.toContainText("motion.min.css");
@@ -261,6 +306,7 @@ test("optional motion transitions one coordinate owner and smooths exit", async 
 test("Slidebox presets support arrows, Lilac export, custom edits, and reset", async ({ page }) => {
   await page.goto("/lab/");
   const ember = page.getByRole("radio", { name: "Ember", exact: true });
+  await ember.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
   await ember.focus();
   await page.keyboard.press("ArrowRight");
   await expect(page.getByRole("radio", { name: "Lagoon", exact: true })).toBeChecked();
@@ -270,14 +316,18 @@ test("Slidebox presets support arrows, Lilac export, custom edits, and reset", a
   await expect(page.locator("#snippet")).toContainText("#e4d4ff");
   await page.locator("#blur").fill("10");
   await expect(page.locator(".presets input:checked")).toHaveCount(0);
-  await page.getByRole("button", { name: "Reset", exact: true }).click();
+  const reset = page.getByRole("button", { name: "Reset", exact: true });
+  await reset.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+  await reset.click();
   await expect(ember).toBeChecked();
 });
 
-test("landing shortcuts select the requested setup and copy the install command", async ({ page }) => {
+test("detailed setup selects each stack and retains the npm install command", async ({ page }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__copiedCode = value; } } }));
   await page.goto("/lab/");
-  await page.getByRole("button", { name: "Copy install", exact: true }).click();
+  const copy = page.locator("#installation-snippet").getByRole("button", { name: "Copy Terminal — in your project folder", exact: true });
+  await copy.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+  await copy.click();
   expect(await page.evaluate(() => window.__copiedCode)).toBe("npm install @monabbous/lumenmorph");
   const picker = page.getByRole("group", { name: "Choose your stack", exact: true });
   for (const [name, code] of [["MUI", "cssVariables: true"], ["Mantine", "Paper.extend"], ["Taiga UI v4+", 'appearance="lumenmorph"'], ["shadcn/ui", "lumen-card.json"]]) {

@@ -23,17 +23,22 @@
       <p class="eyebrow">CSS GLASS / OPEN SOURCE</p>
       <h1 class="lm-title" id="lab-title"><span class="title-label">Lumenmorph</span><span id="header-demo" aria-hidden="true"></span></h1>
       <div class="intro-bottom"><p class="dek">Give your interface a little light.<br>Glass surfaces and glowing edges, in any framework. Start with CSS; add pointer light when you want it.</p><nav class="intro-links" aria-label="Explore Lumenmorph"><a class="intro-link" href="./examples/">24 editable examples <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a><a class="intro-link" href="https://github.com/monabbous/lumenmorph/tree/main/docs">Documentation <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a></nav></div>
-      <div class="start-strip"><div><p class="eyebrow">START WITH ONE IMPORT</p><code>npm install @monabbous/lumenmorph</code></div><button class="lumenmorph lumenmorph-border" id="copy-install" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i><span>Copy install</span></button><a href="#code" class="intro-link">Setup &amp; CDN <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></div>
-      <fieldset class="stack-picker"><legend>Choose your stack</legend><div class="stack-scroll"><div class="slidebox-group material-picker lumenmorph-slidebox stack-options">
-        <label><input type="radio" name="tech-stack" value="css" checked><span>CSS</span></label>
-        <label><input type="radio" name="tech-stack" value="tailwind"><span>Tailwind</span></label>
-        <label><input type="radio" name="tech-stack" value="slidebox"><span>Slidebox</span></label>
-        <label><input type="radio" name="tech-stack" value="shadcn"><span>shadcn/ui</span></label>
-        <label><input type="radio" name="tech-stack" value="mui"><span>MUI</span></label>
-        <label><input type="radio" name="tech-stack" value="mantine"><span>Mantine</span></label>
-        <label><input type="radio" name="tech-stack" value="taiga"><span>Taiga UI v4+</span></label>
-        <label><input type="radio" name="tech-stack" value="svg"><span>SVG adapters</span></label>
-      </div></div><a class="intro-link stack-setup" id="stack-setup" href="#code"><span>View CSS setup</span> <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></fieldset>
+      <section class="quick-use" aria-labelledby="quick-use-heading">
+        <div class="quick-use-heading"><h2 id="quick-use-heading">Quick use</h2><p>No install or build step. Add these to your HTML.</p></div>
+        <ol class="quick-steps">
+          <li><h3>Load the stylesheet</h3><p>Inside <code>&lt;head&gt;</code>.</p><div class="code-blocks quick-code" data-title="CDN stylesheet"><pre><code data-language="xml">&lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.2/dist/css/lumenmorph.min.css"&gt;</code></pre></div></li>
+          <li><h3>Add your content</h3><p>One element, with an optional glowing border.</p><div class="code-blocks quick-code" data-title="Glass markup"><pre><code data-language="xml">&lt;article class="lumenmorph lumenmorph-border" style="padding: 2rem"&gt;
+  &lt;h2&gt;Hello, glass.&lt;/h2&gt;
+  Your content
+&lt;/article&gt;</code></pre></div></li>
+          <li><h3>Let the light follow</h3><p>Optional. Add before <code>&lt;/body&gt;</code>; static glass needs no JavaScript.</p><div class="code-blocks quick-code" data-title="Optional pointer light"><pre><code data-language="xml">&lt;script type="module"&gt;
+  import { trackPointer } from "https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.3.2/js/pointer.mjs";
+  const stop = trackPointer();
+  // Call stop() if you remove the effect.
+&lt;/script&gt;</code></pre></div></li>
+        </ol>
+        <a href="#code" class="intro-link">Using npm, Tailwind, or a framework? Find your stack below <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a>
+      </section>
     </section>
     <div class="playground-heading"><div><p class="eyebrow">TRY IT HERE</p><h2>Tune the material.</h2></div><p>Pick a mood. Move the light. Copy your settings below.</p></div>
     <div class="lm-workspace">
@@ -74,6 +79,16 @@
       </aside>
     </div>
     <section class="code-section lumenmorph-slidebox" id="code" aria-labelledby="code-heading"><p class="eyebrow">IMPLEMENTATION</p><h2 id="code-heading">Use these settings</h2>
+      <fieldset class="stack-picker"><legend>Choose your stack</legend><div class="stack-scroll"><div class="slidebox-group material-picker lumenmorph-slidebox stack-options">
+        <label><input type="radio" name="tech-stack" value="css" checked><span>CSS</span></label>
+        <label><input type="radio" name="tech-stack" value="tailwind"><span>Tailwind</span></label>
+        <label><input type="radio" name="tech-stack" value="slidebox"><span>Slidebox</span></label>
+        <label><input type="radio" name="tech-stack" value="shadcn"><span>shadcn/ui</span></label>
+        <label><input type="radio" name="tech-stack" value="mui"><span>MUI</span></label>
+        <label><input type="radio" name="tech-stack" value="mantine"><span>Mantine</span></label>
+        <label><input type="radio" name="tech-stack" value="taiga"><span>Taiga UI v4+</span></label>
+        <label><input type="radio" name="tech-stack" value="svg"><span>SVG adapters</span></label>
+      </div></div><a class="intro-link stack-setup" id="stack-setup" href="#code"><span>View CSS setup</span> <i class="fa-solid fa-arrow-down" aria-hidden="true"></i></a></fieldset>
       <section class="implementation-panel" aria-labelledby="foundation-heading"><div class="code-heading"><div><h3 id="foundation-heading">Foundations</h3><p class="hint">Choose npm for a bundled project or CDN for plain HTML and CSS. Static glass needs no JavaScript.</p></div></div><div class="code-tabs"><div class="stack-scroll"><div class="slidebox-group material-picker format-options" role="group" aria-label="Code format"><label><input type="radio" name="code-format" value="css" data-format="css" checked><span>Vanilla CSS · npm</span></label><label><input type="radio" name="code-format" value="cdn" data-format="cdn"><span>CDN · minified</span></label><label><input type="radio" name="code-format" value="scss" data-format="scss"><span>SCSS</span></label><label><input type="radio" name="code-format" value="less" data-format="less"><span>Less</span></label><label><input type="radio" name="code-format" value="tailwind" data-format="tailwind"><span>Tailwind</span></label></div></div></div><h4>1. Install</h4><p id="installation-hint" class="hint"></p><div id="installation-snippet" class="code-blocks"></div><h4>2. Shared defaults</h4><p class="hint">Set global defaults in :root, or use local styles below. Local values override inherited defaults.</p><div id="theme-snippet" class="code-blocks"></div><h4>3. Per-material styling</h4><p class="hint">Style a material with your current settings. Tailwind supports @apply or direct utilities.</p><div id="snippet" class="code-blocks"></div></section>
       <section class="implementation-panel" id="integrations" aria-labelledby="integration-heading">
         <div class="code-heading"><div><h3 id="integration-heading">Use your UI library</h3><p class="hint">Keep your components and their behavior. Choose the material integration for your stack.</p></div></div>

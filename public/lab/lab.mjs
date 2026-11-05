@@ -224,15 +224,12 @@ for (const radio of document.querySelectorAll(".stack-options input")) radio.add
   else if (name !== "svg") document.querySelector(`[data-format="${name}"]`).click();
   syncStack(name);
 });
-document.querySelector("#copy-install").addEventListener("click", async event => {
-  const button = event.currentTarget;
-  try {
-    await navigator.clipboard.writeText("npm install @monabbous/lumenmorph");
-    button.querySelector("i").className = "fa-solid fa-check";
-    button.querySelector("span").textContent = "Copied";
-    window.setTimeout(() => { button.querySelector("i").className = "fa-regular fa-copy"; button.querySelector("span").textContent = "Copy install"; }, 1400);
-  } catch { button.querySelector("span").textContent = "Select the command to copy"; }
-});
+// Keep the quick-start code readable without JavaScript. Enhance those exact
+// static snippets with the same copy controls as the detailed setup below.
+for (const target of document.querySelectorAll(".quick-code")) {
+  const code = target.querySelector("code");
+  renderBlocks(target, [{ title: target.dataset.title, language: code.dataset.language, code: code.textContent }]);
+}
 
 // Share navigation choices, not material edits or pointer preferences.
 // replaceState preserves the current anchor without growing history on every selection.
