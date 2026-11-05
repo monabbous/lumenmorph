@@ -46,6 +46,29 @@ test("quick-use snippets remain readable without JavaScript", async ({ browser, 
   await context.close();
 });
 
+test("text links keep underlines when the host shell resets anchors after lab CSS", async ({ page }) => {
+  await page.goto("/lab/");
+  // nabous.dev/generated/lab-shell.css loads after lab.css and resets all links.
+  await page.addStyleTag({ content: "a { color: inherit; text-decoration: none; }" });
+  await page.evaluate(() => {
+    const link = document.createElement("a");
+    link.href = "/";
+    link.id = "host-link";
+    link.textContent = "Host navigation";
+    document.body.prepend(link);
+  });
+  for (const selector of [".intro-links a", ".quick-use > a", "#stack-setup", ".pointer-options a", "#integration-guide"]) {
+    const link = page.locator(selector).first();
+    await expect(link).toHaveCSS("text-decoration-line", "underline");
+    await expect(link).toHaveCSS("text-decoration-thickness", "1px");
+    await expect(link).toHaveCSS("text-underline-offset", "4px");
+  }
+  // Preserve the intentionally undecorated button-style links and host chrome.
+  for (const selector of [".sample-link", ".collection-copy > a", "#host-link"]) {
+    await expect(page.locator(selector)).toHaveCSS("text-decoration-line", "none");
+  }
+});
+
 test("quick-use code highlights on arrival and desktop snippets have room", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1100 });
   await page.goto("/lab/");
