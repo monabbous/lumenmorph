@@ -481,26 +481,31 @@ test("main lab switches and ranges use glass without losing keyboard, fill, or f
   const tracking = page.locator("#tracking"), range = page.locator("#glow-size");
   await expect.poll(() => range.evaluate(input => Math.abs(input.getBoundingClientRect().top - input.nextElementSibling.getBoundingClientRect().top))).toBeLessThan(.5);
   const checkMaterial = async () => {
-    const materials = await page.evaluate(() => {
-      const properties = ["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter"];
-      const read = (element, pseudo) => Object.fromEntries(properties.map(key => [key, getComputedStyle(element, pseudo)[key]]));
-      const card = document.querySelector(".main-card"), input = document.querySelector("#glow-size"), visual = input.nextElementSibling;
-      const thumb = visual.querySelector("[data-slidebox-range-thumb]");
-      return {
-        card: read(card), toggle: read(document.querySelector("#tracking"), "::before"),
-        thumb: read(thumb), fill: read(visual, "::before"),
-        cardBorder: getComputedStyle(card, "::before").backgroundImage,
-        toggleBorder: getComputedStyle(document.querySelector("#tracking"), "::after").backgroundImage,
-        rangeBorder: getComputedStyle(thumb, "::before").backgroundImage,
-        nodes: visual.querySelectorAll("*").length,
-      };
-    });
-    expect(materials.toggle).toEqual(materials.card);
-    expect(materials.thumb).toEqual(materials.card);
-    expect(materials.fill).toEqual(materials.card);
-    expect(materials.toggleBorder).toBe(materials.cardBorder);
-    expect(materials.rangeBorder).toBe(materials.cardBorder);
-    expect(materials.nodes).toBe(1); // Existing wrapper + thumb; fill/border are pseudos.
+    // Native Slidebox background transitions may briefly retain the previous
+    // gradient in WebKit after a material edit. Compare the settled material,
+    // keeping the original geometry/paint transition behavior intact.
+    await expect(async () => {
+      const materials = await page.evaluate(() => {
+        const properties = ["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter"];
+        const read = (element, pseudo) => Object.fromEntries(properties.map(key => [key, getComputedStyle(element, pseudo)[key]]));
+        const card = document.querySelector(".main-card"), input = document.querySelector("#glow-size"), visual = input.nextElementSibling;
+        const thumb = visual.querySelector("[data-slidebox-range-thumb]");
+        return {
+          card: read(card), toggle: read(document.querySelector("#tracking"), "::before"),
+          thumb: read(thumb), fill: read(visual, "::before"),
+          cardBorder: getComputedStyle(card, "::before").backgroundImage,
+          toggleBorder: getComputedStyle(document.querySelector("#tracking"), "::after").backgroundImage,
+          rangeBorder: getComputedStyle(thumb, "::before").backgroundImage,
+          nodes: visual.querySelectorAll("*").length,
+        };
+      });
+      expect(materials.toggle).toEqual(materials.card);
+      expect(materials.thumb).toEqual(materials.card);
+      expect(materials.fill).toEqual(materials.card);
+      expect(materials.toggleBorder).toBe(materials.cardBorder);
+      expect(materials.rangeBorder).toBe(materials.cardBorder);
+      expect(materials.nodes).toBe(1); // Existing wrapper + thumb; fill/border are pseudos.
+    }).toPass({ timeout: 5000 });
   };
   await checkMaterial();
   await expect(tracking).toHaveCSS("border-top-width", "1px");
