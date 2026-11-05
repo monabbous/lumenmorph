@@ -461,7 +461,7 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
   await expect(page.locator("#stack-setup")).toHaveAttribute("href", "#integrations");
   await expect(page.locator("#integration-description")).toContainText("Requires Lumenmorph 0.3.0");
   await expect(page.locator("#integration-snippet code")).toHaveCount(6);
-  await expect(page.locator("#integration-snippet")).toContainText("npm install github:monabbous/lumenmorph");
+  await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0");
   await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText('class="settings lumenmorph-slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText("Optional experimental range");

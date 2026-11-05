@@ -4,10 +4,10 @@
 
 The optional `@monabbous/lumenmorph/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
 
-This is an unreleased preview of Lumenmorph 0.3.0 and Slidebox's shared thumb-layer hooks. Registry Slidebox 1.3.2 does not include those hooks. Until both updates are released, use the preview branches:
+The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later:
 
 ```sh
-npm install github:monabbous/lumenmorph#feat/slidebox-integration github:monabbous/slidebox#feat/thumb-decoration-layers
+npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0
 ```
 
 Choose one Slidebox styling route, then import the skin after it. You do not need the main Lumenmorph stylesheet unless you also use ordinary glass surfaces or SVG adapters.

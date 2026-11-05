@@ -28,4 +28,4 @@ All public custom properties use the `--lumen-` prefix. They inherit, so you can
 
 Glow colors can include alpha; that alpha combines with the intensity. To override the text effect's highlight independently, set `--lumen-glow-color` on the text element.
 
-The optional [Slidebox skin](slidebox.md) reuses the card material and illuminated border for thumb/fill layers, with separate selected/unselected materials for radio groups. `--lumen-slidebox-thumb-bg` optionally overrides only the thumb fill. The full thumb-layer integration is currently an unreleased preview requiring the shared Slidebox extension; see the guide for installation and minimal-markup hooks.
+The optional [Slidebox skin](slidebox.md) reuses the card material and illuminated border for thumb/fill layers, with separate selected/unselected materials for radio groups. `--lumen-slidebox-thumb-bg` optionally overrides only the thumb fill. The integration requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later; see the guide for installation and minimal-markup hooks.

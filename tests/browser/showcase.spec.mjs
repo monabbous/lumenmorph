@@ -54,7 +54,10 @@ test("interactive examples update native state and recover dismissed content", a
   expect(warmColor).toBe("rgb(255, 170, 113)");
   await page.locator("[data-warmth]").fill("28");
   await expect(page.locator(".climate-value")).toHaveText("28°");
-  await page.locator("[data-foil]").check();
+  const foilLabel = page.locator("label:has([data-foil])");
+  await foilLabel.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+  await foilLabel.click();
+  await expect(page.locator("[data-foil]")).toBeChecked();
   await expect(page.locator(".demo-foil")).toHaveAttribute("data-holographic", "");
   await page.locator("[data-ignite]").click();
   await expect(page.locator(".ignite-message")).toHaveText("Keep it glowing.");
