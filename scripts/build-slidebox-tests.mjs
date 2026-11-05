@@ -18,7 +18,7 @@ await writeFile(new URL("index.html", output), `<!doctype html><html lang="en"><
 <link rel="stylesheet" href="../lab/assets/slidebox-range.css">
 <link rel="stylesheet" href="./legacy-material-picker.css">
 <link rel="stylesheet" href="./legacy-preset-highlight.css">
-<link rel="stylesheet" href="../lab/assets/lumenmorph-slidebox.css">
+<link rel="stylesheet" href="../lab/skins/slidebox.css">
 <style>
   body { margin:24px; max-width:640px; background:#101b24; color:#e8f6fa; font:16px/1.6 system-ui;
     --slidebox-size:36px; --slidebox-track:#2a5b7c; --slidebox-border:#5289a6;

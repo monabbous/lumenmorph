@@ -10,6 +10,20 @@ const setCode = async (page, language, value) => {
   await page.getByRole("textbox", { name: `${language.toUpperCase()} code`, exact: true }).fill(value);
 };
 
+test("generated previews use layered skin for ranges and switches", async ({ page }) => {
+  const preview = page.frameLocator("#example-preview");
+  await expect(preview.locator("[data-warmth]")).toHaveAttribute("data-slidebox-range-layers", "");
+  expect(await preview.locator("[data-slidebox-range-thumb]").evaluate(element => getComputedStyle(element, "::before").maskComposite)).toContain("exclude");
+  for (const id of ["foil", "checklist"]) {
+    await page.goto(`/lab/examples/${id}/`);
+    await expect(page.locator("#preview-state")).toHaveText("Live");
+    const input = preview.locator("input.slidebox").first();
+    await expect(input).toHaveAttribute("data-slidebox-thumb-layers", "");
+    expect(await input.evaluate(element => getComputedStyle(element, "::after").maskComposite)).toContain("exclude");
+    expect(await input.evaluate(element => getComputedStyle(element, "::before").backdropFilter)).toContain("blur(");
+  }
+});
+
 test("HTML CSS and JavaScript edit a live sandbox and reset restores the example", async ({ page }) => {
   await page.locator("#auto-run").uncheck();
   await setCode(page, "html", '<button id="demo">Try this</button><output id="value">0</output>');

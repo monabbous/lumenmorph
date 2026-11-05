@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import postcss from "postcss";
 
 const root = new URL("../", import.meta.url);
@@ -143,6 +143,12 @@ const css = `/* Generated from src/lumenmorph.css. Native control parts reuse ca
   }
 }
 `;
+await mkdir(new URL("skins/", root), { recursive: true });
+await writeFile(new URL("skins/slidebox.css", root), css);
+// Retain the original physical file for existing self-hosted/CDN URLs.
 await writeFile(new URL("dist/css/slidebox.css", root), css);
-await writeFile(new URL("public/lab/assets/lumenmorph-slidebox.css", root), css);
+await mkdir(new URL("public/lab/skins/", root), { recursive: true });
+await copyFile(new URL("skins/slidebox.css", root), new URL("public/lab/skins/slidebox.css", root));
+// Compatibility for previously hosted lab pages; current pages use skins/.
+await copyFile(new URL("skins/slidebox.css", root), new URL("public/lab/assets/lumenmorph-slidebox.css", root));
 console.log("Built the optional Slidebox lab skin.");

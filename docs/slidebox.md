@@ -2,7 +2,11 @@
 
 # Style Slidebox like the lab
 
-The optional `@monabbous/lumenmorph/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
+The optional `@monabbous/lumenmorph/skins/slidebox` stylesheet applies the card material to switch thumbs and range fill, including its translucent background, blur, shared light, and actual illuminated thumb border. Radio groups use the lab's translucent selected/unselected materials. Geometry and motion stay in Slidebox; Lumenmorph reuses its canonical surface and border paint instead of implementing another switch.
+
+The stylesheet lives in `skins/slidebox.css`; the `.css` import suffix is optional. The original `@monabbous/lumenmorph/slidebox` path remains a compatibility alias. The `/skins/slidebox` path is new in the next release; use the original alias with published versions through 0.3.1.
+
+The build copies this exact file to `public/lab/skins/slidebox.css` for the standalone lab and gallery, and embeds it unchanged in the editor runtime. There is no separate lab skin definition.
 
 The skin requires Lumenmorph 0.3.0 and Slidebox 1.4.0 or later. The persistent thumb/fill tint is available in Lumenmorph 0.3.1:
 
@@ -20,7 +24,7 @@ Keep the standard `slidebox`, `slidebox-group`, and `slidebox-range` classes eve
 
 ```js
 import "@monabbous/slidebox/dist/css/slidebox.css";
-import "@monabbous/lumenmorph/slidebox";
+import "@monabbous/lumenmorph/skins/slidebox";
 ```
 
 ```html
@@ -41,7 +45,7 @@ Also import Slidebox's group stylesheet:
 ```js
 import "@monabbous/slidebox/dist/css/slidebox.css";
 import "@monabbous/slidebox/dist/css/group.css";
-import "@monabbous/lumenmorph/slidebox";
+import "@monabbous/lumenmorph/skins/slidebox";
 ```
 
 ```html
@@ -64,7 +68,7 @@ Slidebox ranges remain experimental. Import their stylesheet explicitly:
 
 ```js
 import "@monabbous/slidebox/experimental/range.css";
-import "@monabbous/lumenmorph/slidebox";
+import "@monabbous/lumenmorph/skins/slidebox";
 ```
 
 ```html

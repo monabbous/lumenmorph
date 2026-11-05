@@ -112,14 +112,13 @@
 .lm-lab .glass-dock > label > span { font-size: 20px; }
 
 /* 06 — interactive temperature */
-.lm-lab .demo-climate { --warmth: 32%; --temperature-color: #70d5c5; --temperature-tint: #70d5c529; text-align: center; padding: 28px 26px; background: radial-gradient(ellipse at 50% 50%, var(--temperature-tint), transparent 70%), #202c2b; }
+.lm-lab .demo-climate { --warmth: 32%; --temperature-color: #70d5c5; --temperature-tint: #70d5c529; --lumen-glow-color: var(--temperature-color); --lumen-border-glow-color: var(--temperature-color); --slidebox-on: var(--temperature-color); text-align: center; padding: 28px 26px; background: radial-gradient(ellipse at 50% 50%, var(--temperature-tint), transparent 70%), #202c2b; }
 .lm-lab .climate-ring { margin: 27px auto; width: 176px; aspect-ratio: 1; padding: 3px; border-radius: 50%; background: conic-gradient(from 225deg, var(--temperature-color) 0 var(--warmth), #45615c var(--warmth), #45615c 75%, transparent 75%); }
 .lm-lab .climate-face { border-radius: 50%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; --lumen-bg: #202c2b; --lumen-glow-color: var(--temperature-color); box-shadow: 0 0 28px var(--temperature-tint); }
 .lm-lab .climate-face output { color: var(--temperature-color); font-family: inherit; font-size: 56px; font-weight: 500; line-height: 1.1; letter-spacing: -.09em; }
 .lm-lab .climate-face span { font-size: 10px; color: var(--sg-muted); }
 .lm-lab .demo-climate label { display: block; font-size: 10px; text-align: left; }
-.lm-lab .demo-climate .slidebox-range { width: 100%; margin: 12px 0; --slidebox-on: var(--temperature-color); --slidebox-track: #173937; --slidebox-border: #688e8960; }
-.lm-lab .demo-climate [data-slidebox-range-visual] > span { background: var(--temperature-color) !important; }
+.lm-lab .demo-climate .slidebox-range { width: 100%; margin: 12px 0; --slidebox-track: #173937; --slidebox-border: #688e8960; }
 .lm-lab .range-labels { display: flex; justify-content: space-between; font-size: 8px; color: var(--sg-muted); }
 
 /* 07 — brushed and holographic foil */

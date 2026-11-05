@@ -10,7 +10,7 @@ export function initShowcase() {
   const grid = root.querySelector(".showcase-grid");
   const cards = [...grid.children];
   for (const card of cards) examples[card.dataset.example]?.(card.querySelector(".showcase-demo"), signal);
-  const ranges = [...root.querySelectorAll("input[type=range]")].flatMap(input => [enhanceSlideboxRange(input), enhanceSlideboxRangeFill(input)]);
+  const ranges = [...root.querySelectorAll("input[type=range]")].flatMap(input => [enhanceSlideboxRange(input, { layers: true }), enhanceSlideboxRangeFill(input)]);
 
   // Preserve DOM/keyboard order; size grid row spans only when card dimensions change.
   const resize = new ResizeObserver(entries => {

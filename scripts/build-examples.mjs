@@ -32,7 +32,7 @@ ${[...iconNames].map(name => {
   if (!content) throw new Error(`Unknown icon: ${name}`);
   return `.fa-${name}::before { content: ${content}; }`;
 }).join("\n")}`;
-const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css", "assets/slidebox-group.css", "material-picker-layout.css", "assets/lumenmorph-slidebox.css"].map(read))).join("\n") + "\n" + iconCss;
+const runtimeCss = (await Promise.all(["assets/lumenmorph.css", "assets/slidebox.css", "assets/slidebox-range.css", "assets/slidebox-group.css", "material-picker-layout.css", "skins/slidebox.css"].map(read))).join("\n") + "\n" + iconCss;
 await writeFile(new URL("editor-runtime.json", root), JSON.stringify({ css: runtimeCss, js: runtimeJs }) + "\n");
 // Keep icons local so the gallery and editor do not depend on a CDN.
 for (const file of ["css/all.min.css", "webfonts/fa-solid-900.woff2", "webfonts/fa-brands-400.woff2", "webfonts/fa-regular-400.woff2", "LICENSE.txt"]) {
@@ -70,8 +70,8 @@ for (const match of source.matchAll(/<article class="example" data-example="([^"
   css.walkAtRules(rule => { if (rule.nodes && !rule.nodes.length) rule.remove(); });
   let exampleCss = `/* Change this material and make it yours. */\nbody { margin: 0; padding: 24px; min-height: 100vh; box-sizing: border-box; display: grid; place-items: center; background: #102a31; color: #e9f3ed; font-family: ui-monospace, monospace; }\nbutton, input { font: inherit; }\n.lm-lab { width: 100%; max-width: 380px; }\n${css.toString().trim()}\n.lm-lab .showcase { padding: 0; border: 0; }\n.lm-lab .example { border-radius: 4px; }\n`;
   const setup = examples[id] ? `(${examples[id].toString().replace(/^\w+\(/, "function (")})(document.querySelector('.showcase-demo'), controller.signal);` : "// This study needs no extra interaction.";
-  let js = `// Lumenmorph and Slidebox are loaded for this playground.\nconst { trackPointer, enhanceSlideboxRange, enhanceSlideboxRangeFill } = LumenExample;\nconst controller = new AbortController();\nconst stopLight = trackPointer(document.querySelector('.lm-lab'));\nconst ranges = [...document.querySelectorAll('input[type=range]')].flatMap(input => [enhanceSlideboxRange(input), enhanceSlideboxRangeFill(input)]);\n\n${setup}\n\nwindow.addEventListener('pagehide', event => { if (!event.persisted) { controller.abort(); stopLight(); ranges.forEach(stop => stop()); } });\n`;
-  let html = `<main class="lm-lab">\n  <section class="showcase">\n    <article class="example" data-visible>\n      ${markup}\n    </article>\n  </section>\n</main>`;
+  let js = `// Lumenmorph and Slidebox are loaded for this playground.\nconst { trackPointer, enhanceSlideboxRange, enhanceSlideboxRangeFill } = LumenExample;\nconst controller = new AbortController();\nconst stopLight = trackPointer(document.querySelector('.lm-lab'));\nconst ranges = [...document.querySelectorAll('input[type=range]')].flatMap(input => [enhanceSlideboxRange(input, { layers: true }), enhanceSlideboxRangeFill(input)]);\n\n${setup}\n\nwindow.addEventListener('pagehide', event => { if (!event.persisted) { controller.abort(); stopLight(); ranges.forEach(stop => stop()); } });\n`;
+  let html = `<main class="lm-lab">\n  <section class="showcase lumenmorph-slidebox">\n    <article class="example" data-visible>\n      ${markup}\n    </article>\n  </section>\n</main>`;
   [html, exampleCss, js] = await Promise.all([[html, "html"], [exampleCss, "css"], [js, "babel"]].map(([source, parser]) => format(source, { parser, printWidth: 80, tabWidth: 2 })));
   const data = { id, title, description, category, html, css: exampleCss, js };
   const hash = createHash("sha256").update(JSON.stringify(data) + runtimeCss + runtimeJs + generator).digest("hex").slice(0, 16);

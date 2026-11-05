@@ -869,6 +869,9 @@ input {
   --warmth: 32%;
   --temperature-color: #70d5c5;
   --temperature-tint: #70d5c529;
+  --lumen-glow-color: var(--temperature-color);
+  --lumen-border-glow-color: var(--temperature-color);
+  --slidebox-on: var(--temperature-color);
   text-align: center;
   padding: 28px 26px;
   background:
@@ -924,12 +927,8 @@ input {
 .lm-lab .demo-climate .slidebox-range {
   width: 100%;
   margin: 12px 0;
-  --slidebox-on: var(--temperature-color);
   --slidebox-track: #173937;
   --slidebox-border: #688e8960;
-}
-.lm-lab .demo-climate [data-slidebox-range-visual] > span {
-  background: var(--temperature-color) !important;
 }
 .lm-lab .range-labels {
   display: flex;
@@ -1021,7 +1020,7 @@ input {
 }
 
 html,body{width:1200px;height:630px;overflow:hidden}body{padding:60px;display:grid;grid-template-columns:1fr 400px;gap:60px;background:radial-gradient(ellipse at 85% 30%,#37625750,transparent 70%),#102a31}.og-copy{align-self:center;max-width:490px}.og-copy .tag{color:#ffaa71;font:12px/1.6 ui-monospace,monospace;letter-spacing:2px}.og-copy h1{font:500 48px/1.12 ui-monospace,monospace;letter-spacing:-3px;margin:28px 0 22px}.og-copy p{font:16px/1.7 ui-monospace,monospace;color:#adc2c5}.og-copy .address{margin-top:50px;font-size:13px}.lm-lab{width:380px;max-height:540px;align-self:center}.lm-lab .showcase{--lumen-x:950px;--lumen-y:200px}.lm-lab .example{border:2px solid #92b4ad40;border-radius:4px}*{animation:none!important;transition:none!important}</style></head><body><div class="og-copy"><span class="tag">LUMENMORPH / CONTROL</span><h1>Degrees of warmth</h1><p>A tactile dial driven by a real range input.</p><p class="address">nabous.dev / examples / climate</p></div><main class="lm-lab">
-  <section class="showcase">
+  <section class="showcase lumenmorph-slidebox">
     <article class="example" data-visible>
       <div class="showcase-demo demo-climate">
         <span class="demo-kicker">SET THE MOOD</span>

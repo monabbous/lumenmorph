@@ -24,7 +24,9 @@
     },
     "./css": "./dist/css/lumenmorph.css",
     "./motion": "./dist/css/motion.css",
-    "./slidebox": "./dist/css/slidebox.css",
+    "./skins/slidebox": "./skins/slidebox.css",
+    "./skins/slidebox.css": "./skins/slidebox.css",
+    "./slidebox": "./skins/slidebox.css",
     "./scss": "./scss/lumenmorph.scss",
     "./scss/mixins": "./scss/_mixins.scss",
     "./scss/motion": "./scss/_motion.scss",
@@ -62,6 +64,7 @@
   },
   "files": [
     "dist/",
+    "skins/",
     "scss/",
     "less/",
     "tailwind/",

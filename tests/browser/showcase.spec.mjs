@@ -86,6 +86,30 @@ test("interactive examples update native state and recover dismissed content", a
   await expect(page.locator(".glass-steps [aria-current=step]")).toContainText("Make");
 });
 
+test("gallery switches and range use the exported layered skin", async ({ page }) => {
+  const switches = page.locator(".showcase input.slidebox");
+  await expect(switches).toHaveCount(4);
+  for (const input of await switches.all()) {
+    await expect(input).toHaveAttribute("data-slidebox-thumb-layers", "");
+    expect(await input.evaluate(element => getComputedStyle(element, "::before").backdropFilter)).toContain("blur(");
+    expect(await input.evaluate(element => getComputedStyle(element, "::after").maskComposite)).toContain("exclude");
+  }
+  const range = page.locator("[data-warmth]");
+  await expect(range).toHaveAttribute("data-slidebox-range-layers", "");
+  const material = () => range.evaluate(input => {
+    const visual = input.nextElementSibling, thumb = visual.querySelector("[data-slidebox-range-thumb]");
+    return { thumb: getComputedStyle(thumb).backgroundColor, fill: getComputedStyle(visual, "::before").backgroundColor,
+      blur: getComputedStyle(thumb).backdropFilter, mask: getComputedStyle(thumb, "::before").maskComposite };
+  });
+  const cold = await material();
+  expect(cold.thumb).toBe(cold.fill);
+  expect(cold.blur).toContain("blur(");
+  expect(cold.mask).toContain("exclude");
+  await range.fill("30");
+  await expect.poll(async () => (await material()).thumb).not.toBe(cold.thumb);
+  await expect.poll(async () => { const value = await material(); return value.thumb === value.fill; }).toBe(true);
+});
+
 test("every study links to its own published editor", async ({ page, request }) => {
   const links = await page.locator(".recipe-button").evaluateAll(items => items.map(item => item.getAttribute("href")));
   expect(new Set(links).size).toBe(24);

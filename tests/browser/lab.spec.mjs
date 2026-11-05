@@ -399,7 +399,7 @@ test("main lab's imported skin matches its original group styles across demo set
       const response = await route.fetch();
       const body = (await response.text())
         .replace('href="./material-picker-layout.css"', 'href="/__slidebox-tests/legacy-material-picker.css"')
-        .replace('href="./assets/lumenmorph-slidebox.css"', 'href="/__slidebox-tests/legacy-preset-highlight.css"')
+        .replace('href="./skins/slidebox.css"', 'href="/__slidebox-tests/legacy-preset-highlight.css"')
         .replaceAll("material-picker lumenmorph-slidebox", "material-picker")
         .replace('id="controls" class="lumenmorph-slidebox"', 'id="controls"')
         .replace('class="code-section lumenmorph-slidebox"', 'class="code-section"');
@@ -416,7 +416,7 @@ test("main lab's imported skin matches its original group styles across demo set
         root.style.setProperty("--lumen-y", "180px");
       });
     }
-    expect(requests).toContain("/lab/assets/lumenmorph-slidebox.css");
+    expect(requests).toContain("/lab/skins/slidebox.css");
     expect(requests).not.toContain("/lab/material-picker.css");
     expect(requests).not.toContain("/lab/assets/preset-highlight.css");
     expect(await page.locator(".material-picker").evaluateAll(groups => groups.every(group => !!group.closest(".lumenmorph-slidebox")))).toBe(true);
@@ -462,12 +462,12 @@ test("Slidebox setup documents installation, imports, markup, colors, and option
   await expect(page.locator("#integration-description")).toContainText("Requires Lumenmorph 0.3.0");
   await expect(page.locator("#integration-snippet code")).toHaveCount(6);
   await expect(page.locator("#integration-snippet")).toContainText("npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0");
-  await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/slidebox"');
+  await expect(page.locator("#integration-snippet")).toContainText('import "@monabbous/lumenmorph/skins/slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText('class="settings lumenmorph-slidebox"');
   await expect(page.locator("#integration-snippet")).toContainText("Optional experimental range");
   await expect(page.locator("#integration-guide")).toHaveAttribute("href", /\/docs\/slidebox\.md$/);
   await page.getByRole("button", { name: "Copy main.js — import base styles before the skin", exact: true }).click();
-  expect(await page.evaluate(() => window.__copiedCode)).toContain('import "@monabbous/lumenmorph/slidebox"');
+  expect(await page.evaluate(() => window.__copiedCode)).toContain('import "@monabbous/lumenmorph/skins/slidebox"');
   expect(new URL(page.url()).searchParams.get("stack")).toBe("slidebox");
   await page.reload();
   await expect(page.locator('.stack-options input[value="slidebox"]')).toBeChecked();

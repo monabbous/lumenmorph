@@ -99,8 +99,8 @@ test("Slidebox lab documentation includes installation, ordered styles, native m
   assert.equal(blocks.length, 6);
   assert.equal(blocks[0].code, "npm install @monabbous/lumenmorph@^0.3.0 @monabbous/slidebox@^1.4.0");
   const imports = blocks[1].code;
-  assert.ok(imports.indexOf("slidebox/dist/css/slidebox.css") < imports.indexOf("lumenmorph/slidebox"));
-  assert.ok(imports.indexOf("slidebox/dist/css/group.css") < imports.indexOf("lumenmorph/slidebox"));
+  assert.ok(imports.indexOf("slidebox/dist/css/slidebox.css") < imports.indexOf("lumenmorph/skins/slidebox"));
+  assert.ok(imports.indexOf("slidebox/dist/css/group.css") < imports.indexOf("lumenmorph/skins/slidebox"));
   assert.match(imports, /\/\/ import "@monabbous\/slidebox\/experimental\/range\.css"/);
   assert.match(blocks[2].code, /settings lumenmorph-slidebox/);
   assert.match(blocks[2].code, /type="checkbox"/);
@@ -181,10 +181,14 @@ test("core CSS and pointer helper stay within small gzip budgets", async () => {
 });
 
 test("Slidebox skin reuses canonical paint without replacing native geometry or private controls", async () => {
-  const output = await readFile(new URL("../dist/css/slidebox.css", import.meta.url), "utf8");
-  const lab = await readFile(new URL("../public/lab/assets/lumenmorph-slidebox.css", import.meta.url), "utf8");
+  const output = await readFile(new URL("../skins/slidebox.css", import.meta.url), "utf8");
+  const lab = await readFile(new URL("../public/lab/skins/slidebox.css", import.meta.url), "utf8");
   const pkg = JSON.parse(await readFile(new URL("../package.json", import.meta.url), "utf8"));
-  assert.equal(pkg.exports["./slidebox"], "./dist/css/slidebox.css");
+  assert.equal(pkg.exports["./skins/slidebox"], "./skins/slidebox.css");
+  assert.equal(pkg.exports["./skins/slidebox.css"], pkg.exports["./skins/slidebox"]);
+  assert.equal(pkg.exports["./slidebox"], pkg.exports["./skins/slidebox"]);
+  assert.ok(pkg.files.includes("skins/"));
+  assert.equal(await readFile(new URL("../dist/css/slidebox.css", import.meta.url), "utf8"), output);
   assert.equal(output, lab);
   assert.match(output, /@media \(forced-colors: none\)/);
   assert.match(output, /prefers-reduced-transparency: reduce/);
