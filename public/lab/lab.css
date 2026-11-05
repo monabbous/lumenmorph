@@ -315,9 +315,6 @@ body:not(:has([data-nabous-shell])) {
 }
 @media (max-width: 420px) {
   .lm-lab .preview-editors { grid-template-columns: minmax(0, 1fr); gap: 12px; }
-  .lm-lab .type-specimens { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .lm-lab .text-specimen .html-text-demo { font-size: 22px; }
-  .lm-lab .type-specimens #sample-button { grid-column: 1 / -1; }
   .lm-lab .practical-grid { grid-template-columns: minmax(0, 1fr); gap: 20px; }
   .lm-lab #icon-picker { padding: 18px; }
   .lm-lab #icon-results { grid-template-columns: repeat(3, minmax(0, 1fr)); }
