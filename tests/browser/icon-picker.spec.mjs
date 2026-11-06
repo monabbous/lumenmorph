@@ -32,8 +32,11 @@ test("bottom-of-card icon picker is lazy, searchable, keyboard-dismissible, and 
 
 test("custom path validation preserves the last valid preview and updates copied geometry", async ({ page }) => {
   await page.goto("/lab/");
-  await page.locator("#custom-icon-path summary").evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
-  await page.locator("#custom-icon-path summary").click();
+  await expect(page.locator("#icon-demo svg")).toHaveAttribute("aria-label", "GitHub (brands)");
+  const disclosure = page.locator("#custom-icon-path summary");
+  await disclosure.focus();
+  await disclosure.press("Enter");
+  await expect(page.locator("#custom-icon-path")).toHaveAttribute("open", "");
   await page.locator("#icon-viewbox").fill("0 0 24 24");
   await page.locator("#icon-path").fill("M0 0H24V24H0Z");
   await expect(page.locator("#icon-status")).toContainText("Icon updated");

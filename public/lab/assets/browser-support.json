@@ -1,9 +1,10 @@
 {
   "source": "https://github.com/Fyrd/caniuse",
-  "commit": "5c3262aa56eb2f92c4dd32f077a67651d3c7eb16",
-  "committedAt": "2026-11-05T03:18:03Z",
-  "retrievedAt": "2026-11-05T15:32:59.800Z",
+  "commit": "32ebc6d130ecd780d3fdd18c5b14a71dd1469e3f",
+  "committedAt": "2026-11-06T06:23:06Z",
+  "retrievedAt": "2026-11-06T10:17:47.188Z",
   "license": "https://creativecommons.org/licenses/by/4.0/",
+  "method": "intersection-of-browser-version-global-usage",
   "features": [
     {
       "id": "css-backdrop-filter",
@@ -18,6 +19,389 @@
       "full": 94.42,
       "partial": 2.98,
       "url": "https://caniuse.com/css-masks"
+    },
+    {
+      "id": "css-variables",
+      "title": "CSS Variables (Custom Properties)",
+      "full": 97.39,
+      "partial": 0,
+      "url": "https://caniuse.com/css-variables"
+    },
+    {
+      "id": "background-clip-text",
+      "title": "Background-clip: text",
+      "full": 97.28,
+      "partial": 0.12,
+      "url": "https://caniuse.com/background-clip-text"
+    }
+  ],
+  "overall": {
+    "full": 94.41224484,
+    "partial": 2.840629309999999,
+    "none": 0.31879078559999996,
+    "unknown": 0
+  },
+  "browsers": [
+    {
+      "id": "and_chr",
+      "name": "Chrome for Android",
+      "version": "157",
+      "representativeUsage": 44.0246,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 44.0246,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 44.0246
+    },
+    {
+      "id": "chrome",
+      "name": "Chrome",
+      "version": "155",
+      "representativeUsage": 6.302,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 22.993465999999998,
+        "partial": 1.9420279999999999,
+        "none": 0.026865999999999998,
+        "unknown": 0
+      },
+      "usage": 24.962359999999997
+    },
+    {
+      "id": "ios_saf",
+      "name": "Safari on iOS",
+      "version": "26.6",
+      "representativeUsage": 6.12203,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 13.136733560000001,
+        "partial": 0.08630169,
+        "none": 0.00539385,
+        "unknown": 0
+      },
+      "usage": 13.228429100000003
+    },
+    {
+      "id": "edge",
+      "name": "Edge",
+      "version": "155",
+      "representativeUsage": 1.96889,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 4.943344,
+        "partial": 0.111302,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 5.054646
+    },
+    {
+      "id": "safari",
+      "name": "Safari",
+      "version": "26.6",
+      "representativeUsage": 1.00172,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 2.8823400000000006,
+        "partial": 0.030704,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 2.9130440000000006
+    },
+    {
+      "id": "firefox",
+      "name": "Firefox",
+      "version": "157",
+      "representativeUsage": 0.583376,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 2.1109,
+        "partial": 0,
+        "none": 0.015352,
+        "unknown": 0
+      },
+      "usage": 2.126252
+    },
+    {
+      "id": "samsung",
+      "name": "Samsung Internet",
+      "version": "30",
+      "representativeUsage": 1.66542,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 1.90192908,
+        "partial": 0.02956362,
+        "none": 0.00985454,
+        "unknown": 0
+      },
+      "usage": 1.94134724
+    },
+    {
+      "id": "op_mob",
+      "name": "Opera Mobile",
+      "version": "80",
+      "representativeUsage": 1.15864,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 1.15864,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 1.15864
+    },
+    {
+      "id": "opera",
+      "name": "Opera",
+      "version": "136",
+      "representativeUsage": 0.47975,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0.8597119999999999,
+        "partial": 0.061408,
+        "none": 0.003838,
+        "unknown": 0
+      },
+      "usage": 0.924958
+    },
+    {
+      "id": "and_uc",
+      "name": "UC Browser for Android",
+      "version": "15.5",
+      "representativeUsage": 0.579322,
+      "support": [
+        "full",
+        "partial",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0.579322,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0.579322
+    },
+    {
+      "id": "and_ff",
+      "name": "Firefox for Android",
+      "version": "159",
+      "representativeUsage": 0.375943,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0.375943,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0.375943
+    },
+    {
+      "id": "ie",
+      "name": "IE",
+      "version": "11",
+      "representativeUsage": 0.165034,
+      "support": [
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0.165034,
+        "unknown": 0
+      },
+      "usage": 0.165034
+    },
+    {
+      "id": "and_qq",
+      "name": "QQ Browser",
+      "version": "14.9",
+      "representativeUsage": 0.092445,
+      "support": [
+        "none",
+        "partial",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0.092445,
+        "unknown": 0
+      },
+      "usage": 0.092445
+    },
+    {
+      "id": "android",
+      "name": "Android Browser",
+      "version": "157",
+      "representativeUsage": 0.0246372,
+      "support": [
+        "full",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0.0246372,
+        "partial": 0,
+        "none": 0.0000073956,
+        "unknown": 0
+      },
+      "usage": 0.024644595600000003
+    },
+    {
+      "id": "baidu",
+      "name": "Baidu Browser",
+      "version": "13.52",
+      "representativeUsage": 0,
+      "support": [
+        "full",
+        "partial",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0
+    },
+    {
+      "id": "bb",
+      "name": "Blackberry Browser",
+      "version": "10",
+      "representativeUsage": 0,
+      "support": [
+        "none",
+        "partial",
+        "none",
+        "full"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0
+    },
+    {
+      "id": "ie_mob",
+      "name": "IE Mobile",
+      "version": "11",
+      "representativeUsage": 0,
+      "support": [
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0
+    },
+    {
+      "id": "kaios",
+      "name": "KaiOS Browser",
+      "version": "3.0-3.1",
+      "representativeUsage": 0,
+      "support": [
+        "none",
+        "full",
+        "full",
+        "full"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0
+    },
+    {
+      "id": "op_mini",
+      "name": "Opera Mini",
+      "version": "all",
+      "representativeUsage": 0,
+      "support": [
+        "none",
+        "none",
+        "none",
+        "none"
+      ],
+      "coverage": {
+        "full": 0,
+        "partial": 0,
+        "none": 0,
+        "unknown": 0
+      },
+      "usage": 0
     }
   ]
 }

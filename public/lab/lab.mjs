@@ -320,6 +320,10 @@ document.querySelector("#use-preview").addEventListener("click", () => {
 });
 function revealDestination(hash) {
   if (["#code", "#integrations", "#svg-heading"].includes(hash)) document.querySelector("#advanced-setup").open = true;
+  if (hash === "#browser-support") {
+    document.querySelector("#examples-guide").open = true;
+    document.querySelector("#browser-support").open = true;
+  }
 }
 document.addEventListener("click", event => {
   const link = event.target.closest('a[href^="#"]');
@@ -327,6 +331,14 @@ document.addEventListener("click", event => {
 });
 window.addEventListener("hashchange", () => revealDestination(location.hash));
 revealDestination(location.hash);
+const supportDialog = document.querySelector("#browser-support-modal");
+const supportTrigger = document.querySelector("#show-browser-support");
+supportTrigger.addEventListener("click", () => {
+  supportDialog.showModal();
+  document.querySelector("#close-browser-support").focus({ preventScroll: true });
+});
+document.querySelector("#close-browser-support").addEventListener("click", () => supportDialog.close());
+supportTrigger.disabled = false;
 window.addEventListener("pagehide", event => {
   if (event.persisted) return;
   window.clearTimeout(textPreviewTimer);

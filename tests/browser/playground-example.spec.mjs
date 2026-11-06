@@ -66,6 +66,44 @@ test("one page-wide light follows movement outside the lab container", async ({ 
   await expect(page.locator("iframe")).toHaveCount(0);
 });
 
+test("combined support is a secondary preview action with accessible browser details", async ({ page }) => {
+  await page.goto("/lab/");
+  const trigger = page.locator("#show-browser-support");
+  await expect(trigger).toBeVisible();
+  await expect(page.locator(".lm-intro #show-browser-support, .support-summary")).toHaveCount(0);
+  expect(await trigger.evaluate(element => Boolean(element.closest(".example-actions")))).toBe(true);
+  const snapshot = JSON.parse(await readFile(new URL("../../public/lab/assets/browser-support.json", import.meta.url), "utf8"));
+  await expect(trigger.locator("strong")).toHaveText(`${snapshot.overall.full.toFixed(2)}%`);
+  await trigger.evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
+  await trigger.click();
+  const dialog = page.getByRole("dialog", { name: "Browser support", exact: true });
+  await expect(dialog).toBeVisible();
+  await expect(page.locator("#close-browser-support")).toBeFocused();
+  await expect(dialog.locator(".support-matrix tbody tr")).toHaveCount(snapshot.browsers.length);
+  await expect(dialog.locator("#support-dialog-description")).toContainText("not a whole-library guarantee");
+  await expect(dialog.locator(".support-method")).toContainText("No feature percentages are averaged");
+  await expect(dialog.locator(".support-table tbody tr")).toHaveCount(4);
+  for (const feature of snapshot.features) {
+    await expect(dialog.locator(`a[href="${feature.url}"]`)).toHaveCount(1);
+  }
+  for (const width of [1440, 768, 375]) {
+    await page.setViewportSize({ width, height: 1100 });
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+    const box = await dialog.boundingBox();
+    expect(box.width).toBeLessThanOrEqual(width);
+    expect(box.x).toBeGreaterThanOrEqual(0);
+  }
+  await expect(dialog.locator(".support-browser-cards")).toBeVisible();
+  await expect(dialog.locator(".support-matrix")).not.toBeVisible();
+  expect(await dialog.locator(".support-dialog-scroll").evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+  await page.keyboard.press("Escape");
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await page.locator("#close-browser-support").click();
+  await expect(dialog).not.toBeVisible();
+});
+
 test("sample button stays directly below the surface card at every breakpoint", async ({ page }) => {
   await page.goto("/lab/");
   expect(await page.locator(".main-card").evaluate(card => card.nextElementSibling?.id)).toBe("sample-button");
