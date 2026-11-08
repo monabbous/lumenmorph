@@ -316,7 +316,9 @@ renderSettings();
 document.querySelector("#use-preview").addEventListener("click", () => {
   settingsSource.open = true;
   renderSettingsSource();
-  settingsSource.scrollIntoView({ block: "start" });
+  // Keep the newly revealed copy/download actions stable and immediately
+  // usable, even when the surrounding page opts into smooth anchor scrolling.
+  settingsSource.scrollIntoView({ behavior: "instant", block: "start" });
 });
 function revealDestination(hash) {
   if (["#code", "#integrations", "#svg-heading"].includes(hash)) document.querySelector("#advanced-setup").open = true;

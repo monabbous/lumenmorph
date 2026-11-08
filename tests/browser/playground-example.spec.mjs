@@ -34,7 +34,11 @@ test("one star-card playground edits HTML/SVG text and exports the current theme
   await theme.locator("..").click();
   await page.locator("#use-preview").evaluate(element => element.scrollIntoView({ behavior: "instant", block: "center" }));
   await page.locator("#use-preview").click();
+  await expect(page.locator("#settings-source")).toHaveAttribute("open", "");
+  await expect(page.locator("#copy-settings")).toBeInViewport({ ratio: 1 });
   await page.locator("#copy-settings").click();
+  await expect(page.locator("#settings-copy-status")).toHaveText("Complete HTML copied.");
+  await expect.poll(() => page.evaluate(() => window.__previewCopied)).toContain("Your own words");
   const copied = await page.evaluate(() => window.__previewCopied);
   expect(copied).toContain("Your own words");
   expect(copied).toContain("--lumen-glow-color: #00b2b2");
