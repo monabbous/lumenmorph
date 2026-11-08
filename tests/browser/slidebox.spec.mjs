@@ -1,13 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { PNG } from "pngjs";
+import { useCurrentBrandReference } from "../helpers/brand-reference.mjs";
 
-test.beforeEach(async ({ page }) => { await page.goto("/__slidebox-tests/"); });
+test.beforeEach(async ({ page }) => { await useCurrentBrandReference(page); await page.goto("/__slidebox-tests/"); });
 
 const tintedBase = page => page.locator("#reference-card").evaluate(card => {
   const sample = document.createElement("span");
   sample.style.backgroundColor = document.querySelector("#glass").checked
-    ? "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))"
-    : "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
+    ? "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #29282366))"
+    : "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #29282366))";
   card.append(sample);
   const color = getComputedStyle(sample).backgroundColor;
   sample.remove();
@@ -139,7 +140,7 @@ test("unchecked fill glow dims independently while both thumb types keep group-s
     const sample = element.cloneNode(false);
     sample.removeAttribute("id");
     sample.style.setProperty("--lumen-glow-opacity", String(.6 * factor));
-    if (factor < 1) sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))");
+    if (factor < 1) sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #29282366))");
     element.after(sample);
     const image = getComputedStyle(sample).backgroundImage;
     sample.remove();
@@ -185,7 +186,7 @@ test("accent base stays visible away from the pointer and supports inherited the
   // Compare resolved colors rather than serialization (color(srgb) vs rgba).
   await expect.poll(() => page.locator("#glass").evaluate(element => {
     const sample = document.createElement("span");
-    sample.style.backgroundColor = "color-mix(in srgb, transparent 0%, var(--lumen-bg, #102a3166))";
+    sample.style.backgroundColor = "color-mix(in srgb, transparent 0%, var(--lumen-bg, #29282366))";
     document.body.append(sample);
     const expected = getComputedStyle(sample).backgroundColor;
     sample.remove();

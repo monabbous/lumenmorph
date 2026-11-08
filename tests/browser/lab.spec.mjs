@@ -1,10 +1,26 @@
 import { test, expect } from "@playwright/test";
 import { PNG } from "pngjs";
 import { readFile } from "node:fs/promises";
+import { useCurrentBrandReference } from "../helpers/brand-reference.mjs";
 
 async function openDetails(page, ...ids) {
   for (const id of ids) await page.locator(id).evaluate(element => { element.open = true; });
 }
+
+test("input chrome and scrollbars stay neutral when the preview switches to Lagoon", async ({ page }) => {
+  await page.goto("/lab/");
+  await expect(page.locator("#react-demo svg")).toBeVisible();
+  await page.locator('label:has([data-preset="lagoon"])').click();
+  await expect(page.locator("#example-title")).toHaveCSS("border-color", "rgb(130, 123, 108)");
+  await expect(page.locator("#example-title")).toHaveCSS("background-color", "rgb(52, 51, 46)");
+  await expect(page.locator("#glow-color")).toHaveCSS("border-color", "rgb(130, 123, 108)");
+  expect(await page.locator("#reset").evaluate(el => getComputedStyle(el).getPropertyValue("--lumen-border-glow-color").trim())).toBe("#ffd6a0");
+  await expect(page.locator(".quick-use")).toHaveCSS("border-top-color", "rgb(130, 123, 108)");
+  await expect(page.locator("html")).toHaveCSS("scrollbar-color", "rgb(130, 123, 108) rgb(23, 23, 21)");
+  await expect(page.locator("#icon-results")).toHaveCSS("scrollbar-color", "rgb(130, 123, 108) rgb(41, 40, 35)");
+  await page.locator("#example-title").focus();
+  await expect(page.locator("#example-title")).toHaveCSS("outline-color", "rgb(255, 173, 118)");
+});
 
 test("quick use is first, copyable, and its exact CDN example works", async ({ page, context }) => {
   await page.addInitScript(() => Object.defineProperty(navigator, "clipboard", { value: { writeText: async value => { window.__quickCopied = value; } }, configurable: true }));
@@ -508,6 +524,7 @@ test("main lab's imported skin matches its original group styles across demo set
   page.on("request", request => requests.push(new URL(request.url()).pathname));
   const original = await context.newPage();
   try {
+    await useCurrentBrandReference(original);
     await original.route("**/lab/", async route => {
       const response = await route.fetch();
       const body = (await response.text())
@@ -607,14 +624,14 @@ test("main lab switches and ranges use glass without losing keyboard, fill, or f
         const card = document.querySelector(".main-card"), input = document.querySelector("#glow-size"), visual = input.nextElementSibling;
         const thumb = visual.querySelector("[data-slidebox-range-thumb]");
         const sample = document.createElement("span");
-        sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #102a3166))";
+        sample.style.backgroundColor = "color-mix(in srgb, var(--lumen-glow-color, var(--slidebox-on, #ffaa71)) 18%, var(--lumen-bg, #29282366))";
         card.append(sample);
         const tintedCard = { ...read(card), backgroundColor: getComputedStyle(sample).backgroundColor };
         const toggleMaterial = { ...tintedCard };
         if (!document.querySelector("#tracking").checked) {
           sample.className = "lumenmorph";
-          sample.style.backgroundColor = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
-          sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))");
+          sample.style.backgroundColor = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #29282366))";
+          sample.style.setProperty("--lumen-glow-color", "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #29282366))");
           sample.style.setProperty("--lumen-glow-opacity", String(Number.parseFloat(getComputedStyle(card).getPropertyValue("--lumen-glow-opacity")) * .35));
           toggleMaterial.backgroundColor = getComputedStyle(sample).backgroundColor;
           toggleMaterial.backgroundImage = getComputedStyle(sample).backgroundImage;

@@ -9,6 +9,14 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test("gallery headings and counts inherit host colors without recoloring demos", async ({ page }) => {
+  await page.addStyleTag({ content: ':root{--text:#1c1b17;--muted:#615e56;--colors__primary:#e8e6df;--colors__bulb:#ffd6a0}' });
+  await expect(page.locator("#examples-heading")).toHaveCSS("color", "rgb(28, 27, 23)");
+  await expect(page.locator("#showcase-count")).toHaveCSS("color", "rgb(97, 94, 86)");
+  await expect(page.locator(".demo-spotlight")).toHaveCSS("background-color", "rgb(36, 31, 35)");
+  await expect(page.locator(".example-caption").first()).toHaveCSS("background-color", "rgb(41, 40, 35)");
+});
+
 test("masonry keeps every card in bounds and reflows category filters", async ({ page }) => {
   await expect(page.locator(".example:visible")).toHaveCount(24);
   await expect(page.locator(".showcase-grid")).toHaveAttribute("data-masonry", "");

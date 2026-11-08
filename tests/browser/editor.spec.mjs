@@ -10,6 +10,14 @@ const setCode = async (page, language, value) => {
   await page.getByRole("textbox", { name: `${language.toUpperCase()} code`, exact: true }).fill(value);
 };
 
+test("editor chrome inherits host light colors while code remains a dark island", async ({ page }) => {
+  await page.addStyleTag({ content: ':root{color-scheme:light;--bg:#f7f6f2;--text:#1c1b17;--muted:#615e56;--line:#a19e94;--colors__surface:#fffefa;--colors__ember:#a54117}' });
+  await expect(page.locator("body")).toHaveCSS("background-color", "rgb(247, 246, 242)");
+  await expect(page.locator(".example-heading > div:first-child > p:not(.eyebrow)")).toHaveCSS("color", "rgb(97, 94, 86)");
+  await expect(page.locator(".example-heading h1")).toHaveCSS("color", "rgb(28, 27, 23)");
+  await expect(page.locator("#panel-html .cm-editor")).toHaveCSS("background-color", "rgb(23, 23, 21)");
+});
+
 test("generated previews use layered skin for ranges and switches", async ({ page }) => {
   const preview = page.frameLocator("#example-preview");
   await expect(preview.locator("[data-warmth]")).toHaveAttribute("data-slidebox-range-layers", "");

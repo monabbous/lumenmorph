@@ -103,16 +103,17 @@ The stylesheet does not initialize helpers. Without layers mode, ranges retain n
 
 ## Match the lab colors
 
-Set Slidebox's public color variables on your scope. These are the lab's teal preset colors; geometry stays under your control:
+Set Slidebox's public color variables on your scope. These neutral surfaces and ember accents follow the selected color scheme; geometry stays under your control:
 
 ```css
 .settings {
-  --slidebox-track: #2a5b7c;
-  --slidebox-border: #5289a6;
-  --slidebox-off: #e8f6fa;
-  --slidebox-on: #00b2b2;
-  --slidebox-text: #e8f6fa;
-  --slidebox-selected-text: #fff;
+  color-scheme: light dark;
+  --slidebox-track: light-dark(#e8e6df, #34332e);
+  --slidebox-border: light-dark(#a19e94, #827b6c);
+  --slidebox-off: light-dark(#1c1b17, #f6f1e5);
+  --slidebox-on: light-dark(#a54117, #ffad76);
+  --slidebox-text: light-dark(#1c1b17, #f6f1e5);
+  --slidebox-selected-text: light-dark(#1c1b17, #f6f1e5);
   --slidebox-size: 28px;
 }
 ```
@@ -123,8 +124,8 @@ For the Lumenmorph lab's Ember groups, override the group separately:
 
 ```css
 .settings .slidebox-group {
-  --slidebox-track: #063c5940;
-  --slidebox-border: #5289a6;
+  --slidebox-track: #34332e40;
+  --slidebox-border: #827b6c;
   --slidebox-on: #ffaa71;
   --lumen-glow-color: #ffaa71;
   --slidebox-size: 40px;
@@ -133,7 +134,7 @@ For the Lumenmorph lab's Ember groups, override the group separately:
 }
 ```
 
-Thumb and fill paint uses the canonical surface treatment from [controls](controls.md), with the checked group's 18% accent tint and translucent blue-green base so small controls remain visible away from the pointer light. The accent follows `--lumen-glow-color`, falling back to `--slidebox-on` and then Ember. Inherited `--lumen-bg` replaces the base underneath the tint. No lab-only styling or extra configuration is required. Set `--lumen-slidebox-tint` to a percentage to adjust the base tint (`0%` removes the accent). `--lumen-slidebox-thumb-bg` optionally overrides only the thumb fill; the reduced-transparency fallback uses `--lumen-solid-bg`. Blur, light, and illuminated borders still use the inherited card controls. Slidebox's public size, spacing, and radius still control native geometry. Groups keep their selected/unselected material defaults described above.
+Thumb and fill paint uses the canonical surface treatment from [controls](controls.md), with the checked group's 18% accent tint and translucent charcoal base so small controls remain visible away from the pointer light. The accent follows `--lumen-glow-color`, falling back to `--slidebox-on` and then Ember. Inherited `--lumen-bg` replaces the base underneath the tint. No lab-only styling or extra configuration is required. Set `--lumen-slidebox-tint` to a percentage to adjust the base tint (`0%` removes the accent). `--lumen-slidebox-thumb-bg` optionally overrides only the thumb fill; the reduced-transparency fallback uses `--lumen-solid-bg`. Blur, light, and illuminated borders still use the inherited card controls. Slidebox's public size, spacing, and radius still control native geometry. Groups keep their selected/unselected material defaults described above.
 
 ## Add pointer light
 

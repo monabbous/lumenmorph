@@ -31,26 +31,27 @@
 }
 .lm-lab .showcase [hidden] { display: none !important; }
 .lm-lab .showcase-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 30px; }
-.lm-lab .showcase-heading h2 { margin: 0; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.08; letter-spacing: -.06em; }
-.lm-lab .showcase-heading > p { max-width: 280px; font-size: 12px; line-height: 1.8; color: var(--sg-muted); margin: 0; }
+.lm-lab .showcase-heading .eyebrow { color: var(--colors__ember, var(--sg-ember)); }
+.lm-lab .showcase-heading h2 { margin: 0; font-size: clamp(30px, 4.6vw, 52px); line-height: 1.08; letter-spacing: -.03em; color: var(--text, var(--sg-ink)); }
+.lm-lab .showcase-heading > p { max-width: 280px; font-size: 14px; line-height: 1.8; color: var(--muted, var(--sg-muted)); margin: 0; }
 .lm-lab .filter-scroll { min-width: 0; overflow-x: auto; padding: 4px; margin: -4px; scrollbar-width: thin; }
-.lm-lab .showcase-filters { min-width: 570px; }
+.lm-lab .showcase .showcase-filters { min-width: 570px; --slidebox-text: var(--text, #f6f1e5); --slidebox-selected-text: var(--text, #f6f1e5); --lumen-bg: var(--colors__primary, #34332e); --lumen-border-color: var(--line, #827b6c); --lumen-glow-color: var(--colors__bulb, #ffd6a0); }
 .lm-lab .showcase-filters > label > span { display: flex; justify-content: center; gap: 5px; }
 .lm-lab .showcase-filters small { opacity: .6; font-size: inherit; }
 .lm-lab .showcase-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 25px; }
-.lm-lab #showcase-count { margin: 0; color: var(--sg-muted); font-size: 10px; white-space: nowrap; }
+.lm-lab #showcase-count { margin: 0; color: var(--muted, var(--sg-muted)); font-size: 12px; white-space: nowrap; }
 .lm-lab .showcase-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .lm-lab .showcase-grid[data-masonry] { grid-auto-rows: 8px; }
 .lm-lab .showcase-grid[data-masonry] > .example { grid-row-end: span var(--rows, 18); }
-.lm-lab .example { min-width: 0; border: 2px solid #8cafab30; border-radius: var(--studio-radius, 4px); background: #0b2028; overflow: hidden; }
+.lm-lab .example { min-width: 0; border: 1px solid #827b6c66; border-radius: var(--studio-radius, 4px); background: #24231f; overflow: hidden; }
 /* Freeze inherited light coordinates on cards outside the viewport. */
 .lm-lab .showcase[data-enhanced]:not([data-in-view]),
 .lm-lab .showcase[data-enhanced] .example:not([data-visible]) { --lumen-x: -100vw; --lumen-y: -100vh; }
-.lm-lab .example-caption { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px; border-top: 1px solid #8cafab22; background: #0d222a; }
+.lm-lab .example-caption { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px; border-top: 1px solid #827b6c44; background: #292823; color: #f6f1e5; }
 .lm-lab .example-caption > div { min-width: 0; }
-.lm-lab .example-caption span { color: #a1b9b8; font-size: 8px; letter-spacing: .13em; }
+.lm-lab .example-caption span { color: #bbb4a6; font-size: 10px; letter-spacing: .1em; }
 .lm-lab .example-caption h3 { font-size: 13px; line-height: 1.4; margin: 5px 0 6px; letter-spacing: -.025em; }
-.lm-lab .example-caption p { font-size: 10px; color: var(--sg-muted); line-height: 1.65; margin: 0; }
+.lm-lab .example-caption p { font-size: 12px; color: #bbb4a6; line-height: 1.65; margin: 0; }
 .lm-lab .example-caption .recipe-button { display: grid; place-items: center; text-decoration: none; min-width: 40px; min-height: 40px; padding: 4px; font-size: 19px; --lumen-radius: var(--studio-radius, 4px); flex: none; }
 .lm-lab .showcase-demo { position: relative; padding: 24px; min-height: 220px; overflow: clip; isolation: isolate; font-size: 12px; line-height: 1.5; }
 .lm-lab .showcase-demo h3 { font-size: 25px; line-height: 1.15; letter-spacing: -.055em; margin: 14px 0; }
@@ -232,7 +233,7 @@
 .lm-lab .steps-bottom { display: grid; gap: 16px; }
 .lm-lab .steps-status { font-size: 10px; color: var(--sg-muted); }
 
-.lm-lab .showcase-footnote { color: var(--sg-muted); font-size: 10px; line-height: 1.9; max-width: 800px; margin: 30px 0 10px; }
+.lm-lab .showcase-footnote { color: var(--muted, var(--sg-muted)); font-size: 12px; line-height: 1.9; max-width: 800px; margin: 30px 0 10px; }
 .lm-lab .showcase-footnote a { text-underline-offset: 3px; }
 @media (max-width: 940px) {
   .lm-lab .showcase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -272,7 +273,7 @@
   .lm-lab .showcase :is([aria-pressed=true], [aria-current=step]) { outline: 2px solid Highlight; }
 }
 /* 17–24 — more small interfaces */
-.lm-lab .collection-back { display: inline-block; font-size: 11px; margin: 8px 0 20px; text-underline-offset: 4px; color: #adc2c5; }
+.lm-lab .collection-back { display: inline-block; font-size: 13px; margin: 8px 0 20px; text-underline-offset: 4px; color: var(--text, #f6f1e5); }
 .lm-lab .demo-pricing { background: radial-gradient(ellipse at 80% 10%, #ffaa7120, transparent 70%), #282b28; padding: 30px 24px; }
 .lm-lab .demo-pricing h3 { font-size: 40px; margin: 32px 0 20px; }
 .lm-lab .price-value { display: flex; gap: 12px; align-items: baseline; margin: 20px 0 !important; }

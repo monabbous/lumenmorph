@@ -41,7 +41,7 @@ The controls are inherited CSS variables:
 }
 ```
 
-Ember is the default material. The lab also keeps the original nabous.dev blue/teal palette and a light preset. You can change the tint, blur, glow, and border independently.
+Ember is the default material. The lab also offers Lagoon and Lilac presets. The surrounding site uses cream and charcoal, with warm lighting and ember accents. You can change the tint, blur, glow, and border independently.
 
 ## Share the light
 

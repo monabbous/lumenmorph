@@ -7,16 +7,16 @@ import { css } from "@codemirror/lang-css";
 import { javascript } from "@codemirror/lang-javascript";
 import { tags } from "@lezer/highlight";
 const theme = EditorView.theme({
-  "&": { color: "#d4e8df", backgroundColor: "#091d24", height: "100%", fontSize: "12px" },
-  ".cm-content": { fontFamily: "ui-monospace, monospace", padding: "18px 0", caretColor: "#ffaa71" },
+  "&": { color: "#f6f1e5", backgroundColor: "#171715", height: "100%", fontSize: "12px" },
+  ".cm-content": { fontFamily: "var(--studio-mono, ui-monospace, monospace)", padding: "18px 0", caretColor: "#ffad76" },
   ".cm-scroller": { overflow: "auto", fontFamily: "ui-monospace, monospace", lineHeight: "1.8" },
   ".cm-line": { padding: "0 16px 0 9px" },
-  ".cm-gutters": { backgroundColor: "#0b222a", color: "#6e9697", border: "none", paddingLeft: "8px" },
-  ".cm-activeLine, .cm-activeLineGutter": { backgroundColor: "#80b9ab0c" },
+  ".cm-gutters": { backgroundColor: "#24231f", color: "#aaa598", border: "none", paddingLeft: "8px" },
+  ".cm-activeLine, .cm-activeLineGutter": { backgroundColor: "#ffad760c" },
   "&.cm-focused": { outline: "1px solid #ffaa7160", outlineOffset: "-1px" },
   ".cm-cursor": { borderLeftColor: "#ffaa71" },
-  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection": { backgroundColor: "#47796970" },
-  ".cm-tooltip": { border: "1px solid #72978d80", backgroundColor: "#17353a", borderRadius: "4px", color: "#e9f3ed" },
+  "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection": { backgroundColor: "#ffad7640" },
+  ".cm-tooltip": { border: "1px solid #827b6c80", backgroundColor: "#292823", borderRadius: "4px", color: "#f6f1e5" },
   ".cm-tooltip-autocomplete > ul > li[aria-selected]": { backgroundColor: "#ffaa7126", color: "#ffd5af" },
   ".cm-matchingBracket": { color: "#fff0cd", backgroundColor: "#ffaa7120" },
 }, { dark: true });
@@ -26,7 +26,7 @@ const colors = HighlightStyle.define([
   { tag: [tags.attributeName, tags.propertyName], color: "#d6c4f0" },
   { tag: [tags.string, tags.attributeValue], color: "#b6dca6" },
   { tag: [tags.number, tags.bool, tags.null], color: "#f0c58a" },
-  { tag: tags.comment, color: "#789b9c", fontStyle: "italic" },
+  { tag: tags.comment, color: "#aaa598", fontStyle: "italic" },
   { tag: [tags.operator, tags.punctuation], color: "#a2c6ca" },
   { tag: tags.function(tags.variableName), color: "#99d8e6" },
 ]);

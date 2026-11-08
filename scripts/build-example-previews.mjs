@@ -10,7 +10,7 @@ const showcaseCss = await readFile(new URL("../showcase.css", root), "utf8");
 const columns = [["type", "foil"], ["climate", "player"], ["weather", "rating"]];
 const cards = new Map([...gallery.matchAll(/<article class="example" data-example="([^"]+)" data-category="[^"]+">([\s\S]*?)<\/article>/g)].map(([, id, content]) => [id, content.split('<div class="example-caption">')[0]]));
 const collection = `<!doctype html><html lang="en"><head><meta charset="utf-8"><style>${runtime.css}\n${showcaseCss}\n
-html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#102a31;color:#e9f3ed;font:14px/1.6 ui-monospace,monospace}
+html,body{margin:0;width:1200px;height:630px;overflow:hidden;background:#171715;color:#f6f1e5;font:14px/1.6 ui-monospace,monospace}
 .lm-lab{padding:32px 36px}.lm-lab .showcase{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:0;--lumen-x:670px;--lumen-y:220px}
 .collection-column{display:grid;gap:18px;align-content:start}.collection-column:first-child{margin-top:-85px}.collection-column:last-child{margin-top:-34px}
 .lm-lab .example{border-radius:4px}button,input{font:inherit}*{animation:none!important;transition:none!important}

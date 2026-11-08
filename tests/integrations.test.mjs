@@ -197,7 +197,7 @@ test("Slidebox skin reuses canonical paint without replacing native geometry or 
   assert.ok(output.includes(declarations(css, ".lumenmorph", "background-color")[0]));
   assert.match(output, /data-slidebox-thumb-layers/);
   assert.match(output, /data-slidebox-range-thumb/);
-  assert.match(output, /18%, #102a3166/);
+  assert.match(output, /18%, #29282366/);
   assert.match(output, /2\.5%, transparent/);
   assert.match(output, /var\(--lumen-blur, 12px\)/);
   assert.match(output, /var\(--lumen-blur, 2px\)/);

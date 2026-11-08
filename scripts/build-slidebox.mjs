@@ -13,9 +13,9 @@ const border = "var(--lumen-border-color, #ffffff30)";
 const groupAccent = "var(--lumen-glow-color, var(--slidebox-on, #ffaa71))";
 // A persistent accent base keeps small controls legible outside the light.
 // Mix into the inherited card material, retaining its translucency and blur.
-const controlBase = `color-mix(in srgb, ${groupAccent} var(--lumen-slidebox-tint, 18%), var(--lumen-bg, #102a3166))`;
+const controlBase = `color-mix(in srgb, ${groupAccent} var(--lumen-slidebox-tint, 18%), var(--lumen-bg, #29282366))`;
 const thumb = `var(--lumen-slidebox-thumb-bg, ${controlBase})`;
-const offFill = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #102a3166))";
+const offFill = "var(--lumen-slidebox-thumb-bg, var(--lumen-bg, #29282366))";
 const shadow = color => `inset 0 0 0 1px color-mix(in srgb, ${color} 55%, transparent), 0 0 16px color-mix(in srgb, ${color} 12%, transparent)`;
 
 function paint(selector, { thumbs = false, gradient = true, gradientOnly = false, material = {} } = {}) {
@@ -88,13 +88,13 @@ const groupSelected = `${group}:has(> label > input:checked)::before, ${group} >
 const groupIdle = `${group} > label > input:not(:checked) + span`;
 const groupRadius = "var(--lumen-radius, var(--slidebox-radius, 4px))";
 const groupMaterial = {
-  bg: `var(--lumen-bg, color-mix(in srgb, ${groupAccent} 18%, #102a3166))`,
-  solid: "var(--lumen-solid-bg, #203c46)", glow: groupAccent,
+  bg: `var(--lumen-bg, color-mix(in srgb, ${groupAccent} 18%, #29282366))`,
+  solid: "var(--lumen-solid-bg, #34332e)", glow: groupAccent,
   opacity: ".55", size: "180px", radius: groupRadius, blur: "12px", saturation: "1.4",
 };
 const groupIdleMaterial = {
   bg: `var(--lumen-bg, color-mix(in srgb, ${groupAccent} 2.5%, transparent))`,
-  solid: "var(--lumen-solid-bg, #1c3540)", glow: groupAccent,
+  solid: "var(--lumen-solid-bg, #292823)", glow: groupAccent,
   opacity: ".045", size: "160px", radius: groupRadius, blur: "2px", saturation: "1.1",
 };
 // Keep engine-specific range pseudo-elements in separate rules. A browser
@@ -126,8 +126,8 @@ const css = `/* Generated from src/lumenmorph.css. Native control parts reuse ca
   ${uncheckedFill} { box-shadow: ${shadow(offFill)}; }
   /* Match Lumenmorph's material-picker groups, not opaque on-color pills. */
   ${group} {
-    background-color: var(--lumen-bg, var(--slidebox-track, #063c5940));
-    border-color: var(--lumen-border-color, var(--slidebox-border, #5289a6));
+    background-color: var(--lumen-bg, var(--slidebox-track, #34332e40));
+    border-color: var(--lumen-border-color, var(--slidebox-border, #827b6c));
     border-radius: ${groupRadius};
   }
   ${group} > label > span { border-radius: ${groupRadius}; }

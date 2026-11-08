@@ -3,7 +3,7 @@
 Glass surfaces, glowing borders, and optional pointer light. CSS first, with no core runtime dependencies.
 
 [![npm](https://img.shields.io/npm/v/@monabbous/lumenmorph?color=ffaa71)](https://www.npmjs.com/package/@monabbous/lumenmorph)
-[![License: ISC](https://img.shields.io/badge/license-ISC-2a5b7c)](LICENSE)
+[![License: ISC](https://img.shields.io/badge/license-ISC-34332e)](LICENSE)
 
 <p align="center">
   <a href="https://nabous.dev/lab/lumenmorph/">
@@ -53,7 +53,7 @@ The optional [Slidebox skin](docs/slidebox.md) lives in `skins/slidebox.css`. Im
 
 <p align="center">
   <a href="https://nabous.dev/lab/lumenmorph/examples/">
-    <img src="https://img.shields.io/badge/Explore_examples-%E2%86%92-ffaa71?style=for-the-badge&amp;labelColor=102a31" alt="Explore examples">
+    <img src="https://img.shields.io/badge/Explore_examples-%E2%86%92-ffaa71?style=for-the-badge&amp;labelColor=171715" alt="Explore examples">
   </a>
 </p>
 
