@@ -72,7 +72,15 @@ test("group selected and unselected glass match the Lumenmorph lab reference", a
       ? (anchors ? element : element.querySelector("input:checked + span"))
       : element.querySelector("input:not(:checked):not(:disabled) + span");
     const style = getComputedStyle(target, selected ? "::before" : undefined);
-    return Object.fromEntries(["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter", "borderRadius", "boxShadow"].map(key => [key, style[key]]));
+    const result = Object.fromEntries(["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter", "borderRadius", "boxShadow"].map(key => [key, style[key]]));
+    // The historical reference has no optional undertone image. Ignore only
+    // the new inactive layer, keeping active paint and coordinates comparable.
+    if (result.backgroundImage.endsWith(", none")) {
+      result.backgroundImage = result.backgroundImage.slice(0, -6);
+      result.backgroundAttachment = result.backgroundAttachment.split(",").slice(0, -1).join(",");
+      result.backgroundSize = result.backgroundSize.split(",").slice(0, -1).join(",");
+    }
+    return result;
   };
   for (const selected of [true, false]) {
     const actual = await page.locator("#group").evaluate(paint, selected);
