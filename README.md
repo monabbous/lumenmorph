@@ -16,6 +16,22 @@ Glass surfaces, glowing borders, and optional pointer light. CSS first, with no 
 
 [Playground](https://nabous.dev/lab/lumenmorph/) · [24 editable examples](https://nabous.dev/lab/lumenmorph/examples/) · [Documentation](docs/README.md)
 
+## Alpha: independent undertone
+
+The `release/0.4.0-alpha.0` branch adds custom surface and border glows that you can control independently of the pointer light. Install this prerelease explicitly:
+
+```sh
+npm install @monabbous/lumenmorph@0.4.0-alpha.0
+```
+
+For plain HTML, use the alpha stylesheet:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@monabbous/lumenmorph@0.4.0-alpha.0/dist/css/lumenmorph.min.css">
+```
+
+Use the normal imports and markup below, then configure [`--lumen-undertone` and `--lumen-border-undertone`](docs/controls.md#independent-undertone). The npm `alpha` tag tracks prereleases; the unqualified installation below uses the stable release.
+
 ## Get started
 
 With npm and a bundler:

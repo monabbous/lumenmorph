@@ -1,7 +1,7 @@
 // Generated from src/lumenmorph.css.
 .lumen-option(@name; @value) when not (@value = false) { --lumen-@{name}: @value; }
 
-.lumenmorph(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+.lumenmorph(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false; @undertone: false; @border-undertone: false) {
   .lumen-option(bg; @bg);
   .lumen-option(solid-bg; @solid-bg);
   .lumen-option(glow-color; @glow-color);
@@ -18,6 +18,8 @@
   .lumen-option(text-glow-size; @text-glow-size);
   .lumen-option(text-glow-opacity; @text-glow-opacity);
   .lumen-option(text-stroke-width; @text-stroke-width);
+  .lumen-option(undertone; @undertone);
+  .lumen-option(border-undertone; @border-undertone);
   
   & {
     background-color: var(--lumen-bg, #302028b3);
@@ -28,9 +30,9 @@
   
   @supports (background: color-mix(in srgb, red, transparent)) {
     & {
-      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent)";
-      background-attachment: var(--lumen-attachment, fixed);
-      background-size: var(--lumen-space, 100vw 100vh);
+      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-glow-color, #ffaa71) calc(var(--lumen-glow-opacity, 0.3) * 100%), transparent), transparent), var(--lumen-undertone, none)";
+      background-attachment: var(--lumen-attachment, fixed), scroll;
+      background-size: var(--lumen-space, 100vw 100vh), 100% 100%;
       background-repeat: no-repeat;
     }
   }
@@ -54,7 +56,7 @@
   
 }
 
-.lumenmorph-border(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+.lumenmorph-border(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false; @undertone: false; @border-undertone: false) {
   .lumen-option(bg; @bg);
   .lumen-option(solid-bg; @solid-bg);
   .lumen-option(glow-color; @glow-color);
@@ -71,6 +73,8 @@
   .lumen-option(text-glow-size; @text-glow-size);
   .lumen-option(text-glow-opacity; @text-glow-opacity);
   .lumen-option(text-stroke-width; @text-stroke-width);
+  .lumen-option(undertone; @undertone);
+  .lumen-option(border-undertone; @border-undertone);
   
   
   & {
@@ -94,9 +98,9 @@
   @supports (background: color-mix(in srgb, red, transparent)) {
   
     &::before {
-      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-border-glow-color, var(--lumen-glow-color, #ffd4a3)) calc(var(--lumen-border-opacity, 0.9) * 100%), transparent), transparent)";
-      background-attachment: var(--lumen-attachment, fixed);
-      background-size: var(--lumen-space, 100vw 100vh);
+      background-image: ~"radial-gradient(circle var(--lumen-glow-size, 460px) at var(--lumen-x, 50vw) var(--lumen-y, 35vh), color-mix(in srgb, var(--lumen-border-glow-color, var(--lumen-glow-color, #ffd4a3)) calc(var(--lumen-border-opacity, 0.9) * 100%), transparent), transparent), var(--lumen-border-undertone, none)";
+      background-attachment: var(--lumen-attachment, fixed), scroll;
+      background-size: var(--lumen-space, 100vw 100vh), 100% 100%;
       background-repeat: no-repeat;
     }
   }
@@ -108,7 +112,7 @@
   
 }
 
-.lumenmorph-text(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false) {
+.lumenmorph-text(@bg: false; @solid-bg: false; @glow-color: false; @glow-size: false; @glow-opacity: false; @blur: false; @saturation: false; @radius: false; @border-width: false; @border-color: false; @border-glow-color: false; @border-opacity: false; @text-color: false; @text-glow-size: false; @text-glow-opacity: false; @text-stroke-width: false; @undertone: false; @border-undertone: false) {
   .lumen-option(bg; @bg);
   .lumen-option(solid-bg; @solid-bg);
   .lumen-option(glow-color; @glow-color);
@@ -125,6 +129,8 @@
   .lumen-option(text-glow-size; @text-glow-size);
   .lumen-option(text-glow-opacity; @text-glow-opacity);
   .lumen-option(text-stroke-width; @text-stroke-width);
+  .lumen-option(undertone; @undertone);
+  .lumen-option(border-undertone; @border-undertone);
   
   
   & {

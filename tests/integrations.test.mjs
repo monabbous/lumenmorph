@@ -28,12 +28,16 @@ function declarations(source, selector, property) {
 }
 
 test("SCSS and Less preserve core declarations and accessibility rules", async () => {
-  const sass = compileString('@use "mixins" as lumen; .card { @include lumen.lumenmorph((glow-size: 480px)); @include lumen.border(); } .label { @include lumen.text(); }', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;
-  const lessCSS = (await less.render(`${mixins}\n.card { .lumenmorph(@glow-size: 480px); .lumenmorph-border(); } .label { .lumenmorph-text(); }`)).css;
+  const sass = compileString('@use "mixins" as lumen; .card { @include lumen.lumenmorph((glow-size: 480px, undertone: linear-gradient(#123456, #123456), border-undertone: radial-gradient(circle at center, #fedcba, transparent))); @include lumen.border(); } .label { @include lumen.text(); }', { loadPaths: [new URL("../scss", import.meta.url).pathname] }).css;
+  const lessCSS = (await less.render(`${mixins}\n.card { .lumenmorph(@glow-size: 480px; @undertone: linear-gradient(#123456, #123456); @border-undertone: radial-gradient(circle at center, #fedcba, transparent)); .lumenmorph-border(); } .label { .lumenmorph-text(); }`)).css;
   for (const compiled of [sass, lessCSS]) {
-    assert.deepEqual(declarations(compiled, ".card", "background-image"), declarations(css, ".lumenmorph", "background-image"));
-    assert.deepEqual(declarations(compiled, ".card::before", "background-image"), declarations(css, ".lumenmorph-border::before", "background-image"));
+    for (const property of ["background-image", "background-attachment", "background-size"]) {
+      assert.deepEqual(declarations(compiled, ".card", property), declarations(css, ".lumenmorph", property));
+      assert.deepEqual(declarations(compiled, ".card::before", property), declarations(css, ".lumenmorph-border::before", property));
+    }
     assert.deepEqual(declarations(compiled, ".card", "--lumen-glow-size"), ["480px"]);
+    assert.deepEqual(declarations(compiled, ".card", "--lumen-undertone"), ["linear-gradient(#123456, #123456)"]);
+    assert.deepEqual(declarations(compiled, ".card", "--lumen-border-undertone"), ["radial-gradient(circle at center, #fedcba, transparent)"]);
     assert.match(compiled, /forced-colors: active/);
     assert.match(compiled, /prefers-reduced-transparency: reduce/);
     assert.match(compiled, /mask-composite: exclude/);
@@ -57,7 +61,9 @@ test("Less ready-made classes match CSS for surfaces and HTML text", async () =>
   const source = await readFile(new URL("../less/classes.less", import.meta.url), "utf8");
   const output = (await less.render(source)).css;
   for (const selector of [".lumenmorph", ".lumenmorph-border::before", ".lumenmorph-text", ".glassmorphism-text"]) {
-    assert.deepEqual(declarations(output, selector, "background-image"), declarations(css, selector, "background-image"));
+    for (const property of ["background-image", "background-attachment", "background-size"]) {
+      assert.deepEqual(declarations(output, selector, property), declarations(css, selector, property));
+    }
   }
 });
 
@@ -244,8 +250,10 @@ test("UI themes reuse canonical paint and accessibility without taking over focu
     ["taiga-ui", '[tuiAppearance][data-appearance="lumenmorph"]', '[tuiAppearance][data-appearance="lumenmorph"]'],
   ]) {
     const theme = await readFile(new URL(`../dist/css/${name}.css`, import.meta.url), "utf8");
-    assert.deepEqual(declarations(theme, surface, "background-image"), declarations(css, ".lumenmorph", "background-image"));
-    assert.deepEqual(declarations(theme, border + "::before", "background-image"), declarations(css, ".lumenmorph-border::before", "background-image"));
+    for (const property of ["background-image", "background-attachment", "background-size"]) {
+      assert.deepEqual(declarations(theme, surface, property), declarations(css, ".lumenmorph", property));
+      assert.deepEqual(declarations(theme, border + "::before", property), declarations(css, ".lumenmorph-border::before", property));
+    }
     assert.match(theme, /forced-colors: active/);
     assert.match(theme, /prefers-reduced-transparency: reduce/);
     assert.doesNotMatch(theme, /outline:|opacity:|transition:|!important/);

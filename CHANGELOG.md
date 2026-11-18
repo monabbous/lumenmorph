@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0-alpha.0 - 2026-11-18
+
+- Add optional `--lumen-undertone` and `--lumen-border-undertone` controls for a custom surface glow and illuminated edge. Each accepts one CSS image and defaults to `none`.
+- Paint undertones behind the normal glow using element-sized backgrounds. Their placement, colors, and app-owned controls remain independent of `--lumen-x`, `--lumen-y`, and the pointer helper's attachment and sizing.
+- Preserve the one-element surface and existing masked border, with no new runtime or pointer listeners. Include the controls in generated styles and Less named arguments.
+- Document the alpha installation, independent controls, and optional shared surface/border design.
+
 ## 0.3.2 - 2026-11-05
 
 - Add `@monabbous/lumenmorph/skins/slidebox` and its optional `.css` suffix. Retain `/slidebox` as a compatibility alias.

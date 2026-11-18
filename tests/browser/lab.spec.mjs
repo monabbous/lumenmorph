@@ -553,7 +553,18 @@ test("main lab's imported skin matches its original group styles across demo set
     expect(await page.locator(".material-picker").evaluateAll(groups => groups.every(group => !!group.closest(".lumenmorph-slidebox")))).toBe(true);
     const read = view => view.locator(".material-picker").evaluateAll(groups => {
       const properties = ["backgroundColor", "backgroundImage", "backgroundAttachment", "backgroundSize", "backdropFilter", "borderRadius", "boxShadow", "borderColor", "color"];
-      const paint = style => Object.fromEntries(properties.map(key => [key, style[key]]));
+      const paint = style => {
+        const result = Object.fromEntries(properties.map(key => [key, style[key]]));
+        // An unset optional undertone adds an inert trailing image. Compare
+        // visible paint with the old one-image fixture, preserving every
+        // active layer and its coordinate space in the regression check.
+        if (result.backgroundImage.endsWith(", none")) {
+          result.backgroundImage = result.backgroundImage.slice(0, -6);
+          result.backgroundAttachment = result.backgroundAttachment.split(",").slice(0, -1).join(",");
+          result.backgroundSize = result.backgroundSize.split(",").slice(0, -1).join(",");
+        }
+        return result;
+      };
       const anchored = CSS.supports("anchor-scope", "--slidebox-selection") && CSS.supports("left", "anchor(left)");
       return groups.map(group => {
         const selected = group.querySelector("input:checked + span"), idle = group.querySelector("input:not(:checked) + span");

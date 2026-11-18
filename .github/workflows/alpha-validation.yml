@@ -1,0 +1,41 @@
+name: Validate undertone alpha
+
+on:
+  push:
+    branches:
+      - release/0.4.0-alpha.0
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npm run test:types
+      - run: npm run test:svelte
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run build:previews
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alpha-previews-${{ github.sha }}
+          path: |
+            public/lab/examples/*/og.png
+            public/lab/examples/collection.png
+            public/lab/examples/previews.json
+          if-no-files-found: error
+      - run: npm run test:browser -- --reporter=line
+      - run: npm pack --dry-run
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: alpha-browser-test-results-${{ github.sha }}
+          path: test-results/

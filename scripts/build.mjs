@@ -17,7 +17,7 @@ const lessClasses = ast.clone();
 lessClasses.walkDecls(declaration => {
   if (/\b(?:color-mix|calc|blur|saturate|radial-gradient)\(/.test(declaration.value)) declaration.value = `~"${declaration.value}"`;
 });
-const controls = ["bg", "solid-bg", "glow-color", "glow-size", "glow-opacity", "blur", "saturation", "radius", "border-width", "border-color", "border-glow-color", "border-opacity", "text-color", "text-glow-size", "text-glow-opacity", "text-stroke-width"];
+const controls = ["bg", "solid-bg", "glow-color", "glow-size", "glow-opacity", "blur", "saturation", "radius", "border-width", "border-color", "border-glow-color", "border-opacity", "text-color", "text-glow-size", "text-glow-opacity", "text-stroke-width", "undertone", "border-undertone"];
 const components = { lumenmorph: ".lumenmorph", border: ".lumenmorph-border", text: ".lumenmorph-text" };
 
 function nested(container, selector) {
