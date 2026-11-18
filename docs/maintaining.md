@@ -32,7 +32,7 @@ Use the actual version for later releases. The workflow checks the version, buil
 
 Keep an alpha on its own named branch, with the exact version in `package.json` and `package-lock.json`. For `0.4.0-alpha.0`, use `release/0.4.0-alpha.0`; do not merge it into `main` to publish it.
 
-An authorized push that changes `package.json` on a `release/*-alpha.*` branch starts the publishing workflow. Review and test the release commit before pushing it. The workflow rejects a branch that does not exactly match `release/<package version>`, and accepts only canonical `x.y.z-alpha.n` versions for this route. Manual dispatch on the same branch is also supported with the exact version input:
+An authorized push on a `release/*-alpha.*` branch starts the publishing workflow. Review and test the release commit before pushing it. The workflow rejects a branch that does not exactly match `release/<package version>`, and accepts only canonical `x.y.z-alpha.n` versions for this route. Manual dispatch on the same branch is also supported with the exact version input:
 
 ```sh
 gh workflow run publish-npm.yml --ref release/0.4.0-alpha.0 -f version=0.4.0-alpha.0

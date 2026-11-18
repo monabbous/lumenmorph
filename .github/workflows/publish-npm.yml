@@ -1,6 +1,9 @@
 name: Publish to npm
 
 on:
+  push:
+    branches:
+      - 'release/*-alpha.*'
   workflow_dispatch:
     inputs:
       version:
@@ -10,7 +13,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: npm-release-main
@@ -18,9 +20,15 @@ concurrency:
 
 jobs:
   publish:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/release/')
     environment: production
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+      prerelease: ${{ steps.release.outputs.prerelease }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,10 +36,11 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - run: npm install --global npm@11
-      - name: Check requested version
+      - name: Validate release version, branch, and npm tag
+        id: release
         env:
           EXPECTED_VERSION: ${{ inputs.version }}
-        run: node --input-type=module -e 'import fs from "node:fs"; if (JSON.parse(fs.readFileSync("package.json")).version !== process.env.EXPECTED_VERSION) process.exit(1)'
+        run: node scripts/release-config.mjs
       - run: npm ci
       - run: npm run build
       - run: npm test
@@ -42,4 +51,32 @@ jobs:
       - run: git diff --exit-code -- dist skins scss less tailwind public/lab/assets public/lab/skins public/lab/playground public/lab/playground-layout.css public/lab/index.html public/lab/r public/lab/examples public/lab/editor-runtime.json angular/dist web-component/styles.mjs react/index.mjs react/index.d.ts
       - run: npm run build:previews -- --check
       - run: npm pack --dry-run
-      - run: npm publish --access public --provenance
+      - name: Publish to the validated npm tag
+        env:
+          NPM_TAG: ${{ steps.release.outputs.tag }}
+        run: npm publish --access public --provenance --tag "$NPM_TAG"
+
+  prerelease:
+    needs: publish
+    if: needs.publish.outputs.prerelease == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create the alpha GitHub release after npm publication
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_VERSION: ${{ needs.publish.outputs.version }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile, writeFile } from 'node:fs/promises';
+          import { join } from 'node:path';
+          const version = process.env.RELEASE_VERSION;
+          const changelog = await readFile('CHANGELOG.md', 'utf8');
+          const entry = changelog.split(/^## /m).find(section => section.startsWith(`${version} - `));
+          if (!entry) throw new Error(`Missing changelog entry for ${version}`);
+          const notes = `Install this alpha with \`npm install @monabbous/lumenmorph@${version}\`.\n\n${entry.slice(entry.indexOf('\n') + 1).trim()}\n`;
+          await writeFile(join(process.env.RUNNER_TEMP, 'alpha-release-notes.md'), notes);
+          NODE
+          gh release create "v$RELEASE_VERSION" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --prerelease --title "Lumenmorph $RELEASE_VERSION" --notes-file "$RUNNER_TEMP/alpha-release-notes.md"
